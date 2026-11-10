@@ -259,13 +259,17 @@ pub(crate) fn parse_ply(bytes: &[u8]) -> Result<Mesh> {
             for p in &e.properties {
                 if let Some(count) = p.list {
                     let n = index(body.read(count)?, "list count")?;
-                    let items = (0..n)
-                        .map(|_| index(body.read(p.kind)?, "vertex index"))
-                        .collect::<Result<Vec<_>>>()?;
                     if role == "face"
                         && matches!(p.name.as_str(), "vertex_indices" | "vertex_index")
                     {
-                        polygon = items;
+                        polygon = (0..n)
+                            .map(|_| index(body.read(p.kind)?, "vertex index"))
+                            .collect::<Result<Vec<_>>>()?;
+                    } else {
+                        // Other lists (wedge texcoords, ...) are read past, not kept.
+                        for _ in 0..n {
+                            body.read(p.kind)?;
+                        }
                     }
                     continue;
                 }
@@ -597,6 +601,17 @@ mod tests {
             .iter()
             .for_each(|i| bytes.extend(i.to_le_bytes()));
         assert!(parse_ply(&bytes).is_err());
+    }
+
+    #[test]
+    fn non_index_lists_may_hold_fractions() {
+        // MeshLab writes per-face wedge texcoords as a float list.
+        let text = "ply\nformat ascii 1.0\nelement vertex 3\nproperty float x\n\
+            property float y\nproperty float z\nelement face 1\n\
+            property list uchar int vertex_indices\nproperty list uchar float texcoord\n\
+            end_header\n0 0 0\n1 0 0\n0 1 0\n3 0 1 2 6 0.25 0.5 0.75 0.125 -0.5 nan\n";
+        let mesh = parse_ply(text.as_bytes()).unwrap();
+        assert_eq!(mesh.triangles(), &[[0, 1, 2]]);
     }
 
     #[test]

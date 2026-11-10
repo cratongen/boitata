@@ -23,6 +23,18 @@ const GDAL_METADATA: Tag = Tag::Unknown(42112);
 const MAX_EXPANSION: u64 = 4096;
 const MIN_BUDGET: usize = 16 << 20;
 
+/// Zero-extends `values` to `len`, reporting allocation failure as an error
+/// instead of aborting the process.
+fn grow(values: &mut Vec<f64>, len: usize) -> Result<()> {
+    if let Some(more) = len.checked_sub(values.len()) {
+        values
+            .try_reserve(more)
+            .map_err(|_| bad(format!("cannot allocate {len} samples")))?;
+        values.resize(len, 0.0);
+    }
+    Ok(())
+}
+
 fn bad(message: impl Into<String>) -> Error {
     Error::GeoTiff(message.into())
 }
@@ -134,14 +146,20 @@ pub fn read_geotiff(path: impl AsRef<Path>, nodata: Option<f64>) -> Result<Block
         .ok_or_else(|| {
             bad(format!(
                 "the header declares {w} x {h} pixels of {bands} {bits}-bit bands, more than \
-                 the {stored} bytes of image data in the file can hold"
+                 the {stored} bytes of image data in the file can hold (compressed data is \
+                 assumed to expand at most {MAX_EXPANSION}x, with a {MIN_BUDGET}-byte floor)"
             ))
         })?;
+    // The tiff crate checks decoded chunks in their result type (12-bit samples
+    // decode to u16), so scale the stored-bits budget up to that width.
+    let decoded_bits = bits.next_power_of_two().clamp(8, 64);
     let mut limits = Limits::default();
-    limits.decoding_buffer_size = budget;
+    limits.decoding_buffer_size = (budget / bits.max(1)).saturating_mul(decoded_bits);
     limits.intermediate_buffer_size = usize::try_from(file_size).unwrap_or(usize::MAX);
     let mut tif = tif.with_limits(limits);
-    let mut values = vec![0.0; n_samples];
+    // Grown as chunks decode, so memory follows the data actually decompressed
+    // rather than what the header claims.
+    let mut values = Vec::new();
     let mut single = false;
     for k in 0..chunks {
         let (plane, at) = (k / per_plane, k % per_plane);
@@ -170,11 +188,15 @@ pub fn read_geotiff(path: impl AsRef<Path>, nodata: Option<f64>) -> Result<Block
                 let x = x0 + c;
                 if y < h && x < w {
                     let at = (y * w + x) * bands + plane;
+                    if values.len() < at + per_pixel {
+                        grow(&mut values, at + per_pixel)?;
+                    }
                     values[at..at + per_pixel].copy_from_slice(pixel);
                 }
             }
         }
     }
+    grow(&mut values, n_samples)?;
     let nodata = nodata.map(|v| if single { v as f32 as f64 } else { v });
 
     let key = |id: u16| {

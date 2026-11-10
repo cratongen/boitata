@@ -627,7 +627,7 @@ mod tests {
         let data = vec![(40.0, 40.0, 0.0)];
         let vgs = vec![Variogram::single(Model::Gaussian, 1.0, 20.0); 3];
         let mut share = [0.0; 5];
-        let reals = 16;
+        let reals = 32;
         for seed in 0..reals {
             let f = plurigaussian(&data, &[1], &grid, &vgs, &rule, &quiet_params(seed)).unwrap();
             for &c in &f {

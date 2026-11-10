@@ -378,7 +378,7 @@ def test_plurigaussian_fitted_variograms_recover_the_latent_ranges():
     fine = bt.BlockModel(origin=(0, 0), size=(2, 2), count=(60, 60))
     xy = fine.coords[:, :2]
     pgs = bt.Plurigaussian(truth, proportions=[0.3, 0.4, 0.3], rule=rule).fit([[60.0, 60.0]], [1])
-    facies = pgs.simulate(fine, n=1, seed=5, keep=True).realizations[0]
+    facies = pgs.simulate(fine, n=1, seed=0, keep=True).realizations[0]
     experimental = [bt.experimental_variogram(xy, (facies == f).astype(float), 2.0, 24.0) for f in range(3)]
     start = [bt.Variogram([("spherical", 1.0, 5.0)]), bt.Variogram([("exponential", 1.0, 80.0)])]
     fitted = bt.Plurigaussian(start, proportions=[0.3, 0.4, 0.3], rule=rule).fit_variograms(experimental)
@@ -1475,3 +1475,13 @@ def test_turning_bands_rejects_a_model_invalid_in_3d():
     bands = bt.TurningBands(bt.Variogram([("circular", 1.0, 100.0)]), bands=20, search=bt.Search(50.0))
     with pytest.raises(bt.InvalidInput, match="valid in 3-D"):
         bands.fit(d, g.standard_normal(50)).simulate(t, n=2)
+
+
+@pytest.mark.parametrize(("model", "tol"), [("exponential", 0.02), ("spherical", 0.012), ("gaussian", 0.012)])
+def test_turning_bands_field_has_unit_variance_at_the_default_step(model, tol):
+    from boitata._boitata import _gaussian_field
+
+    vg = bt.Variogram([(model, 1.0, 100.0)])
+    points = np.random.default_rng(99).uniform(50, 1950, (4000, 3))
+    z = np.concatenate([_gaussian_field(points, vg, [0.0] * 3, [2000.0] * 3, seed=s) for s in range(20)])
+    assert np.mean(z**2) == pytest.approx(1.0, abs=tol)

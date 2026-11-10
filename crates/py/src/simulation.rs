@@ -205,6 +205,10 @@ impl SimulationSummary {
         crate::persist::state(<Self as pyo3::PyClass>::NAME, self)
     }
 
+    fn _meta(&self) -> PyResult<String> {
+        crate::persist::meta(<Self as pyo3::PyClass>::NAME, self)
+    }
+
     #[staticmethod]
     fn _from_state(meta: &str, columns: Option<crate::persist::Columns>) -> PyResult<Self> {
         crate::persist::from_state(<Self as pyo3::PyClass>::NAME, meta, columns)
@@ -537,6 +541,10 @@ impl CategoricalSummary {
         crate::persist::state(<Self as pyo3::PyClass>::NAME, self)
     }
 
+    fn _meta(&self) -> PyResult<String> {
+        crate::persist::meta(<Self as pyo3::PyClass>::NAME, self)
+    }
+
     #[staticmethod]
     fn _from_state(meta: &str, columns: Option<crate::persist::Columns>) -> PyResult<Self> {
         crate::persist::from_state(<Self as pyo3::PyClass>::NAME, meta, columns)
@@ -601,15 +609,6 @@ impl CategoricalSummary {
                 self.0.most_likely.len(),
             )
         })
-    }
-
-    fn __repr__(&self) -> String {
-        format!(
-            "CategoricalSummary(n={}, targets={}, categories={})",
-            self.0.n,
-            self.0.most_likely.len(),
-            self.0.probabilities.len()
-        )
     }
 }
 
@@ -1206,6 +1205,10 @@ impl Sgs {
         crate::persist::state(<Self as pyo3::PyClass>::NAME, self)
     }
 
+    fn _meta(&self) -> PyResult<String> {
+        crate::persist::meta(<Self as pyo3::PyClass>::NAME, self)
+    }
+
     #[staticmethod]
     fn _from_state(meta: &str, columns: Option<crate::persist::Columns>) -> PyResult<Self> {
         crate::persist::from_state(<Self as pyo3::PyClass>::NAME, meta, columns)
@@ -1774,6 +1777,10 @@ impl Dss {
         crate::persist::state(<Self as pyo3::PyClass>::NAME, self)
     }
 
+    fn _meta(&self) -> PyResult<String> {
+        crate::persist::meta(<Self as pyo3::PyClass>::NAME, self)
+    }
+
     #[staticmethod]
     fn _from_state(meta: &str, columns: Option<crate::persist::Columns>) -> PyResult<Self> {
         crate::persist::from_state(<Self as pyo3::PyClass>::NAME, meta, columns)
@@ -2256,6 +2263,10 @@ impl TurningBands {
         crate::persist::state(<Self as pyo3::PyClass>::NAME, self)
     }
 
+    fn _meta(&self) -> PyResult<String> {
+        crate::persist::meta(<Self as pyo3::PyClass>::NAME, self)
+    }
+
     #[staticmethod]
     fn _from_state(meta: &str, columns: Option<crate::persist::Columns>) -> PyResult<Self> {
         crate::persist::from_state(<Self as pyo3::PyClass>::NAME, meta, columns)
@@ -2715,6 +2726,10 @@ impl Sis {
         crate::persist::state(<Self as pyo3::PyClass>::NAME, self)
     }
 
+    fn _meta(&self) -> PyResult<String> {
+        crate::persist::meta(<Self as pyo3::PyClass>::NAME, self)
+    }
+
     #[staticmethod]
     fn _from_state(meta: &str, columns: Option<crate::persist::Columns>) -> PyResult<Self> {
         crate::persist::from_state(<Self as pyo3::PyClass>::NAME, meta, columns)
@@ -2931,6 +2946,10 @@ impl Plurigaussian {
 
     fn _state(&self) -> PyResult<(String, Option<crate::persist::Columns>)> {
         crate::persist::state(<Self as pyo3::PyClass>::NAME, self)
+    }
+
+    fn _meta(&self) -> PyResult<String> {
+        crate::persist::meta(<Self as pyo3::PyClass>::NAME, self)
     }
 
     #[staticmethod]
@@ -3807,6 +3826,10 @@ fn categories_from(found: &Found, k: usize) -> PyResult<(Vec<Point>, Vec<usize>)
 }
 
 impl Tabular for Sgs {
+    fn rows(&self) -> Option<usize> {
+        self.data.as_ref().map(|d| d.values.len())
+    }
+
     fn columns(&self) -> Option<Columns> {
         self.data.as_ref().map(data_columns)
     }
@@ -3818,6 +3841,10 @@ impl Tabular for Sgs {
 }
 
 impl Tabular for Dss {
+    fn rows(&self) -> Option<usize> {
+        self.data.as_ref().map(|d| d.values.len())
+    }
+
     fn columns(&self) -> Option<Columns> {
         self.data.as_ref().map(data_columns)
     }
@@ -3829,6 +3856,10 @@ impl Tabular for Dss {
 }
 
 impl Tabular for TurningBands {
+    fn rows(&self) -> Option<usize> {
+        self.data.as_ref().map(|d| d.values.len())
+    }
+
     fn columns(&self) -> Option<Columns> {
         self.data.as_ref().map(data_columns)
     }
@@ -3840,6 +3871,10 @@ impl Tabular for TurningBands {
 }
 
 impl Tabular for Sis {
+    fn rows(&self) -> Option<usize> {
+        self.data.as_ref().map(|d| d.0.len())
+    }
+
     fn columns(&self) -> Option<Columns> {
         self.data.as_ref().map(|d| {
             let mut columns = category_columns(d);
@@ -4302,6 +4337,10 @@ impl MultivariateSimulation {
 
     fn _state(&self) -> PyResult<(String, Option<crate::persist::Columns>)> {
         crate::persist::state(<Self as pyo3::PyClass>::NAME, self)
+    }
+
+    fn _meta(&self) -> PyResult<String> {
+        crate::persist::meta(<Self as pyo3::PyClass>::NAME, self)
     }
 
     #[staticmethod]
@@ -4990,6 +5029,10 @@ impl Snesim {
         crate::persist::state(<Self as pyo3::PyClass>::NAME, self)
     }
 
+    fn _meta(&self) -> PyResult<String> {
+        crate::persist::meta(<Self as pyo3::PyClass>::NAME, self)
+    }
+
     #[staticmethod]
     fn _from_state(meta: &str, columns: Option<crate::persist::Columns>) -> PyResult<Self> {
         crate::persist::from_state(<Self as pyo3::PyClass>::NAME, meta, columns)
@@ -5561,6 +5604,10 @@ impl ImageQuilting {
 
     fn _state(&self) -> PyResult<(String, Option<crate::persist::Columns>)> {
         crate::persist::state(<Self as pyo3::PyClass>::NAME, self)
+    }
+
+    fn _meta(&self) -> PyResult<String> {
+        crate::persist::meta(<Self as pyo3::PyClass>::NAME, self)
     }
 
     #[staticmethod]

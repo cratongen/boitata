@@ -33,7 +33,7 @@ print(f"std {scores.std():.2f}, back to V: {np.allclose(back, samples['V'])}")
 std 1.00, back to V: True
 ```
 
-`fit_transform` does both steps at once, with one difference: it gives tied values, such as the metal survey's 12 zeros, distinct scores by breaking ties at random from `seed`, while `transform` sends equal values to one score.
+`fit_transform` does both steps at once, with one difference: it gives tied values, such as the metal survey's 11 zeros, distinct scores by breaking ties at random from `seed`, while `transform` sends equal values to one score.
 
 `Capping`, `BoxCox`, `HermiteAnamorphosis`, `PPMT`, `PCA`, `MAF` and the other transforms follow the same pattern; the [transforms API](../api/transforms/index.md) lists them.
 
@@ -58,9 +58,9 @@ BlockModel  regular, 3,120 blocks
   size    5 × 5 × 1
   origin  2.5, 2.5, 0
   bounds  x 2.5 to 262.5, y 2.5 to 302.5, z 0 to 1
-  column      type     unit  nulls      min     mean    max
-  V           float64            0   0.2893      290   1050
-  V_variance  float64            0  33906.4  44219.7  72481
+  column      type     unit  nulls      min     mean      max
+  V           float64            0    5.006    295.2    939.3
+  V_variance  float64            0  40467.1  49442.5  72591.2
 ```
 
 ### Where results go
@@ -89,7 +89,7 @@ print(f"mean error {check.mean_error:.1f}, RMSE {check.rmse:.1f}, slope {check.s
 ```
 
 ```text
-mean error 6.8, RMSE 182.8, slope 1.11
+mean error 3.7, RMSE 181.9, slope 1.12
 ```
 
 `OrdinaryKriging`, `SimpleKriging`, `UniversalKriging`, `BlockKriging`, `IndicatorKriging`, `InverseDistance` and the rest share `fit`, `predict`, `cross_validate` and `with_search`; the [estimation API](../api/estimation/index.md) lists them.

@@ -157,19 +157,19 @@ print(f"    total: {domain_model.volumes.sum():>13,.0f} m3 = grid {np.prod(size)
 </details>
 
 ```text
-BlockModel  sub-blocked, 26,337 sub-blocks in 12,342 blocks
-  count   17 × 22 × 33
+BlockModel  sub-blocked, 26,146 sub-blocks in 11,968 blocks
+  count   17 × 22 × 32
   size    40 × 40 × 20
   origin  11880, 29480, -240
-  bounds  x 11880 to 12560, y 29480 to 30360, z -240 to 420
+  bounds  x 11880 to 12560, y 29480 to 30360, z -240 to 400
   column  type  unit  nulls  values
   domain  str             0  5 unique: host rock, lens 3, lens 2, …
    lens 1:     2,862,500 m3
    lens 2:     1,905,000 m3
    lens 3:     1,638,500 m3
-host rock:   367,214,000 m3
-      air:    21,324,000 m3
-    total:   394,944,000 m3 = grid 394,944,000 m3
+host rock:   370,856,500 m3
+      air:     5,713,500 m3
+    total:   382,976,000 m3 = grid 382,976,000 m3
 ```
 
 A vertical section across strike (the lenses strike N22.5°E) through the domain model, with the lens outlines:
@@ -227,9 +227,9 @@ for minimum in (0.0, 0.5):
 </details>
 
 ```text
-sub-blocks: 6,406,000 m3 at 6.03% Zn
-min_fraction 0.0: 845 parents, 6,406,000 m3 at 6.03% Zn, 100.0% of the metal
-min_fraction 0.5: 113 parents, 2,237,000 m3 at 5.51% Zn, 31.9% of the metal
+sub-blocks: 6,406,000 m3 at 6.50% Zn
+min_fraction 0.0: 845 parents, 6,406,000 m3 at 6.50% Zn, 100.0% of the metal
+min_fraction 0.5: 113 parents, 2,237,000 m3 at 6.75% Zn, 36.2% of the metal
 ```
 
 A label keeps only the value that fills most of a block. The lenses fill few 40 m blocks by more than half,

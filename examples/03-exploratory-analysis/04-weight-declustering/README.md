@@ -49,7 +49,7 @@ print(f"cell {cell.cell_size:.0f} m: mean {cell.mean:.2f} m")
 </details>
 
 ```text
-cell 766 m: mean 1.76 m
+cell 766 m: mean 1.81 m
 ```
 
 ## Weights from estimation
@@ -80,9 +80,9 @@ for name, w in weights.items():
 </details>
 
 ```text
-nearest neighbor: mean 1.74 m, weights 0.04 to 3.11
-inverse distance: mean 1.78 m, weights 0.32 to 2.08
-ordinary kriging: mean 1.77 m, weights 0.31 to 2.20
+nearest neighbor: mean 1.77 m, weights 0.00 to 3.07
+inverse distance: mean 1.83 m, weights 0.34 to 2.02
+ordinary kriging: mean 1.82 m, weights 0.30 to 2.15
 ```
 
 Nearest neighbor gives each hole the cells closest to it: polygon declustering at the resolution of the grid. Inverse

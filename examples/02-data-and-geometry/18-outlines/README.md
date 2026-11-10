@@ -57,7 +57,7 @@ save(fig, "outlines")
 ```text
 convex            0.92 km²
 concave           0.81 km²
-concave + buffer  1.03 km²
+concave + buffer  1.04 km²
 ```
 
 ![outlines](outlines.png)

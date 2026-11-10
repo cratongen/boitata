@@ -48,7 +48,7 @@ show(scene, "scene", "Topography by elevation, the three lenses and their Zn com
 
 ```text
 topography: 289 vertices, 558 triangles
-1,489 composites inside a lens, 0 of them null
+1,466 composites inside a lens, 0 of them null
 ```
 
 ![scene](scene.png)

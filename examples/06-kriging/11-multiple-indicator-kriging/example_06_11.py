@@ -67,7 +67,7 @@ print(f"validation points inside their 10-90% interval: {inside:.0%}")
 
 # %% [markdown]
 # The E-type estimate, the mean of each distribution, has a lower error than ordinary kriging, and the median-indicator
-# shortcut gives all of that gain back. The distributions also carry the uncertainty: those at the lowest and highest
+# shortcut keeps that gain. The distributions also carry the uncertainty: those at the lowest and highest
 # validation estimates sit on either side of the declustered global one:
 
 # %%
@@ -121,9 +121,9 @@ save(fig, "accuracy")
 # %% [markdown]
 # At a panel centroid the distribution describes Cd at that one point. Kriging the indicators over the panel instead,
 # with `discretization=(4, 4, 1)`, gives the distribution of the point values within it, and `localize` takes the same
-# argument. Each panel probability averages those of the points inside, so panels differ a little less and the order
-# relations need less correction. Within 1 km the indicator variograms rise mostly at the nugget, which kriging at a
-# centroid already filters, so the two stay close here:
+# argument. Each panel probability averages those of the points inside, so the order relations need less correction.
+# Within 1 km the indicator variograms rise mostly at the nugget, which kriging at a centroid already filters, so the
+# two stay close here:
 
 # %%
 panels = bt.BlockModel(origin=(0.25, 0.0), size=(1.0, 1.0), count=(5, 6))

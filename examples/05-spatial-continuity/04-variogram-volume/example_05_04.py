@@ -82,9 +82,9 @@ print(f"mean lens plane:                        dips {lens_dip:.0f} towards {len
 print(f"minor axis to lens pole: {angle:.1f} degrees")
 
 # %% [markdown]
-# The major axis plunges 23° toward 185°, close to strike; the semi-major axis runs obliquely down dip; the minor axis
-# lies within a degree of the pole of the lenses. The plane of best continuity is the lens plane. Within it the two
-# ranges differ by only 13 %, so the direction of the major axis in that plane is the least certain part of the fit.
+# The major axis plunges 2° toward 202°, along strike; the semi-major axis runs down dip; the minor axis lies within
+# three degrees of the pole of the lenses. The plane of best continuity is the lens plane. Within it the semi-major
+# range is about two thirds of the major, so the grade is more continuous along strike than down dip.
 #
 # ## Slices through the principal planes
 #

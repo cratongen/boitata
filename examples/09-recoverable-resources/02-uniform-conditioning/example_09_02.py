@@ -101,9 +101,9 @@ save(fig, "uniform-conditioning")
 
 
 # %% [markdown]
-# At 500 ppm uniform conditioning keeps 19.1% of the blocks against a true 16.9%; the smoothed kriged blocks keep 14.0%.
-# At 300 ppm it overstates the tonnage by a few percent, as kriging does. At 800 ppm, where few blocks remain, it thins
-# the rich tail to 1.1% against a true 2.1%.
+# At 500 ppm uniform conditioning keeps 15.9% of the blocks against a true 15.5%; the smoothed kriged blocks keep 11.7%.
+# At 300 ppm it overstates the tonnage by two percent, where kriging understates it. At 800 ppm, where few blocks
+# remain, it keeps 2.2% against a true 1.6%.
 
 
 # %% [markdown]
@@ -138,7 +138,7 @@ save(fig, "localized")
 
 
 # %% [markdown]
-# The localized blocks spread as the model says blocks should, and the model says too little here: variance 35 465
-# against the true 47 350. Block by block they match the truth less well than kriging (correlation 0.88 against 0.92),
+# The localized blocks spread as the model says blocks should, and the model says too little here: variance 42 435
+# against the true 44 183. Block by block they match the truth less well than kriging (correlation 0.84 against 0.87),
 # since the ranking inside a panel is only as good as the kriging that sets it. Localization keeps the grade of each
 # panel and its tonnage above every cutoff.

@@ -76,8 +76,8 @@ print(f"mean density {np.nanmean(table['DENSITY']):.2f} t/m3 = {np.nanmean(densi
 </details>
 
 ```text
-[1.4 1.4 1.8] g/t is [0.04083333 0.04083333 0.0525    ] oz/t
-mean density 3.25 t/m3 = 3245 kg/m3
+[1.  1.4 0.7] g/t is [0.02916667 0.04083333 0.02041667] oz/t
+mean density 3.29 t/m3 = 3293 kg/m3
 ```
 
 A conversion across kinds raises `InvalidInput`: a zinc grade in percent is not a ratio in percent.
@@ -208,7 +208,7 @@ for crs in (wkt, "EPSG:32722"):
 </details>
 
 ```text
-109105 blocks estimated in PROJCRS["SIRGAS 2000 / UTM zone 22S"]
+109586 blocks estimated in PROJCRS["SIRGAS 2000 / UTM zone 22S"]
 samples are in CRS EPSG:31982 and targets in EPSG:32722; give them one CRS
 ```
 
@@ -236,9 +236,9 @@ shape: (3, 4)
 │ ---    ┆ ---      ┆ ---        ┆ ---        │
 │ f64    ┆ f64      ┆ f64        ┆ f64        │
 ╞════════╪══════════╪════════════╪════════════╡
-│ 0.0    ┆ 67.95045 ┆ 1.012868   ┆ 688.248429 │
-│ 2.0    ┆ 12.7658  ┆ 3.913826   ┆ 499.631216 │
-│ 4.0    ┆ 4.32295  ┆ 5.999953   ┆ 259.374987 │
+│ 0.0    ┆ 67.75205 ┆ 1.147937   ┆ 777.751135 │
+│ 2.0    ┆ 13.5408  ┆ 4.421723   ┆ 598.736621 │
+│ 4.0    ┆ 5.30255  ┆ 6.850076   ┆ 363.22868  │
 └────────┴──────────┴────────────┴────────────┘
 ```
 
@@ -260,7 +260,7 @@ print(search.radius, search.length_unit)
 </details>
 
 ```text
-[12.7658] [12.7658]
+[13.5408] [13.5408]
 200.0 ft
 ```
 
@@ -310,8 +310,8 @@ shape: (2, 4)
 │ ---    ┆ ---   ┆ ---      ┆ ---       │
 │ str    ┆ u64   ┆ f64      ┆ f64       │
 ╞════════╪═══════╪══════════╪═══════════╡
-│ naive  ┆ 16070 ┆ 0.617235 ┆ 0.0       │
-│ model  ┆ 43862 ┆ 1.01224  ┆ 0.639958  │
+│ naive  ┆ 16002 ┆ 0.641284 ┆ 0.0       │
+│ model  ┆ 43739 ┆ 1.147105 ┆ 0.788763  │
 └────────┴───────┴──────────┴───────────┘
 ```
 

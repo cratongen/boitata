@@ -23,7 +23,7 @@ print(f"{len(pair)} composites, correlation {np.corrcoef(pair.T)[0, 1]:.2f}")
 </details>
 
 ```text
-7213 composites, correlation 0.12
+7213 composites, correlation -0.04
 ```
 
 PCA rotates onto the eigenvectors of the correlation matrix. MAF rotates the sphered data onto the eigenvectors of its
@@ -57,16 +57,17 @@ print("MAF variogram of each factor at 5 m:", np.round(transforms["MAF"].gammas_
 
 ```text
         r(f1, f2)  r(f1², f2)  skew f2  round trip
-PCA         0.000      -0.178    -0.35     3.0e-15
-MAF        -0.000      -0.008     1.90     4.0e-15
-SCT         0.003       0.012     0.98     1.5e-16
-PPMT       -0.958       0.965    59.02     3.3e-08
-PCA explained variance ratio: [0.56 0.44]
-MAF variogram of each factor at 5 m: [0.177 0.222]
+PCA         0.000       0.575     0.91     2.2e-15
+MAF        -0.000       0.561     0.98     2.2e-15
+SCT        -0.004      -0.015     0.85     2.8e-17
+PPMT       -0.140       0.201     0.37     3.2e-08
+PCA explained variance ratio: [0.518 0.482]
+MAF variogram of each factor at 5 m: [0.196 0.254]
 ```
 
 The data and the four sets of factors. Linear factors are uncorrelated but keep the L-shaped cloud of two mineral
-associations; the nonlinear ones fill the standard bivariate normal.
+associations; the nonlinear ones move toward the standard bivariate normal, though the ties at the lowest grades stay
+as lines.
 
 <details><summary>Python</summary>
 
@@ -87,8 +88,9 @@ save(fig, "factors")
 
 ![factors](factors.png)
 
-Every transform returns the data exactly and leaves uncorrelated factors. PCA and MAF keep some dependence (r(f1², f2)
-of 0.07 and −0.08), and MAF leaves a skewed second factor (1.90). SCT and PPMT bring both to about 0, so you can
-simulate their factors one at a time and keep the shape of the cloud.
+Every transform returns the data exactly. PCA and MAF leave uncorrelated factors that keep strong dependence
+(r(f1², f2) of 0.58 and 0.56) and a skewed second factor (0.91 and 0.98). SCT brings the dependence to about 0, so you
+can simulate its factors one at a time and keep the shape of the cloud. PPMT, held back by the ties, leaves some
+(r(f1, f2) of −0.14, r(f1², f2) of 0.20).
 
 Full script: [`example_04_05.py`](example_04_05.py)

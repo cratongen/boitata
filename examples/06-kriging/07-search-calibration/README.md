@@ -73,19 +73,19 @@ for i, n in enumerate(counts):
 ```text
         slope of regression  variance ratio tonnage >= 500 negative
 samples   mean     CV   true scores   true scores   true  weights
-      4   0.86   0.92   0.93   0.97   0.95   1.13   1.01    0.000
-      8   0.94   0.97   0.99   0.87   0.86   1.05   0.94   -0.000
-     12   0.97   1.00   1.01   0.84   0.82   1.00   0.89   -0.005
-     16   0.98   1.00   1.02   0.82   0.81   0.94   0.83   -0.015
-     24   0.98   0.99   1.02   0.82   0.80   0.92   0.82   -0.036
-     32   0.98   0.99   1.02   0.82   0.80   0.91   0.81   -0.055
-     48   0.97   0.99   1.02   0.82   0.80   0.95   0.85   -0.074
+      4   0.80   0.88   0.93   0.90   0.85   1.10   0.85    0.000
+      8   0.91   0.93   1.00   0.80   0.75   1.06   0.82   -0.000
+     12   0.95   0.95   1.03   0.76   0.71   1.04   0.80   -0.000
+     16   0.97   0.97   1.05   0.73   0.69   1.00   0.78   -0.002
+     24   0.98   0.99   1.06   0.72   0.67   1.00   0.78   -0.015
+     32   0.98   0.99   1.07   0.71   0.67   1.03   0.80   -0.031
+     48   0.97   0.99   1.06   0.72   0.67   1.00   0.78   -0.053
 ```
 
 Every score moves with the truth. More samples raise the slope, and the cross-validation slope follows the true one;
 the mean predicted slope sits lower. Estimates grow smoother, so the variance ratio falls and fewer blocks clear 500
-ppm. The true variance ratio sits higher because the blocks of this 260 × 300 m area vary less than the sill implies,
-and the discrete Gaussian reference puts about 11 % fewer blocks above 500 ppm than the truth. Past 16 to 24 samples
+ppm. The true variance ratio sits lower because the blocks of this 260 × 300 m area vary more than the sill implies,
+and the discrete Gaussian reference puts about 22 % fewer blocks above 500 ppm than the truth. Past 16 to 24 samples
 the slope rises little while the negative weights keep growing; you settle that trade-off.
 
 <details><summary>Python</summary>
@@ -149,28 +149,28 @@ for i in range(table.num_rows):
 </details>
 
 ```text
-target 0.9: max_samples=8, radius 80 m; true slope 0.99
-target 0.95: max_samples=12, radius 80 m; true slope 1.01
+target 0.9: max_samples=8, radius 80 m; true slope 1.00
+target 0.95: max_samples=16, radius 80 m; true slope 1.05
 samples factor estimated  slope
-      8   0.25       37%   0.90
-      8   0.50       98%   0.94
-      8   1.00      100%   0.94
-     12   0.25       37%   0.91
-     12   0.50       98%   0.96
-     12   1.00      100%   0.97
-     16   0.25       37%   0.91
-     16   0.50       98%   0.97
-     16   1.00      100%   0.98
-     24   0.25       37%   0.91
-     24   0.50       98%   0.97
+      8   0.25       36%   0.85
+      8   0.50       99%   0.90
+      8   1.00      100%   0.91
+     12   0.25       36%   0.86
+     12   0.50       99%   0.93
+     12   1.00      100%   0.95
+     16   0.25       36%   0.86
+     16   0.50       99%   0.94
+     16   1.00      100%   0.97
+     24   0.25       36%   0.86
+     24   0.50       99%   0.95
      24   1.00      100%   0.98
-     32   0.25       37%   0.91
-     32   0.50       98%   0.97
+     32   0.25       36%   0.86
+     32   0.50       99%   0.95
      32   1.00      100%   0.98
 ```
 
-A quarter of the radius reaches a third of the blocks and half reaches 98 %, so their slopes do not count. At the
-full radius 8 samples reach a mean slope of 0.9 and 12 reach 0.95. The true slopes sit near 1, as in the first table,
+A quarter of the radius reaches a third of the blocks and half reaches 99 %, so their slopes do not count. At the
+full radius 8 samples reach a mean slope of 0.9 and 16 reach 0.95. The true slopes sit near 1, as in the first table,
 where the predicted slope runs low.
 
 `calibrate_search` picks one search for every block. A search with `target_slope` (or `target_efficiency`) calibrates
@@ -205,15 +205,15 @@ for target in (0.85, 0.9, 0.95):
 
 ```text
  target  samples    met  true slope  variance ratio
-   0.85      5.0    99%        0.95            0.92
-   0.90      7.6    94%        0.98            0.87
-   0.95     11.5    85%        1.01            0.82
+   0.85      6.5    99%        0.98            0.77
+   0.90      9.4    93%        1.01            0.73
+   0.95     13.9    85%        1.04            0.70
 ```
 
 A higher target takes more samples, raises the true slope and smooths more, as a larger fixed search does. At about
-the same mean count as a fixed search, the calibrated one smooths a little less for a slightly lower slope. It sends
-the samples where the drilling is sparse: the dense clusters keep the minimum, the edges and gaps take the most, and a
-few edge blocks fall short even at `max_samples`.
+the same mean count as a fixed search, the calibrated one gives about the same slope and smoothing. It sends the
+samples where the drilling is sparse: the dense clusters keep the minimum, the edges and gaps take the most, and a few
+edge blocks fall short even at `max_samples`.
 
 <details><summary>Python</summary>
 

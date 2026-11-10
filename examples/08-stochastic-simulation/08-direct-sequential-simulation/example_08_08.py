@@ -59,7 +59,7 @@ print(f"normal scores: {gaussian}\ngrades:        {raw}")
 # share of nodes it moved. Both simulators run 30 realizations from the same seed.
 #
 # Each DSS draw matches its kriged mean and variance, but the histogram of a realization need not match the data. V is
-# skewed, with 5% of the declustered samples at 0 ppm, and its variogram has a 22% nugget, so the kriging variance
+# skewed, with 5% of the declustered samples at 0 ppm, and its variogram has a 46% nugget, so the kriging variance
 # stays large where the kriged mean is low. The only draws with a low mean and a large variance put most of their
 # weight at 0 ppm and the rest at high grades. `correct_distribution` maps each realization, rank by rank, onto the
 # declustered histogram.
@@ -90,9 +90,9 @@ print(
 
 
 # %% [markdown]
-# DSS puts 20% of the nodes at 0 ppm, four times the declustered share, in wide patches across the low-grade areas. After
-# the correction, realization 1 keeps the same pattern of high and low grades with 5% at 0 ppm. The DSS and SGS
-# realizations average about 300 ppm with a variance near 72 000 ppm², above the declustered 291 ppm and 65 006 ppm²:
+# DSS puts 15% of the nodes at 0 ppm, three times the declustered share, in wide patches across the low-grade areas.
+# After the correction, realization 1 keeps the same pattern of high and low grades with 5% at 0 ppm. The DSS and SGS
+# realizations average about 294 ppm with a variance near 65 000 ppm², above the declustered 282 ppm and 57 810 ppm²:
 # the grid nodes near the clustered high-grade samples copy them. The corrected realizations take the declustered mean
 # and variance exactly.
 
@@ -118,9 +118,10 @@ save(fig, "maps")
 
 # %% [markdown]
 # The corrected DSS and the SGS realizations follow the declustered histogram. The variograms of the corrected DSS
-# realizations level off at the declustered variance (dashed) and run slightly below the model of V at short lags.
-# Before the correction they level off about 10% above that sill, as their variance does, and the SGS realizations do
-# the same. The samples sit above every curve since they cluster in the high grades.
+# realizations run below the model of V at every lag and only approach the declustered variance (dashed) at 120 m.
+# Before the correction they follow the model and end slightly above that sill, as their variance, 13% above it,
+# suggests, and the SGS realizations do the same. Beyond the first lag the samples sit above every curve since they
+# cluster in the high grades.
 
 # %%
 fig, axes = plt.subplots(2, 2, figsize=(11, 8), layout="constrained")

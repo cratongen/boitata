@@ -34,12 +34,12 @@ print(f"Cd × Zn: {len(vs['Cd', 'Zn'].lags)} lags, {int(vs['Cd', 'Zn'].counts.su
 ```text
 VariogramSet  7 variables, omnidirectional
   variables  Cd, Co, Cr, Cu, Ni, Pb, Zn
-Cd × Zn: 15 lags, 9,807 pairs
+Cd × Zn: 15 lags, 9,983 pairs
 ```
 
 The linear model of coregionalization fits all 28 at once. Each structure has a 7 × 7 sill matrix, kept positive
 semi-definite, so the model is valid for cokriging any subset of the metals. Its total sill matrix gives correlations
-between the metals close to those of the samples:
+between the metals within about 0.1 of those of the samples:
 
 <details><summary>Python</summary>
 
@@ -57,15 +57,15 @@ print(f"largest |model - sample| correlation: {np.abs(model_corr - sample_corr)[
 </details>
 
 ```text
-nugget             smallest eigenvalue 0.1
-spherical 0.48 km  smallest eigenvalue -2.2e-14
-spherical 1.03 km  smallest eigenvalue -4.5e-14
-largest |model - sample| correlation: 0.03
+nugget             smallest eigenvalue 0.092
+spherical 0.51 km  smallest eigenvalue -4e-14
+spherical 4.16 km  smallest eigenvalue -6.6e-15
+largest |model - sample| correlation: 0.13
 ```
 
 The diagonal holds the direct variograms and the panels above it the cross variograms, each with the fitted model. Co
-and Ni gain most of their sill over the long structure, Cu and Pb over the short one, and each cross variogram mixes
-the two in its own proportions.
+and Ni gain most of their sill over the long structure, Cu and Pb hold most of theirs in the nugget, and each cross
+variogram mixes the structures in its own proportions.
 
 <details><summary>Python</summary>
 
@@ -125,7 +125,7 @@ print(f"largest relative difference in γ: {np.max(np.abs(by_shift.gammas / by_s
 
 ```text
 same pair counts: True
-largest relative difference in γ: 8.9e-16
+largest relative difference in γ: 1.3e-15
 ```
 
 V is more continuous north to south than east to west, and U follows it. The same call on a simulated realization

@@ -56,24 +56,24 @@ flags, details = check(raw)
 
 ```text
    collar:    290 rows
-   survey:   4469 rows
-   assays:  19151 rows
-lithology:   2239 rows
+   survey:   4528 rows
+   assays:  19245 rows
+lithology:   2240 rows
    collar duplicate       2 rows in   2 holes: 'DD0032', 'DD0224'
    collar no_survey       1 rows in   1 holes: 'DD0207'
-   collar no_assays      85 rows in  85 holes: 'DD0001' ... 'DD0244'
+   collar no_assays      86 rows in  86 holes: 'DD0001' ... 'DD0244'
    survey deviation       2 rows in   1 holes: 'DD0017'
-   survey dip_sign       10 rows in   1 holes: 'DD0058'
-   survey past_depth      2 rows in   1 holes: 'DD0102'
+   survey dip_sign       21 rows in   1 holes: 'DD0056'
+   survey past_depth      1 rows in   1 holes: 'DD0102'
    survey id_mismatch    14 rows in   1 holes: 'DD0053'
    survey no_collar      17 rows in   1 holes: 'DD0104'
-   assays inverted        1 rows in   1 holes: 'DD0123'
-   assays gap            13 rows in  11 holes: 'DD0054' ... 'RC0045'
+   assays inverted        1 rows in   1 holes: 'DD0122'
+   assays gap            12 rows in  10 holes: 'DD0054' ... 'RC0045'
    assays overlap         5 rows in   2 holes: 'DD0109', 'DD0216'
    assays past_depth      4 rows in   1 holes: 'DD0102'
    assays sentinel        5 rows in   1 holes: 'DD0018'
    assays text_values     3 rows in   1 holes: 'DD0231'
-   assays id_mismatch    83 rows in   2 holes: 'DD0053', 'dd0145'
+   assays id_mismatch    84 rows in   2 holes: 'DD0053', 'dd0144'
    assays no_collar      95 rows in   1 holes: 'DD0104'
 lithology gap             1 rows in   1 holes: 'DD0196'
 lithology past_depth      1 rows in   1 holes: 'DD0102'
@@ -84,20 +84,20 @@ lithology no_collar       9 rows in   1 holes: 'DD0104'
 Each flag points at a planted error, or follows from one:
 
 - `duplicate` collars: `DD0032` entered twice with different coordinates, `DD0224` the same row twice.
-- `id_mismatch`: `'dd0145'` in the assays and `'DD0196 '` in the lithology are ids in the wrong case or with a
+- `id_mismatch`: `'dd0144'` in the assays and `'DD0196 '` in the lithology are ids in the wrong case or with a
   trailing space. The collar `'DD0053 '` has the trailing space, so its survey, assays and lithology miss it.
 - `no_collar`: `DD0104` has surveys, assays and lithology but no collar.
 - `no_survey`: `DD0207` has no survey.
 - `deviation`: two stations of `DD0017`, where the azimuth flips at one station and back at the next.
-- `dip_sign`: `DD0058` has its dips entered negative, pointing up, while the other holes dip down.
+- `dip_sign`: `DD0056` has its dips entered negative, pointing up, while the other holes dip down.
 - `past_depth`: `DD0102` has surveys, assays and lithology below its collar `LENGTH`.
-- `inverted`: an assay of `DD0123` with `FROM` > `TO`.
+- `inverted`: an assay of `DD0122` with `FROM` > `TO`.
 - `overlap`: two assays of `DD0109` start before the previous one ends, and three of `DD0216` are entered twice.
-- `gap`: two missing samples in `DD0054`. The rows above leave the gaps in `DD0145`, `DD0123`, `DD0196` and
+- `gap`: two missing samples in `DD0054`. The rows above leave the gaps in `DD0144`, `DD0122`, `DD0196` and
   `DD0109`. The gaps in the RC holes are unsampled core and real.
 - `text_values` and `sentinel`: the reader took the grades as text, because some cells are not numbers. `DD0018`
   holds `-99` and `-999`.
-- `no_assays`: 85 collars. Only mineralized zones are assayed, so a hole that never logs `MS`, `SMS` or `STR`
+- `no_assays`: 86 collars. Only mineralized zones are assayed, so a hole that never logs `MS`, `SMS` or `STR`
   has no assays by design. One more hides among them.
 
 The details name the value behind each id, dip and text flag, and what it should become:
@@ -121,7 +121,7 @@ for (table, check_, hole, column), values in groups.items():
 </details>
 
 ```text
-   survey dip_sign     'DD0058'  DIP     '-54.32' -> '54.32' ... '-56.73' -> '56.73' (10 values)
+   survey dip_sign     'DD0056'  DIP     '-47.0' -> '47.0' ... '-55.75' -> '55.75' (21 values)
    assays text_values  'DD0231'  AU_GPT  '<0.01', 'NS'
    assays text_values  'DD0231'  ZN_PCT  'NS'
    assays text_values  'DD0231'  PB_PCT  'NS'
@@ -129,7 +129,7 @@ for (table, check_, hole, column), values in groups.items():
    assays text_values  'DD0231'  AG_GPT  'NS'
    survey id_mismatch  'DD0053'  HOLE_ID 'DD0053' -> 'DD0053 '
    assays id_mismatch  'DD0053'  HOLE_ID 'DD0053' -> 'DD0053 '
-   assays id_mismatch  'dd0145'  HOLE_ID 'dd0145' -> 'DD0145'
+   assays id_mismatch  'dd0144'  HOLE_ID 'dd0144' -> 'DD0144'
 lithology id_mismatch  'DD0053'  HOLE_ID 'DD0053' -> 'DD0053 '
 lithology id_mismatch  'DD0196 ' HOLE_ID 'DD0196 ' -> 'DD0196'
 ```
@@ -153,7 +153,7 @@ mineralized, no assays: ['DD0076']
 Two repairs need a person. You swap the ends of the inverted interval and take `DD0102`'s `LENGTH` from its
 deepest survey station, since the survey, assays and lithology agree the hole is longer. After a second check,
 `fix_drillholes` resolves the rest with one named rule per check. Two rules are asked for by name:
-`dip_sign="negate"` turns `DD0058` down, and `text_values="half"` reads `<0.01` as half the detection limit
+`dip_sign="negate"` turns `DD0056` down, and `text_values="half"` reads `<0.01` as half the detection limit
 (by default it becomes null, as `NS` does). The log says what each rule changed: ids are renamed to their collar,
 the later duplicate collar goes (for `DD0032`, the second, wrong entry), overlapping assays keep the one that
 starts first (dropping the twinned re-entries), the two `DD0017` stations turned by the flip go, sentinels become
@@ -190,41 +190,41 @@ flags, _ = check(fixed)
       drop   2 collar rows flagged duplicate
       drop   2 survey rows flagged deviation
       drop  17 survey rows flagged no_collar
-    negate  10 survey rows flagged dip_sign
+    negate  21 survey rows flagged dip_sign
     rename  14 survey rows flagged id_mismatch
 keep_first   5 assays rows flagged overlap
       half   3 assays rows flagged text_values
       null   5 assays rows flagged sentinel
       drop  95 assays rows flagged no_collar
-    rename  83 assays rows flagged id_mismatch
+    rename  84 assays rows flagged id_mismatch
       drop   9 lithology rows flagged no_collar
     rename  10 lithology rows flagged id_mismatch
 
    collar no_survey       1 rows in   1 holes: 'DD0207'
-   collar no_assays      85 rows in  85 holes: 'DD0001' ... 'DD0244'
-   assays gap            11 rows in   9 holes: 'DD0054' ... 'RC0045'
+   collar no_assays      86 rows in  86 holes: 'DD0001' ... 'DD0244'
+   assays gap            10 rows in   8 holes: 'DD0054', 'DD0109', 'RC0009', 'RC0012', 'RC0019', 'RC0027', 'RC0033', 'RC0045'
 ```
 
 The rest needs the field records, since no rule can fix it. `DD0207` has no survey and would be desurveyed as
 vertical, `DD0076` needs its assays found, and the gaps are the two lost `DD0054` samples, the two `DD0109`
 intervals dropped as overlaps and the unsampled RC core. `'DD0053 '` keeps its trailing space, now in every table.
-`DD0058` shows why the dips matter: desurveyed as entered, it climbs out of the ground.
+`DD0056` shows why the dips matter: desurveyed as entered, it climbs out of the ground.
 
 <details><summary>Python</summary>
 
 ```python
-def dd0058(table):
-    return table.filter(table["HOLE_ID"] == "DD0058")
+def dd0056(table):
+    return table.filter(table["HOLE_ID"] == "DD0056")
 
 
-collar = dd0058(fixed["collar"])
+collar = dd0056(fixed["collar"])
 fig, ax = plt.subplots(figsize=(4, 5.5), layout="constrained")
 for name, survey, color in (("As entered", raw["survey"], HIGHLIGHT), ("Fixed", fixed["survey"], ACCENT)):
-    path = bt.Drillholes(collar, dd0058(survey)).paths()
+    path = bt.Drillholes(collar, dd0056(survey)).paths()
     ax.plot(path["x"], path["z"], color=color, lw=1.6, label=name)
 ax.axhline(collar["Z"][0], color=GRAY, lw=0.6, ls="--", label="Collar elevation")
 ax.set_aspect("equal")
-ax.set(title="DD0058, east-west section", xlabel="Easting (m)", ylabel="Elevation (m)")
+ax.set(title="DD0056, east-west section", xlabel="Easting (m)", ylabel="Elevation (m)")
 ax.legend()
 save(fig, "dip")
 ```

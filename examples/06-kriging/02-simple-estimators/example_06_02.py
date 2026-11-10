@@ -55,7 +55,7 @@ for name, e in estimates.items():
     )
 
 # %% [markdown]
-# Nearest neighbor keeps almost all the variance but places it poorly, as a patchwork of polygons around the samples.
+# Nearest neighbor keeps most of the variance but places it poorly, as a patchwork of polygons around the samples.
 # Moving average smooths the most and is the least accurate, since distant samples weigh as much as close ones. Inverse
 # distance sits between them and comes close to kriging, the most accurate here. Kriging also gives a variance per
 # estimate and accounts for clustered samples, which inverse distance does not.
@@ -104,8 +104,8 @@ save(fig, "grade_tonnage")
 
 # %% [markdown]
 # Smooth estimates put too much of the area above a low cutoff and too little above a high one: at 300 ppm moving
-# average nearly doubles the true tonnage, and at 600 ppm it misses 27 % of it. Nearest neighbor follows the true
-# tonnage because it keeps the variance of the data, yet its local estimates are wrong. A reliable grade-tonnage of
-# selected blocks needs a change of support (the
+# average adds 38 % to the true tonnage, and at 600 ppm it misses 26 % of it. Nearest neighbor follows the true
+# tonnage most closely because it keeps most of the variance of the data, yet its local estimates are wrong. A reliable
+# grade-tonnage of selected blocks needs a change of support (the
 # [discrete Gaussian model](../../09-recoverable-resources/01-discrete-gaussian-model/README.md) and the pages after
 # it).

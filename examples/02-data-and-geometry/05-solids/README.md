@@ -57,10 +57,10 @@ print(f"outside: {outside.sum()} composites, mean Zn {np.nanmean(zn[outside]):.2
 </details>
 
 ```text
-lens 1:  783 composites, mean Zn 5.28%
-lens 2:  430 composites, mean Zn 6.10%
-lens 3:  276 composites, mean Zn 6.69%
-outside: 14581 composites, mean Zn 0.09%
+lens 1:  787 composites, mean Zn 6.08%
+lens 2:  415 composites, mean Zn 5.76%
+lens 3:  264 composites, mean Zn 6.82%
+outside: 14536 composites, mean Zn 0.09%
 ```
 
 `BlockModel.from_extents` builds a 20 × 20 × 10 m model around the lenses ([block model from extents](../../02-data-and-geometry/12-block-model-from-extents/README.md)). `proportion` settles

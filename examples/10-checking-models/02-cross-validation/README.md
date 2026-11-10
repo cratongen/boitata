@@ -45,10 +45,10 @@ for folds in (None, 10, 5, 2):
 </details>
 
 ```text
-leave-one-out: RMSE 153.5 ppm, correlation 0.84, slope 1.04, standardized squared error 0.72
-      10-fold: RMSE 156.5 ppm, correlation 0.83, slope 1.03, standardized squared error 0.73
-       5-fold: RMSE 158.2 ppm, correlation 0.82, slope 1.04, standardized squared error 0.72
-       2-fold: RMSE 164.3 ppm, correlation 0.81, slope 1.06, standardized squared error 0.72
+leave-one-out: RMSE 166.0 ppm, correlation 0.79, slope 1.05, standardized squared error 0.75
+      10-fold: RMSE 169.1 ppm, correlation 0.79, slope 1.03, standardized squared error 0.76
+       5-fold: RMSE 174.9 ppm, correlation 0.77, slope 1.03, standardized squared error 0.78
+       2-fold: RMSE 187.3 ppm, correlation 0.73, slope 1.01, standardized squared error 0.83
 ```
 
 Errors grow as folds get fewer. Leave-one-out judges the model at the sample spacing, which in the clustered areas

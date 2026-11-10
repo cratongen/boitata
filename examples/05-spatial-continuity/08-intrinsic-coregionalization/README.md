@@ -26,7 +26,7 @@ print(f"{len(cd)} samples, corr(Cd, Zn) {np.corrcoef(cd, zn)[0, 1]:.2f}")
 </details>
 
 ```text
-259 samples, corr(Cd, Zn) 0.74
+259 samples, corr(Cd, Zn) 0.70
 ```
 
 ## Cd and Zn
@@ -63,17 +63,17 @@ for name, model in [("intrinsic", icm), ("full LMC", lmc)]:
 </details>
 
 ```text
-intrinsic: sills Cd 1.403, Zn 767, correlation 0.73
-  share of the Cd / Zn sill: nugget 0 / 0 %, spherical 0.30 km 50 / 50 %, spherical 0.99 km 50 / 50 %
-full LMC: sills Cd 1.399, Zn 769, correlation 0.75
-  share of the Cd / Zn sill: nugget 5 / 9 %, spherical 0.32 km 48 / 37 %, spherical 0.99 km 47 / 53 %
+intrinsic: sills Cd 1.445, Zn 864, correlation 0.71
+  share of the Cd / Zn sill: nugget 11 / 11 %, spherical 0.45 km 74 / 74 %, spherical 2.18 km 15 / 15 %
+full LMC: sills Cd 1.458, Zn 894, correlation 0.74
+  share of the Cd / Zn sill: nugget 7 / 21 %, spherical 0.45 km 77 / 56 %, spherical 2.24 km 16 / 23 %
 ```
 
 The full linear model of coregionalization of
 [coregionalization](../../05-spatial-continuity/07-coregionalization/README.md) gives each variable its own mix of the
-shared structures: Cd puts 83 % of its sill in the short structure, Zn 53 %. The intrinsic model gives both the same
-68 %, a compromise, and one correlation, 0.64, at every lag. The total sills and the correlation differ little between
-the two models, so the curves meet at large lags. At short lags the intrinsic model is too smooth for Cd and too rough
+shared structures: Cd puts 77 % of its sill in the short structure, Zn 56 %. The intrinsic model gives both the same
+74 %, a compromise, and one correlation, 0.71, at every lag. The total sills and the correlation differ little between
+the two models, so the curves meet at large lags. At short lags the intrinsic model is too rough for Cd and too smooth
 for Zn:
 
 <details><summary>Python</summary>
@@ -101,8 +101,8 @@ save(fig, "variograms")
 ## Cokriging with either model
 
 Both models go to `Cokriging` the same way. The test kriges Cd at the 100 validation samples by collocated cokriging,
-with Zn known there, as in [cokriging](../../06-kriging/09-cokriging/README.md). With correlations this close, the
-simpler model predicts as well:
+with Zn known there, as in [cokriging](../../06-kriging/09-cokriging/README.md). Even with correlations this close,
+the full model predicts better, its RMSE about 7 % lower:
 
 <details><summary>Python</summary>
 
@@ -119,8 +119,8 @@ for name, model in [("intrinsic", icm), ("full LMC", lmc)]:
 </details>
 
 ```text
- intrinsic: validation RMSE 0.696 mg/kg
-  full LMC: validation RMSE 0.652 mg/kg
+ intrinsic: validation RMSE 0.898 mg/kg
+  full LMC: validation RMSE 0.837 mg/kg
 ```
 
 ## Seven metals
@@ -146,15 +146,15 @@ for m, row in zip(metals, corr):
 </details>
 
 ```text
-smallest eigenvalue of the sill matrix 0.523
+smallest eigenvalue of the sill matrix 0.595
           Cd    Co    Cr    Cu    Ni    Pb    Zn
-Cd      1.00  0.61  0.72  0.22  0.62  0.31  0.73
-Co      0.61  1.00  0.70  0.19  0.80  0.23  0.66
-Cr      0.72  0.70  1.00  0.22  0.71  0.29  0.76
-Cu      0.22  0.19  0.22  1.00  0.22  0.60  0.52
-Ni      0.62  0.80  0.71  0.22  1.00  0.26  0.75
-Pb      0.31  0.23  0.29  0.60  0.26  1.00  0.52
-Zn      0.73  0.66  0.76  0.52  0.75  0.52  1.00
+Cd      1.00  0.60  0.66  0.28  0.69  0.28  0.71
+Co      0.60  1.00  0.72  0.21  0.80  0.18  0.64
+Cr      0.66  0.72  1.00  0.26  0.75  0.26  0.71
+Cu      0.28  0.21  0.26  1.00  0.21  0.79  0.56
+Ni      0.69  0.80  0.75  0.21  1.00  0.21  0.69
+Pb      0.28  0.18  0.26  0.79  0.21  1.00  0.56
+Zn      0.71  0.64  0.71  0.56  0.69  0.56  1.00
 ```
 
 Full script: [`example_05_08.py`](example_05_08.py)

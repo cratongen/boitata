@@ -21,13 +21,13 @@ print(f"{len(cd)} samples, corr(Cd, Zn) {np.corrcoef(cd, zn)[0, 1]:.2f}")
 </details>
 
 ```text
-259 samples, corr(Cd, Zn) 0.74
+259 samples, corr(Cd, Zn) 0.70
 ```
 
 The cross-variogram is half the mean product of the Cd and Zn increments between co-located samples. The LMC fits the
 two variograms and the cross-variogram together. The variables share the structures, a nugget and two spherical
 ranges, and each structure's sill matrix stays positive semi-definite: its smallest eigenvalue is never negative. The
-short structure takes the place of the nugget, which fits to zero.
+short structure carries most of both variances; the long one adds a slow rise past 0.5 km.
 
 <details><summary>Python</summary>
 
@@ -47,9 +47,9 @@ for name, matrix in [("nugget", lmc.nugget)] + [(f"{m} {a:.2f} km", s) for m, a,
 </details>
 
 ```text
-nugget: [[0.076, -2.336], [-2.336, 72.012]], smallest eigenvalue -1.39e-17
-spherical 0.32 km: [[0.668, 10.759], [10.759, 287.019]], smallest eigenvalue 0.264
-spherical 0.99 km: [[0.655, 16.011], [16.011, 409.632]], smallest eigenvalue 0.0291
+nugget: [[0.098, -2.634], [-2.634, 189.883]], smallest eigenvalue 0.0618
+spherical 0.45 km: [[1.123, 22.219], [22.219, 499.193]], smallest eigenvalue 0.134
+spherical 2.24 km: [[0.237, 6.975], [6.975, 205.355]], smallest eigenvalue 5.55e-17
 ```
 
 Each curve is the fitted LMC's C(0) − C(h). The three experimental variograms follow the shared short and long
@@ -106,7 +106,7 @@ print(
 </details>
 
 ```text
-major axis azimuth 120°, semi-major/major ratio 0.52, major ranges 0.46, 1.45 km
+major axis azimuth 139°, semi-major/major ratio 0.62, major ranges 0.51, 1.08 km
 ```
 
 Full script: [`example_05_07.py`](example_05_07.py)

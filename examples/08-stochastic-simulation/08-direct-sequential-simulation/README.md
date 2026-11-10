@@ -27,7 +27,7 @@ print(f"declustered mean {stats['mean']:.0f} ppm, variance {variance:.0f} ppm²"
 </details>
 
 ```text
-declustered mean 285 ppm, variance 64116 ppm²
+declustered mean 282 ppm, variance 57810 ppm²
 ```
 
 Each method takes the variogram of the variable it kriges: SGS the variogram of the normal scores, DSS the variogram
@@ -55,8 +55,8 @@ print(f"normal scores: {gaussian}\ngrades:        {raw}")
 </details>
 
 ```text
-normal scores: Variogram([('spherical', 0.9198959372908582, 123.39893489850286)], nugget=0.08010406270914183, rotation=(170.0, 0.0, 0.0), ratios=(0.4202456530489358, 1.0))
-grades:        Variogram([('spherical', 0.7815483583438634, 103.13969280814382)], nugget=0.21845164165613667, rotation=(170.0, 0.0, 0.0), ratios=(0.4648166465332574, 1.0))
+normal scores: Variogram([('spherical', 0.6214422858227233, 118.09669327017929)], nugget=0.3785577141772766, rotation=(170.0, 0.0, 0.0), ratios=(0.47849146872112114, 1.0))
+grades:        Variogram([('spherical', 0.5405765699754241, 96.86296199415023)], nugget=0.45942343002457575, rotation=(170.0, 0.0, 0.0), ratios=(0.5239334682504028, 1.0))
 ```
 
 DSS simple kriges each node with the declustered mean and draws it from the declustered histogram, as the
@@ -65,7 +65,7 @@ kriging extrapolates beyond the data, no such draw exists; DSS takes the nearest
 share of nodes it moved. Both simulators run 30 realizations from the same seed.
 
 Each DSS draw matches its kriged mean and variance, but the histogram of a realization need not match the data. V is
-skewed, with 5% of the declustered samples at 0 ppm, and its variogram has a 22% nugget, so the kriging variance
+skewed, with 5% of the declustered samples at 0 ppm, and its variogram has a 46% nugget, so the kriging variance
 stays large where the kriged mean is low. The only draws with a low mean and a large variance put most of their
 weight at 0 ppm and the rest at high grades. `correct_distribution` maps each realization, rank by rank, onto the
 declustered histogram.
@@ -100,16 +100,16 @@ print(
 </details>
 
 ```text
-16.40% of simulated nodes had a kriged mean and variance no draw reaches; drew them from the nearest reachable pair
-DSS: mean 283, variance 66354, at 0 ppm 20.0%, above 500 ppm 20.7%
-corrected DSS: mean 285, variance 64081, at 0 ppm 4.8%, above 500 ppm 19.0%
-SGS: mean 273, variance 61022, at 0 ppm 4.0%, above 500 ppm 18.0%
-true: mean 280, variance 65444, at 0 ppm 5.1%, above 500 ppm 18.7%
+9.68% of simulated nodes had a kriged mean and variance no draw reaches; drew them from the nearest reachable pair
+DSS: mean 294, variance 65334, at 0 ppm 14.8%, above 500 ppm 21.0%
+corrected DSS: mean 282, variance 57794, at 0 ppm 4.8%, above 500 ppm 17.0%
+SGS: mean 294, variance 65030, at 0 ppm 4.8%, above 500 ppm 18.7%
+true: mean 279, variance 64436, at 0 ppm 5.1%, above 500 ppm 19.4%
 ```
 
-DSS puts 20% of the nodes at 0 ppm, four times the declustered share, in wide patches across the low-grade areas. After
-the correction, realization 1 keeps the same pattern of high and low grades with 5% at 0 ppm. The DSS and SGS
-realizations average about 300 ppm with a variance near 72 000 ppm², above the declustered 291 ppm and 65 006 ppm²:
+DSS puts 15% of the nodes at 0 ppm, three times the declustered share, in wide patches across the low-grade areas.
+After the correction, realization 1 keeps the same pattern of high and low grades with 5% at 0 ppm. The DSS and SGS
+realizations average about 294 ppm with a variance near 65 000 ppm², above the declustered 282 ppm and 57 810 ppm²:
 the grid nodes near the clustered high-grade samples copy them. The corrected realizations take the declustered mean
 and variance exactly.
 
@@ -140,9 +140,10 @@ save(fig, "maps")
 ![maps](maps.png)
 
 The corrected DSS and the SGS realizations follow the declustered histogram. The variograms of the corrected DSS
-realizations level off at the declustered variance (dashed) and run slightly below the model of V at short lags.
-Before the correction they level off about 10% above that sill, as their variance does, and the SGS realizations do
-the same. The samples sit above every curve since they cluster in the high grades.
+realizations run below the model of V at every lag and only approach the declustered variance (dashed) at 120 m.
+Before the correction they follow the model and end slightly above that sill, as their variance, 13% above it,
+suggests, and the SGS realizations do the same. Beyond the first lag the samples sit above every curve since they
+cluster in the high grades.
 
 <details><summary>Python</summary>
 

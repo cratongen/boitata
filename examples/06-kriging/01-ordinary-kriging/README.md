@@ -35,13 +35,13 @@ print(model)
 </details>
 
 ```text
-Variogram  sill 77760.1, 2 structures
-  rotation  azimuth 0.4915°, dip 0°, rake 0°
-  ratios    semi/major 0.343, minor/major 1
+Variogram  sill 75304.4, 2 structures
+  rotation  azimuth 2.076°, dip 0°, rake 0°
+  ratios    semi/major 0.3918, minor/major 1
   structure     sill  major   semi  minor
-  nugget      4206.7
-  spherical  22196.4  13.99  4.798  13.99
-  spherical    51357    115  39.45    115
+  nugget        3381
+  spherical  30138.9   11.4  4.467   11.4
+  spherical  41784.5    115  45.05    115
 ```
 
 The search takes up to 24 samples within 100 m. `predict` accepts a `BlockModel`, a `PointSet` or an array of
@@ -66,9 +66,9 @@ BlockModel  regular, 3,120 blocks
   size    5 × 5 × 1
   origin  0.5, 0.5, 0
   bounds  x 0.5 to 260.5, y 0.5 to 300.5, z 0 to 1
-  column    type     unit  nulls      min     mean      max
-  estimate  float64            0  -0.6739    283.4   1379.4
-  variance  float64            0   8901.1  39192.4  66726.8
+  column    type     unit  nulls     min   mean      max
+  estimate  float64            0   2.729  287.3   1368.6
+  variance  float64            0  9263.8  44082  69265.9
 ```
 
 Compare with the true values at the grid nodes, and re-estimate every sample with itself left out:
@@ -90,9 +90,9 @@ print(
 </details>
 
 ```text
-grid: mean estimate 283.4, true 279.6
-variance of estimates 43066 vs true 65444
-cross-validation: ME 6.7  RMSE 153.2  r 0.84  slope 1.04  error²/variance 0.72
+grid: mean estimate 287.3, true 279.0
+variance of estimates 32909 vs true 64436
+cross-validation: ME 9.4  RMSE 166.1  r 0.79  slope 1.05  error²/variance 0.75
 ```
 
 The kriging standard deviation depends only on the data layout and the model: low near samples, high in gaps.
@@ -122,9 +122,9 @@ save(fig, "maps")
 
 ![maps](maps.png)
 
-Kriging smooths: the estimates vary less than the truth, a variance of 43 000 against 65 000 at the nodes.
+Kriging smooths: the estimates vary less than the truth, a variance of 33 000 against 64 000 at the nodes.
 Cross-validation shows no conditional bias (the slope of actual on estimate is near 1). A mean error² / variance of
-0.72 means the model's variance runs high here.
+0.75 means the model's variance runs high here.
 
 <details><summary>Python</summary>
 

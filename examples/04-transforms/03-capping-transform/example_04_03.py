@@ -55,10 +55,9 @@ for vein in veins:
     print(f"{vein:<6}{row}")
 
 # %% [markdown]
-# The rules disagree most where the tail is longest. V1 and V2 lose 9 and 3 % of their metal at the P99; holding the
-# loss to 5 % lifts their caps to 202 and 191 g/t, the latter just under the extreme channels of V2. In the small veins
-# the P99 barely cuts: it is the maximum of V3. A CV of 1.5 caps V1 and V2 near 60 g/t and costs them 15 to 28 % of
-# their metal.
+# The rules disagree most where the tail is longest. V1 and V2 lose 12 and 9 % of their metal at the P99; holding the
+# loss to 5 % lifts their caps to 375 and 172 g/t. In the small veins the P99 barely cuts: it is the maximum of V3. A
+# CV of 1.5 caps V1 and V2 at 70 and 50 g/t and costs them about 20 % of their metal.
 #
 # ## The same numbers as [top cuts](../../03-exploratory-analysis/05-top-cuts/README.md)
 #
@@ -107,7 +106,7 @@ save(fig, "probability")
 # The capped grades feed the estimate as any other column. Ordinary kriging estimates 5 m blocks inside the V1 solid
 # from the raw and from the capped composites of V1, with one variogram and search. The extreme channels no longer
 # spread their grade over their neighborhood: the richest blocks drop below the diagonal and the low-grade ones stay on
-# it. The blocks lose 9.5 % of their mean grade, close to the 9.1 % of the declustered composites.
+# it. The blocks lose 9.9 % of their mean grade, against 12.3 % for the declustered composites.
 
 # %%
 v1 = quartz.filter(quartz["VEIN"] == "V1")
@@ -140,7 +139,7 @@ save(fig, "kriged")
 # ## In a pipeline
 #
 # `Capping` has `fit`, `transform` and `fit_transform` like `NormalScore`, so the two chain: cap, then score, the usual
-# preparation for a Gaussian simulation. Fitted once, both apply to new samples: a 500 g/t sample is capped to 101 g/t
+# preparation for a Gaussian simulation. Fitted once, both apply to new samples: a 500 g/t sample is capped to 127 g/t
 # before scoring, so its score is that of the cap. The fitted caps round-trip through JSON and pickle.
 
 # %%

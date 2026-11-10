@@ -25,7 +25,7 @@ print(f"{len(pair)} composites, correlation {np.corrcoef(pair.T)[0, 1]:.2f}")
 </details>
 
 ```text
-7213 composites, correlation 0.12
+7213 composites, correlation -0.04
 ```
 
 Each factor gets the omnidirectional variogram of its scores; turning bands simulate 20 realizations on 25 m nodes.
@@ -61,7 +61,7 @@ print(f"{len(nodes.coords)} nodes, 20 realizations")
 
 Both keep the correlation, the only dependence a linear rotation carries. PPMT also keeps the declustered
 histograms and honors the composites. PCA factors depart from Gaussian, so simulating them as Gaussian shortens
-the upper tail of chalcocite and puts high chalcocite with high tennantite twice as often.
+the upper tail of chalcocite and puts high chalcocite with high tennantite 40 % more often.
 
 <details><summary>Python</summary>
 
@@ -101,10 +101,10 @@ print(f"PPMT at 500 composites: largest departure from the data {error:.1e}")
 
 ```text
            r   chalcocite q10, q50, q90   tennantite q10, q50, q90  both > q80
-data    0.11        -7.60, -6.07, -2.44        -7.60, -7.60, -4.13       0.055
-PPMT    0.12        -7.60, -6.08, -2.83        -7.60, -7.60, -4.78       0.045
-PCA     0.10        -7.72, -5.74, -2.77        -8.42, -6.94, -4.63       0.090
-PPMT at 500 composites: largest departure from the data 1.5e-07
+data   -0.05        -7.60, -6.10, -2.63        -7.60, -7.60, -3.73       0.040
+PPMT   -0.08        -7.60, -6.15, -2.64        -7.60, -7.60, -3.70       0.030
+PCA    -0.05        -7.89, -5.61, -2.88        -8.49, -6.72, -4.35       0.056
+PPMT at 500 composites: largest departure from the data 7.6e-09
 ```
 
 One realization of each: PPMT rebuilds the L-shaped cloud of the data; PCA spreads a rotated square over it,
@@ -146,8 +146,8 @@ for j, s in enumerate(by_block):
 </details>
 
 ```text
-Log chalcocite (%): variance 3.38 at nodes, 1.77 in 1053 blocks
-Log tennantite (%): variance 1.84 at nodes, 0.85 in 1053 blocks
+Log chalcocite (%): variance 3.80 at nodes, 1.11 in 1053 blocks
+Log tennantite (%): variance 2.73 at nodes, 0.65 in 1053 blocks
 ```
 
 ## Missing variables
@@ -181,7 +181,7 @@ print(f"r {r:.2f}, tennantite q10, q50, q90: " + ", ".join(f"{v:.2f}" for v in n
 
 ```text
 3586 of 7213 composites miss tennantite
-r 0.14, tennantite q10, q50, q90: -7.60, -7.60, -4.62
+r -0.11, tennantite q10, q50, q90: -7.60, -7.60, -3.72
 ```
 
 Full script: [`example_08_06.py`](example_08_06.py)

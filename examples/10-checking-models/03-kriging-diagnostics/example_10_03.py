@@ -56,9 +56,9 @@ fig.colorbar(im, ax=axes, shrink=0.8)
 save(fig, "diagnostics")
 
 # %% [markdown]
-# The truth checks both. Over all blocks, the regression of true on estimated block grades has a slope close to the
-# mean predicted slope. Blocks with efficiency of 0.7 or more sit closer to the truth; below 0.7, efficiency separates
-# them poorly, one reason classification also uses sample spacing ([classification](../../10-checking-models/05-classification/README.md)).
+# The truth checks both. Over all blocks, the regression of true on estimated block grades has a slope a little
+# above the mean predicted slope. Blocks with efficiency of 0.7 or more sit closer to the truth; below 0.7, efficiency
+# separates them poorly, one reason classification also uses sample spacing ([classification](../../10-checking-models/05-classification/README.md)).
 
 # %%
 observed = np.polyfit(d["value"], true_blocks, 1)[0]
@@ -99,9 +99,9 @@ for g, label in enumerate(("below -0.05", "-0.05 to -0.03", "above -0.03")):
 print(f"{np.sum(d['value'] < 0)} negative estimates")
 
 # %% [markdown]
-# Negative weights are strongest in and around the dense clusters of the west, where close samples screen the
-# others. Those blocks lie in high grades and overstate the truth by about four times as much as the rest, with
-# errors no larger; no estimate goes below zero.
+# Negative weights are strongest in the sparse gaps between the clusters, where a few close samples screen the
+# others. Those blocks lie in low grades and overstate the truth by about 40 ppm, where the rest come within 10 ppm,
+# with errors no larger; no estimate goes below zero.
 
 # %%
 fig, axes = plt.subplots(1, 2, figsize=(9, 4.6), layout="constrained")

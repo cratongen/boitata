@@ -48,14 +48,14 @@ print(raw)
 </details>
 
 ```text
-r = 0.866
-Variogram  sill 64054.3, 2 structures
+r = 0.816
+Variogram  sill 57755.9, 2 structures
   rotation  azimuth 170°, dip 0°, rake 0°
-  ratios    semi/major 0.4316, minor/major 1
+  ratios    semi/major 0.4121, minor/major 1
   structure     sill  major   semi  minor
-  nugget      9443.6
-  spherical   7322.6  10.62  4.585  10.62
-  spherical  47288.1     99  42.73     99
+  nugget      2884.5
+  spherical  26770.6   11.3  4.659   11.3
+  spherical  28100.8    115   47.4    115
 ```
 
 Ordinary block kriging of 50 × 50 m panels over the western 250 m. Its diagnostics give each panel the variance of its
@@ -113,16 +113,16 @@ save(fig, "uniform-conditioning")
 </details>
 
 ```text
-above 300 ppm: uniform conditioning 42.4%, kriged blocks 42.3%, true 38.9%
-above 500 ppm: uniform conditioning 19.1%, kriged blocks 14.0%, true 16.9%
-above 800 ppm: uniform conditioning 3.2%, kriged blocks 1.6%, true 2.7%
+above 300 ppm: uniform conditioning 42.0%, kriged blocks 38.7%, true 40.0%
+above 500 ppm: uniform conditioning 15.9%, kriged blocks 11.7%, true 15.5%
+above 800 ppm: uniform conditioning 2.2%, kriged blocks 1.2%, true 1.6%
 ```
 
 ![uniform-conditioning](uniform-conditioning.png)
 
-At 500 ppm uniform conditioning keeps 19.1% of the blocks against a true 16.9%; the smoothed kriged blocks keep 14.0%.
-At 300 ppm it overstates the tonnage by a few percent, as kriging does. At 800 ppm, where few blocks remain, it thins
-the rich tail to 1.1% against a true 2.1%.
+At 500 ppm uniform conditioning keeps 15.9% of the blocks against a true 15.5%; the smoothed kriged blocks keep 11.7%.
+At 300 ppm it overstates the tonnage by two percent, where kriging understates it. At 800 ppm, where few blocks
+remain, it keeps 2.2% against a true 1.6%.
 
 Uniform conditioning says how much of each panel is ore, but not where. Localization places it: inside each panel, the
 25 blocks of `panels.discretize(5)` are ranked by their direct kriging, and the block ranked i receives the mean of
@@ -159,15 +159,15 @@ save(fig, "localized")
 </details>
 
 ```text
-kriged: variance 41398, correlation with truth 0.92
-localized: variance 52518, correlation with truth 0.88
-true blocks: variance 50084
+kriged: variance 29140, correlation with truth 0.87
+localized: variance 42435, correlation with truth 0.84
+true blocks: variance 44183
 ```
 
 ![localized](localized.png)
 
-The localized blocks spread as the model says blocks should, and the model says too little here: variance 35 465
-against the true 47 350. Block by block they match the truth less well than kriging (correlation 0.88 against 0.92),
+The localized blocks spread as the model says blocks should, and the model says too little here: variance 42 435
+against the true 44 183. Block by block they match the truth less well than kriging (correlation 0.84 against 0.87),
 since the ranking inside a panel is only as good as the kriging that sets it. Localization keeps the grade of each
 panel and its tonnage above every cutoff.
 

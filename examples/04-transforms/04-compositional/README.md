@@ -45,16 +45,16 @@ print(f"most variable ratio {names[i]}/{names[j]}, least variable {names[k]}/{na
 </details>
 
 ```text
-clay          mean   4.81 %, center   3.79 %
-chalcocite    mean   0.07 %, center   0.00 %
-bornite       mean   0.13 %, center   0.05 %
-chalcopyrite  mean   0.77 %, center   0.54 %
+clay          mean   5.44 %, center   4.12 %
+chalcocite    mean   0.05 %, center   0.00 %
+bornite       mean   0.11 %, center   0.05 %
+chalcopyrite  mean   0.86 %, center   0.63 %
 tennantite    mean   0.01 %, center   0.00 %
 molybdenite   mean   0.02 %, center   0.01 %
-pyrite        mean   1.74 %, center   0.82 %
-rest          mean  92.45 %, center  94.78 %
-total variance 10.31
-most variable ratio chalcocite/tennantite, least variable rest/clay
+pyrite        mean   1.48 %, center   0.76 %
+rest          mean  92.03 %, center  94.42 %
+total variance 10.20
+most variable ratio chalcocite/tennantite, least variable molybdenite/chalcopyrite
 ```
 
 The isometric log-ratio (ILR) maps each composition to 7 unconstrained coordinates, the balances. A sequential binary
@@ -95,7 +95,7 @@ gauss = np.column_stack([gaussian[b] for b in balances])
 </details>
 
 ```text
-round trip max error 2.16e-11 %
+round trip max error 1.13e-12 %
 ```
 
 Correlations at each stage:

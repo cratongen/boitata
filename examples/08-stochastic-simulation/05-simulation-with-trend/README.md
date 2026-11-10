@@ -66,12 +66,12 @@ by_sgs = plain.simulate(grid, n=20, seed=5, keep=True).realizations
 ```text
 Variogram  sill 1, 1 structure
   structure    sill  range
-  nugget     0.4075
-  spherical  0.5925  24.99
+  nugget     0.5289
+  spherical  0.4711  28.65
 Variogram  sill 1, 1 structure
   structure    sill  range
-  nugget     0.2298
-  spherical  0.7702  68.36
+  nugget     0.3462
+  spherical  0.6538  72.56
 ```
 
 <details><summary>Python</summary>
@@ -94,12 +94,12 @@ for k in range(4):
 </details>
 
 ```text
-correlation with the trend: data 0.64, SGS 0.61, SGS with trend 0.65
+correlation with the trend: data 0.58, SGS 0.56, SGS with trend 0.60
 mean V (ppm) by trend quartile    data   SGS  SGS with trend
-quartile 1                          72    93              82
-quartile 2                         222   225             223
-quartile 3                         309   317             312
-quartile 4                         504   516             528
+quartile 1                         123   141             117
+quartile 2                         210   216             220
+quartile 3                         303   313             303
+quartile 4                         468   496             504
 ```
 
 <details><summary>Python</summary>
@@ -125,7 +125,7 @@ save(fig, "trend")
 ![trend](trend.png)
 
 Plain SGS follows the trend where data are dense, but pulls the low-trend quarter up toward the global mean. With
-the trend, each quarter keeps the declustered mean of its data, and the realizations correlate with the trend about
-as much as the data do.
+the trend, the lower three quarters keep close to the declustered mean of their data, the top quarter runs high as
+with plain SGS, and the realizations correlate with the trend about as much as the data do.
 
 Full script: [`example_08_05.py`](example_08_05.py)

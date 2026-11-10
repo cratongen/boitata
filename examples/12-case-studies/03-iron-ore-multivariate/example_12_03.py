@@ -266,21 +266,23 @@ b.legend(loc="upper left")
 save(fig, "reconciliation")
 
 # %% [markdown]
-# Per domain the simulation sits near the drilling in the window, not the blastholes: 87 composites from 8 holes,
-# against 1953 blastholes. Hematite blocks come out 4.5 % Fe poorer than the blastholes say, compact itabirite blocks
-# 2.0 % richer; friable itabirite is close. The spreads order as the supports do: 142 at 6 m points, 99 for the
-# 12 m blastholes, 80 for the mean of about six blastholes per block, 42 for simulated blocks. The mean of six
+# In every domain the simulation comes out poorer than the blastholes say: hematite blocks by 4.0 % Fe, friable
+# itabirite by 4.3 % and compact itabirite by 2.4 %. Hematite sits near the drilling in the window, 143 composites
+# from 8 holes against 1953 blastholes; the itabirites fall below both. The spreads order as the supports do: 132 at
+# 6 m points, 58 for the 12 m blastholes, 42 for the mean of about six blastholes per block, 38 for simulated blocks. The mean of six
 # blastholes still carries their analytical error and short-scale variation, so it varies more than the block
 # itself would.
 #
-# Blocks rank well (r 0.76), but the blasthole means spread 1.55 times as far as the simulated means: with holes
-# 100 m apart, the model cannot place the 25 m contrasts between hematite and itabirite that grade control sees. Grade
+# Blocks rank fairly (r 0.70), and the blasthole means rise one for one with the simulated means (slope 1.03), but
+# scatter widely around them: with holes 100 m apart, the model cannot place every 25 m contrast between hematite and
+# itabirite that grade control sees. Grade
 # control drills blastholes to close that gap.
 #
 # ## A bench in plan
 #
 # The middle bench, 672 to 684 m: the mean of the simulated block Fe, with the blastholes on the same color scale.
-# The low-grade itabirite band the blastholes trace to the northeast is in the model, wider and less sharp.
+# The low-grade itabirite the blastholes trace at the north edge of the bench is in the model, wider and less sharp;
+# several lean blocks elsewhere hold richer blastholes.
 
 # %%
 bench = int((678 - model.origin[2]) // model.size[2])

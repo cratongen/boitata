@@ -22,7 +22,7 @@ print(f"share of samples above {limit} mg/kg: {np.mean(cd > limit):.0%}")
 </details>
 
 ```text
-share of samples above 0.8 mg/kg: 71%
+share of samples above 0.8 mg/kg: 77%
 ```
 
 The indicator is 1 where Cd is above the threshold and 0 below, and you fit its variogram like any other. IK estimates
@@ -46,7 +46,7 @@ print(
 </details>
 
 ```text
-validation: mean P(Cd > 0.8) 0.75 where true exceedance, 0.61 elsewhere
+validation: mean P(Cd > 0.8) 0.78 where true exceedance, 0.60 elsewhere
 ```
 
 Most of the area exceeds 0.8 mg/kg, and the map picks out the clean zones:

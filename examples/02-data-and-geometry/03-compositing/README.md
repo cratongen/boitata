@@ -1,6 +1,6 @@
 # Compositing
 
-The stacked sulfide lenses: 19 247 assays, mostly 1 m or 2 m, taken only in and around the mineralized zones, and 2239
+The stacked sulfide lenses: 19 340 assays, mostly 1 m or 2 m, taken only in and around the mineralized zones, and 2240
 lithology intervals. Compositing brings the assays to one support. It must not average across a contact, read
 unsampled core as zero, or create or lose metal.
 
@@ -33,20 +33,20 @@ print(dh)
 </details>
 
 ```text
-19247 assays + 2239 lithology intervals -> 20095 merged
-Drillholes  289 holes, 20,095 intervals
-  bounds  x 11748.7 to 12947.7, y 29206.5 to 30522.9, z -275.4 to 394.8
+19340 assays + 2240 lithology intervals -> 20215 merged
+Drillholes  289 holes, 20,215 intervals
+  bounds  x 11748.8 to 12953.9, y 29207.3 to 30526.2, z -275.7 to 397.4
   interval columns
   column   type     unit   nulls    min    mean    max
   HOLE_ID  str                 0  289 unique: DD0001, DD0002, DD0003, …
-  FROM     float64             0      0   299.2  867.8
-  TO       float64             0   2.25   305.2  869.8
-  ZN_PCT   float64           848  0.005  0.6747  39.68
-  PB_PCT   float64           848  0.001  0.2712     24
-  CU_PCT   float64           848      0  0.1322  8.295
-  AG_GPT   float64           848      0    6.86  520.4
-  AU_GPT   float64         5,876      0  0.1512  9.995
-  DENSITY  float64        18,874   2.82   3.245    4.8
+  FROM     float64             0      0   299.8  876.7
+  TO       float64             0   2.25   305.9  878.6
+  ZN_PCT   float64           875  0.003  0.6725  40.77
+  PB_PCT   float64           875  0.001  0.2691  25.75
+  CU_PCT   float64           875      0  0.1392   16.5
+  AG_GPT   float64           875      0   6.727    594
+  AU_GPT   float64         6,236      0  0.1682  17.71
+  DENSITY  float64        18,998   2.82   3.293    4.8
   LITH     str                 0  8 unique: OB, VCL, FWV, …
 ```
 
@@ -70,7 +70,7 @@ print(
 </details>
 
 ```text
-16864 composites; 222 partly unsampled for Zn; 2578 without Au (RC holes)
+16811 composites; 229 partly unsampled for Zn; 2754 without Au (RC holes)
 ```
 
 The assays are mostly 1 m or 2 m and the composites 2 m, with shorter tails where a run of one lithology ends.
@@ -131,12 +131,12 @@ for name, c in modes.items():
 </details>
 
 ```text
-               2 m:  16864 composites, median length 2.0 m
-              runs:   1622 composites, median length 9.3 m
-      10 m benches:   4245 composites, median length 9.1 m
-  2 m, merge < 1 m:  16311 composites, median length 2.0 m
-   2 m, drop < 1 m:  16220 composites, median length 2.0 m
-2 m, majority LITH:  16099 composites, median length 2.0 m
+               2 m:  16811 composites, median length 2.0 m
+              runs:   1602 composites, median length 9.2 m
+      10 m benches:   4213 composites, median length 9.4 m
+  2 m, merge < 1 m:  16220 composites, median length 2.0 m
+   2 m, drop < 1 m:  16125 composites, median length 2.0 m
+2 m, majority LITH:  16031 composites, median length 2.0 m
 ```
 
 Metal balance: Σ grade × `<grade>_length` over the composites reproduces Σ grade × interval length over the assays,
@@ -168,13 +168,13 @@ print("metal balanced to 1e-9 for", ", ".join(GRADES))
 
 ```text
                       Zn metal     error  by length
-            assays     19829.1
-               2 m     19829.1  +0.0e+00      +0.1%
-              runs     19829.1  +0.0e+00      +7.1%
-      10 m benches     19829.1  +0.0e+00      +0.3%
-  2 m, merge < 1 m     19829.1  -2.2e-16      +0.1%
-   2 m, drop < 1 m     19103.6  -3.7e-02      -3.6%
-2 m, majority LITH     19829.1  +0.0e+00      +0.2%
+            assays     20514.3
+               2 m     20514.3  +0.0e+00      +0.1%
+              runs     20514.3  +0.0e+00      +6.9%
+      10 m benches     20514.3  +0.0e+00      +0.3%
+  2 m, merge < 1 m     20514.3  +0.0e+00      +0.1%
+   2 m, drop < 1 m     19797.3  -3.5e-02      -3.4%
+2 m, majority LITH     20514.3  +0.0e+00      +0.1%
 metal balanced to 1e-9 for ZN_PCT, PB_PCT, CU_PCT, AG_GPT, AU_GPT
 ```
 

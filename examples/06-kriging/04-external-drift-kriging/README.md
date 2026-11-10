@@ -37,7 +37,7 @@ print(
 </details>
 
 ```text
-correlation with Cu: magnetics 0.39, elevation 0.33
+correlation with Cu: magnetics 0.43, elevation 0.52
 ```
 
 A single spherical structure fitted to the omnidirectional experimental variogram of copper.
@@ -54,10 +54,10 @@ print(model)
 </details>
 
 ```text
-Variogram  sill 1529, 1 structure
-  structure    sill  range
-  nugget      399.8
-  spherical  1129.2   1238
+Variogram  sill 2037.3, 1 structure
+  structure    sill   range
+  nugget      508.6
+  spherical  1528.7  1274.5
 ```
 
 `ExternalDriftKriging` takes the drift column names at `fit` (read off `samples`) and again at `predict` (read off
@@ -81,8 +81,8 @@ print(f"correlation between the two maps: {np.corrcoef(ok[inside], edk[inside])[
 </details>
 
 ```text
-mean: ordinary 56.5, external drift 56.0 ppm
-correlation between the two maps: 0.972
+mean: ordinary 66.9, external drift 66.2 ppm
+correlation between the two maps: 0.968
 ```
 
 The two maps agree where covariates are flat and pull apart where magnetics or elevation depart from the neighborhood

@@ -42,7 +42,7 @@ print(f"{len(composites):,} composites, {int(np.sum(table['count'])):,} pairs 5 
 </details>
 
 ```text
-24,501 composites, 23,924 pairs 5 m apart
+24,863 composites, 24,285 pairs 5 m apart
 ```
 
 ## The matrix, reused from `domain_change`

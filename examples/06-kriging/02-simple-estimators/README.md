@@ -56,13 +56,13 @@ for name, e in estimates.items():
 
 ```text
            method  RMSE   corr   variance ratio
- nearest neighbor  177.1  0.755  0.95
- inverse distance  160.5  0.799  0.60
-   moving average  208.8  0.687  0.41
- ordinary kriging  144.7  0.825  0.66
+ nearest neighbor  193.3  0.688  0.84
+ inverse distance  176.4  0.733  0.52
+   moving average  213.1  0.617  0.39
+ ordinary kriging  163.5  0.767  0.51
 ```
 
-Nearest neighbor keeps almost all the variance but places it poorly, as a patchwork of polygons around the samples.
+Nearest neighbor keeps most of the variance but places it poorly, as a patchwork of polygons around the samples.
 Moving average smooths the most and is the least accurate, since distant samples weigh as much as close ones. Inverse
 distance sits between them and comes close to kriging, the most accurate here. Kriging also gives a variance per
 estimate and accounts for clustered samples, which inverse distance does not.
@@ -123,24 +123,24 @@ save(fig, "grade_tonnage")
 ```text
 cutoff 300 ppm
               truth: tonnage +0%, grade +0%
-   nearest neighbor: tonnage +4%, grade -4%
-   inverse distance: tonnage +30%, grade -11%
-     moving average: tonnage +57%, grade -12%
-   ordinary kriging: tonnage +7%, grade -10%
+   nearest neighbor: tonnage -3%, grade -6%
+   inverse distance: tonnage +14%, grade -12%
+     moving average: tonnage +38%, grade -14%
+   ordinary kriging: tonnage -4%, grade -13%
 cutoff 600 ppm
               truth: tonnage +0%, grade +0%
-   nearest neighbor: tonnage -5%, grade +2%
-   inverse distance: tonnage -16%, grade -8%
-     moving average: tonnage -27%, grade -11%
-   ordinary kriging: tonnage -33%, grade -6%
+   nearest neighbor: tonnage -22%, grade +1%
+   inverse distance: tonnage -28%, grade -7%
+     moving average: tonnage -26%, grade -10%
+   ordinary kriging: tonnage -42%, grade -7%
 ```
 
 ![grade_tonnage](grade_tonnage.png)
 
 Smooth estimates put too much of the area above a low cutoff and too little above a high one: at 300 ppm moving
-average nearly doubles the true tonnage, and at 600 ppm it misses 27 % of it. Nearest neighbor follows the true
-tonnage because it keeps the variance of the data, yet its local estimates are wrong. A reliable grade-tonnage of
-selected blocks needs a change of support (the
+average adds 38 % to the true tonnage, and at 600 ppm it misses 26 % of it. Nearest neighbor follows the true
+tonnage most closely because it keeps most of the variance of the data, yet its local estimates are wrong. A reliable
+grade-tonnage of selected blocks needs a change of support (the
 [discrete Gaussian model](../../09-recoverable-resources/01-discrete-gaussian-model/README.md) and the pages after
 it).
 

@@ -49,7 +49,7 @@ print(
 </details>
 
 ```text
-blocks 284.0 ppm, declustered samples 284.9 ppm, bias -0.3%; true blocks 279.5 ppm
+blocks 287.4 ppm, declustered samples 281.6 ppm, bias +2.1%; true blocks 279.5 ppm
 ```
 
 ## Distributions
@@ -75,14 +75,14 @@ for row in zip(
 
 ```text
                  n   mean    CV   P10   P50    P90  mean diff var. ratio
-naive          470    428  0.65    41   411    795     +50.1%       1.22
-declustered    470    285  0.89     3   234    676      +0.0%       1.00
-model          780    284  0.71    48   262    561      -0.3%       0.64
-reference      780    280  0.81    37   224    602      -1.9%       0.79
+naive          470    407  0.67    45   376    757     +44.4%       1.28
+declustered    470    282  0.85    12   249    612      +0.0%       1.00
+model          780    287  0.61    96   249    538      +2.1%       0.53
+reference      780    280  0.76    38   234    603      -0.7%       0.79
 ```
 
-The blocks reproduce the declustered mean within 0.3 %. Both sit about 2 % above the truth, a bias no check against
-the samples can see. The blocks are 10 × 10 m averages smoothed by kriging, so their variance is much smaller. The
+The blocks sit 2.1 % above the declustered mean and about 3 % above the truth; the declustered samples come within
+1 % of the truth. The blocks are 10 × 10 m averages smoothed by kriging, so their variance is much smaller. The
 true blocks sit in between, since averaging over a block removes part of the sample variance. The cumulative
 distributions show the same smoothing: the blocks have fewer low and high grades than the true blocks, the
 declustered samples more. `bt.plot.grade_tonnage` draws the same comparison as tonnage and grade above cutoff

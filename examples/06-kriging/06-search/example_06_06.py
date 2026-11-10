@@ -111,8 +111,8 @@ for p in (1, 2):
 print(f"RMSE of all nodes {rmse(d['value']):.1f} ppm")
 
 # %% [markdown]
-# Pass-1 nodes have the higher slope of regression and also the larger errors. The metal survey drilling is densest where
-# `V` is high and variable, so the best-informed nodes are also the hardest ones.
+# Pass-1 nodes have the larger errors, and a slope of regression no higher than the rest. The metal survey drilling is
+# densest where `V` is high and variable, so the best-informed nodes are also the hardest ones.
 #
 # ## Sector rules
 #
@@ -141,8 +141,8 @@ for name, first in rules.items():
         )
 
 # %% [markdown]
-# Both rules send about 11 % of the nodes, those with samples on one side, to the second pass. Their estimates run over
-# 70 ppm high on average, against 11 to 13 ppm for the rest, with a lower slope of regression. The second pass still
+# Both rules send about 9 % of the nodes, those with samples on one side, to the second pass. Their estimates run 6 ppm
+# low on average, against 7 to 10 ppm high for the rest, with a lower slope of regression. The second pass still
 # estimates them; without it they stay unestimated.
 #
 # ## High-grade restriction
@@ -201,8 +201,8 @@ fig.colorbar(im, ax=b, shrink=0.8, label="ppm")
 save(fig, "passes")
 
 # %% [markdown]
-# Around isolated rich samples the restriction lowers the estimates where kriging overestimates most, and brings the
-# mean error of those nodes to zero. Inside the dense cluster of rich samples it raises them instead. There the rich
-# samples 20 to 30 m away sit behind closer samples that screen them, so ordinary kriging gives them small negative
-# weights, and dropping a negative weight on a high value raises the estimate. The restriction suits isolated high
-# values; over all samples the cross-validation mean error changes little.
+# Around isolated rich samples the restriction lowers the estimates where kriging overestimates most, and turns the mean
+# error of those nodes from +15 ppm to -11 ppm. Inside the dense cluster of rich samples it raises them instead. There
+# the rich samples 20 to 30 m away sit behind closer samples that screen them, so ordinary kriging gives them small
+# negative weights, and dropping a negative weight on a high value raises the estimate. The restriction suits isolated
+# high values; over all samples the cross-validation mean error changes little.

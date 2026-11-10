@@ -86,9 +86,9 @@ for table, name, rows in zip(summary["table"], summary["check"], summary["rows"]
         print(f"{table:>9} {name:<12} {rows:5.0f} {len(holes):5}  {listed}")
 
 # %% [markdown]
-# Twenty checks fire. The raw count means little: 78 of the 83 `id_mismatch` assay rows come from one trailing
-# space, while the two `deviation` rows are one flipped azimuth that bends `DD0017` between its stations at 150 and
-# 210 m. Each flag needs a decision.
+# Twenty checks fire. The raw count means little: 79 of the 84 `id_mismatch` assay rows come from one trailing
+# space, while the two `deviation` rows are one flipped azimuth that bends `DD0017` between its stations at 120 and
+# 180 m. Each flag needs a decision.
 #
 # <figure class="bt-figure">
 # --8<-- "svg/w2-triage.svg"
@@ -100,7 +100,7 @@ for table, name, rows in zip(summary["table"], summary["check"], summary["rows"]
 #
 # !!! step "Step 2: Look at the evidence behind the ambiguous flags"
 #     Four flags have no obvious answer. `DD0032` has two collars with different coordinates; `DD0102` has
-#     samples below its recorded length; one `DD0123` assay is inverted; `DD0017` has a survey station whose
+#     samples below its recorded length; one `DD0122` assay is inverted; `DD0017` has a survey station whose
 #     azimuth jumps. The other tables of each hole say which entry to trust.
 
 # %%
@@ -127,22 +127,24 @@ xy = np.c_[c["X"], c["Y"]][rows_of(c, "DD0032")]
 print(f"DD0032 collar entries are {np.hypot(*(xy[1] - xy[0])):.0f} m apart")
 
 inverted = a["FROM"] > a["TO"]
-print(f"DD0123 inverted assay: FROM {a['FROM'][inverted][0]} TO {a['TO'][inverted][0]}")
+print(f"DD0122 inverted assay: FROM {a['FROM'][inverted][0]} TO {a['TO'][inverted][0]}")
 dd0017 = rows_of(s, "DD0017")
-print("DD0017 azimuths at 150, 180, 210 m:", s["AZIMUTH"][dd0017][5:8])
+k = np.argmax(np.abs(s["AZIMUTH"][dd0017] - np.median(s["AZIMUTH"][dd0017]))) - 1
+depths = ", ".join(f"{d:.0f}" for d in s["DEPTH"][dd0017][k : k + 3])
+print(f"DD0017 azimuths at {depths} m:", s["AZIMUTH"][dd0017][k : k + 3])
 top = np.abs(s["DIP"][s["DEPTH"] == 0])
 print(f"dip at the collar, all surveyed holes: {top.min():.0f} to {top.max():.0f} degrees")
 
 # %% [markdown]
 # The evidence settles each one:
 #
-# - `DD0032`: its survey, assays and lithology all end at 398.05 m, the length of the first collar entry. The second
-#   entry (284.05 m, 225 m away) is wrong; the `duplicate` rule drops the later entry, which is the right one to
-#   drop here.
-# - `DD0102`: three tables agree the hole reaches 330.51 m, past the 324.18 m on the collar. The collar length is
+# - `DD0032`: its survey and lithology end at 390.21 m, the length of the first collar entry, and its assays run to
+#   300 m. The second entry (278.45 m, 225 m away) is wrong; the `duplicate` rule drops the later entry, which is
+#   the right one to drop here.
+# - `DD0102`: three tables agree the hole reaches 354.71 m, past the 348.26 m on the collar. The collar length is
 #   the typo; set it to the deepest survey station.
-# - `DD0123`: FROM 436.81, TO 435.25 is a 1.6 m sample with its ends swapped; swap them back.
-# - `DD0017`: 299.69° → 119.66° → 299.92° is a flip of 180° and back, a transcription error. The `deviation` rule
+# - `DD0122`: FROM 302.1, TO 300.12 is a 2.0 m sample with its ends swapped; swap them back.
+# - `DD0017`: 299.92° → 120.15° → 300.67° is a flip of 180° and back, a transcription error. The `deviation` rule
 #   drops the two stations the flip touches, and the stations on either side carry the hole.
 #
 # !!! pitfall "Pitfall: sentinels read as grades"
@@ -150,16 +152,18 @@ print(f"dip at the collar, all surveyed holes: {top.min():.0f} to {top.max():.0f
 #     `-999` for zinc in the middle of its ore intercept:
 
 # %%
-dd0018 = rows_of(a, "DD0018") & (a["FROM"] >= 254.92) & (a["TO"] <= 259.42)
+ore = rows_of(lith, "DD0018") & np.isin(lith["LITH"], ["MS", "SMS"])
+top, bottom = lith["FROM"][ore].min(), lith["TO"][ore].max()
+dd0018 = rows_of(a, "DD0018") & (a["FROM"] >= top) & (a["TO"] <= bottom)
 zn = np.asarray(a["ZN_PCT"][dd0018], dtype=float)
 length = (a["TO"] - a["FROM"])[dd0018]
 valid = zn > -99
-print(f"DD0018, 254.92-259.42 m, {dd0018.sum()} assays: Zn values {zn}")
+print(f"DD0018, {top:.2f}-{bottom:.2f} m, {dd0018.sum()} assays: Zn values {zn}")
 print(f"  length-weighted Zn with -999 as a number: {np.average(zn, weights=length):.1f} %")
 print(f"  length-weighted Zn without it:            {np.average(zn[valid], weights=length[valid]):.2f} %")
 
 # %% [markdown]
-# One sentinel turns a 4.96 % zinc intercept into −273.9 %. A negative grade is easy to spot; a `-99` in a column of
+# One sentinel turns a 1.62 % zinc intercept into −278.6 %. A negative grade is easy to spot; a `-99` in a column of
 # values near 100 is not. The readers in boitatá map sentinels to null by default (`nodata=`); this page reads the raw
 # tables with `nodata=[]` to keep the problem visible.
 #
@@ -193,8 +197,8 @@ tables = {name: t.filter(~rows_of(t, "DD0207")) for name, t in tables.items()}
 # !!! step "Step 4: Apply the rules"
 #     `fix_drillholes` takes the flags of the corrected tables and applies one named rule per check. The defaults
 #     drop duplicates, flipped survey stations and rows of holes without a collar, rename ids to their collar
-#     (`'dd0145'` → `'DD0145'`), keep the first of two overlapping intervals and set sentinels to null. Two rules are
-#     chosen here: `dip_sign="negate"` turns `DD0058`'s negative dips down like every other hole, and
+#     (`'dd0144'` → `'DD0144'`), keep the first of two overlapping intervals and set sentinels to null. Two rules are
+#     chosen here: `dip_sign="negate"` turns `DD0056`'s negative dips down like every other hole, and
 #     `text_values="half"` reads `<0.01` as half the detection limit (`NS`, not sampled, becomes null). The log
 #     says what each rule did.
 
@@ -213,7 +217,7 @@ for table, name, action, rows in zip(log["table"], log["check"], log["action"], 
 # %%
 flags, summary, _ = check(fixed)
 after = {(t, n): int(r) for t, n, r in zip(summary["table"], summary["check"], summary["rows"]) if r}
-rc_core = {"RC0009", "RC0011", "RC0012", "RC0028", "RC0034", "RC0038", "RC0045"}
+rc_core = {"RC0009", "RC0012", "RC0019", "RC0027", "RC0033", "RC0045"}
 accepted = {
     ("assays", "gap"): rc_core | {"DD0109", "DD0054"},
     ("collar", "no_assays"): None,
@@ -232,7 +236,7 @@ print("no assays but logged mineralized:", sorted(unassayed))
 
 # %% [markdown]
 # Two checks still fire, and every hole they name is explained. The RC gaps are core that was never
-# sampled. The `DD0054` gaps are two lost samples, and the `DD0109` gaps are the two intervals the overlap rule dropped. Of the 85 holes without assays, 84
+# sampled. The `DD0054` gaps are two lost samples, and the `DD0109` gaps are the two intervals the overlap rule dropped. Of the 86 holes without assays, 85
 # never log a mineralized unit (`MS`, `SMS`, `STR`) and were not sent to the lab; `DD0076` logs ore and has no
 # assays.
 #

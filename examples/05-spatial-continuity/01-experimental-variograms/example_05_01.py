@@ -55,7 +55,7 @@ print(f"sample variance {variance:.0f}")
 
 
 # %% [markdown]
-# Across the major axis γ passes the sample variance by 65 m. Along it γ is five tenths of the variance at 25 m and
+# Across the major axis γ passes the sample variance by 55 m. Along it γ is seven tenths of the variance at 25 m and
 # reaches the variance at 105 m. The omnidirectional variogram averages the two and hides the anisotropy. The first lag
 # holds few pairs, and any fit near the origin leans on it.
 
@@ -92,9 +92,9 @@ save(fig, "variogram")
 
 # %% [markdown]
 # Other estimators along the major axis. `standardize=True` divides the classical and covariance estimates by the sample
-# variance, the correlogram's scale. Covariance and correlogram use each lag's own head and tail means and level off
-# below 1 here. The pairwise-relative variogram scales each squared difference by the pair mean, so it ignores the grade
-# level and keeps its own scale.
+# variance, the correlogram's scale. Covariance and correlogram use each lag's own head and tail means; here they
+# depart from the classical estimate at short lags and follow it beyond 50 m. The pairwise-relative variogram scales
+# each squared difference by the pair mean, so it ignores the grade level and keeps its own scale.
 
 # %%
 fig, ax = plt.subplots(figsize=(6, 3.4), layout="constrained")

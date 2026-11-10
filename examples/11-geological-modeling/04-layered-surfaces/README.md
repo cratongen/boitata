@@ -20,7 +20,7 @@ from common import ACCENT, GRAY, HIGHLIGHT, INK, LIGHT, map_axes, save
 
 Gridded elevations are a 2D `BlockModel` with a `Z` column; `grid_surface` triangulates them through the block
 centers. `Mesh.vertical_distance` is a point's elevation minus the surface's at the same easting and northing:
-the collars sit on the topography.
+the collars sit within about a meter of the topography.
 
 <details><summary>Python</summary>
 
@@ -60,11 +60,11 @@ BlockModel  regular, 46,031 blocks
   origin  59795, 22045, 0
   bounds  x 59795 to 62205, y 22045 to 23955, z 0 to 1
   column  type     unit  nulls     min    mean     max
-  Z       float64            0  1082.8  1165.8  1260.4
+  Z       float64            0  1054.7  1153.5  1214.4
 Mesh  46,031 vertices, 91,200 triangles, open, 860 boundary edges
-  area    4607472.8
-  bounds  x 59800 to 62200, y 22050 to 23950, z 1082.8 to 1260.4
-collar minus topography: -0.06 to +0.06 m
+  area    4686992.7
+  bounds  x 59800 to 62200, y 22050 to 23950, z 1054.7 to 1214.4
+collar minus topography: -1.08 to +0.91 m
 ```
 
 ![topography](topography.png)
@@ -96,10 +96,10 @@ for name in LAYERS:
 </details>
 
 ```text
-base of SOIL: depth   3.1 m median, Mesh(42046 vertices, 83359 triangles, open, 731 boundary edges)
-base of ALU: depth  23.6 m median, Mesh(42046 vertices, 83359 triangles, open, 731 boundary edges)
-base of OXI: depth  50.7 m median, Mesh(42046 vertices, 83359 triangles, open, 731 boundary edges)
-base of SAP: depth  73.7 m median, Mesh(42046 vertices, 83359 triangles, open, 731 boundary edges)
+base of SOIL: depth   2.9 m median, Mesh(42046 vertices, 83359 triangles, open, 731 boundary edges)
+base of ALU: depth  23.3 m median, Mesh(42046 vertices, 83359 triangles, open, 731 boundary edges)
+base of OXI: depth  51.2 m median, Mesh(42046 vertices, 83359 triangles, open, 731 boundary edges)
+base of SAP: depth  73.5 m median, Mesh(42046 vertices, 83359 triangles, open, 731 boundary edges)
 ```
 
 The surfaces leave out cells beyond 400 m of a hole. The thickness of a horizon is the vertical distance from its
@@ -125,10 +125,10 @@ save(fig, "thickness")
 </details>
 
 ```text
-SOIL: thickness   2.2 to   5.7 m
- ALU: thickness   5.4 to  36.1 m
- OXI: thickness  10.8 to  44.8 m
- SAP: thickness  10.6 to  32.0 m
+SOIL: thickness   1.6 to   5.7 m
+ ALU: thickness   8.2 to  30.4 m
+ OXI: thickness  14.4 to  40.2 m
+ SAP: thickness  14.2 to  31.6 m
 ```
 
 ![thickness](thickness.png)
@@ -171,11 +171,11 @@ save(fig, "profile")
 
 ```text
 horizon midpoints in their logged layer: 100.0%
-SOIL:   259 assays, P2O5  1.95 %
- ALU:  1152 assays, P2O5  4.74 %
- OXI:  1533 assays, P2O5 12.52 %
- SAP:  1241 assays, P2O5  8.48 %
-ROCK:  1407 assays, P2O5  5.03 %
+SOIL:   252 assays, P2O5  1.95 %
+ ALU:  1138 assays, P2O5  4.91 %
+ OXI:  1483 assays, P2O5 13.58 %
+ SAP:  1226 assays, P2O5  9.17 %
+ROCK:  1407 assays, P2O5  5.00 %
 ```
 
 ![profile](profile.png)
@@ -208,18 +208,18 @@ for name in [*LAYERS, "ROCK"]:
 </details>
 
 ```text
-BlockModel  sub-blocked, 254,048 sub-blocks in 144,000 blocks
+BlockModel  sub-blocked, 247,141 sub-blocks in 144,000 blocks
   count   80 × 60 × 30
   size    25 × 25 × 10
   origin  60000, 22250, 950
-  bounds  x 60000 to 62000, y 22250 to 23750, z 950 to 1239
+  bounds  x 60000 to 62000, y 22250 to 23750, z 950 to 1213
   column  type  unit  nulls  values
   domain  str             0  5 unique: ROCK, SAP, OXI, …
-SOIL:    9.62 Mm3 from the bottom,    9.69 Mm3 from the top
- ALU:   63.02 Mm3 from the bottom,   63.02 Mm3 from the top
- OXI:   86.59 Mm3 from the bottom,   86.59 Mm3 from the top
- SAP:   68.25 Mm3 from the bottom,   68.25 Mm3 from the top
-ROCK:  420.56 Mm3 from the bottom,  420.56 Mm3 from the top
+SOIL:    9.07 Mm3 from the bottom,    9.15 Mm3 from the top
+ ALU:   61.03 Mm3 from the bottom,   61.03 Mm3 from the top
+ OXI:   81.74 Mm3 from the bottom,   81.74 Mm3 from the top
+ SAP:   66.48 Mm3 from the bottom,   66.48 Mm3 from the top
+ROCK:  396.73 Mm3 from the bottom,  396.73 Mm3 from the top
 ```
 
 A true-scale east-west section shows the sub-cells following the surfaces:

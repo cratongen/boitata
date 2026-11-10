@@ -81,7 +81,7 @@ save(fig, "variograms")
 # %% [markdown]
 # `local_variogram_parameters` fits the shape of the global model (nugget and structures, rescaled to the variance of
 # the samples in a window) to such variograms. With one window over the whole deposit it returns one fit: in the global
-# frame it gives back the global model (scale 1), in the local frames a longer and narrower one.
+# frame it gives a longer and narrower model than the global one, in the local frames longer and narrower still.
 
 # %%
 center = [[130.0, 150.0]]
@@ -158,10 +158,11 @@ fig.colorbar(im, ax=axes, shrink=0.8, label="V (ppm)")
 save(fig, "kriging")
 
 # %% [markdown]
-# The scales alone change the estimate little: RMSE 145.9 against 145.6 ppm. Longer ranges with the same nugget and
-# ratios leave the kriging weights close. The fitted ratios change them: the windows see bodies about 0.14 as wide as
-# they are long, against 0.33 in the global model, and kriging with those needle-thin ellipses streaks along the field's
+# The scales alone change the estimate little: RMSE 167.6 against 166.5 ppm. Longer ranges with the same nugget and
+# ratios leave the kriging weights close. The fitted ratios change them: the windows see bodies about 0.12 as wide as
+# they are long, against 0.42 in the global model, and kriging with those needle-thin ellipses streaks along the field's
 # directions. Wherever the guide's directions are off, the estimate follows them across the bodies, and the RMSE rises
-# to 146.3 ppm, worse than the global model. Narrow local ratios pay off only as far as you can trust the orientation
-# field. With a field this rough, keep the global ratios and take the local angles and scales. SGS, indicator and
+# to 173.3 ppm, worse than the global model. Narrow local ratios pay off only as far as you can trust the orientation
+# field. With a field this rough even the local angles alone lose to the global model, 166.5 against 160.8 ppm, so keep
+# the global model here and take the local angles and scales only where the field can be trusted. SGS, indicator and
 # categorical kriging take the same `anisotropy=` field, scales included.

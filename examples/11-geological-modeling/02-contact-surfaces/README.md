@@ -62,7 +62,7 @@ print(
 </details>
 
 ```text
-155 holes, 334 lens intervals, 224 contacts, 601 coded points
+155 holes, 336 lens intervals, 226 contacts, 620 coded points
 ```
 
 The lens strikes N22.5°E and dips 55° to the east-southeast, so the anisotropy axes run along strike, down dip and
@@ -104,11 +104,11 @@ print(f"GP ranges {[round(r) for r in models['GP'].report['lengthscales']]} m")
 </details>
 
 ```text
-Kriging, cubic: 100.0% of coded points on their side, 4.09 Mm3, covers 92% of the solid, 36% outside it
-       Kriging: 100.0% of coded points on their side, 3.18 Mm3, covers 99% of the solid, 10% outside it
+Kriging, cubic: 100.0% of coded points on their side, 3.84 Mm3, covers 93% of the solid, 30% outside it
+       Kriging: 100.0% of coded points on their side, 3.19 Mm3, covers 99% of the solid, 11% outside it
            RBF: 100.0% of coded points on their side, 3.20 Mm3, covers 100% of the solid, 11% outside it
-            GP:  96.8% of coded points on their side, 19.21 Mm3, covers 97% of the solid, 85% outside it
-GP ranges [1280, 1092, 75] m
+            GP:  96.9% of coded points on their side, 15.63 Mm3, covers 97% of the solid, 82% outside it
+GP ranges [1237, 1020, 73] m
 ```
 
 Kriging with a spherical covariance and the RBF honor each contact and agree with the solid except for a thin rind.

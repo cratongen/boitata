@@ -72,8 +72,8 @@ ax.set(title="Metal survey V, 470 samples", xlabel="V (ppm)")
 save(fig, "histogram")
 
 # %% [markdown]
-# The 470 samples of `V` have a mean of 428 ppm, a standard deviation of 279 ppm and a CV of 0.65. The median
-# (`P50`) is 411 ppm, close to the mean, and the skewness is a mild 0.39. Chapter 1 showed that these samples
+# The 470 samples of `V` have a mean of 407 ppm, a standard deviation of 272 ppm and a CV of 0.67. The median
+# (`P50`) is 376 ppm, below the mean, and the skewness is a moderate 0.65. Chapter 1 showed that these samples
 # crowd into the rich zones, and that crowding distorts every number above.
 #
 # ??? math "The math"
@@ -134,12 +134,12 @@ print(
 )
 
 # %% [markdown]
-# The mean falls from 428 ppm to a minimum of 285 ppm at 22.5 m cells, then climbs as the cells grow. At
-# 22.5 m, the weights run from 0.26 in the dense clusters to 2.86 on the sparse grid.
+# The mean falls from 407 ppm to a minimum of 282 ppm at 20 m cells, then climbs as the cells grow. At
+# 20 m, the weights run from 0.25 in the dense clusters to 2.48 on the sparse grid.
 #
-# The metal survey is one of the few datasets where you can check the answer. Declustering moves the mean from 428 to
-# 285 ppm against a true 280 ppm, the variance from 77 905 to 64 116 ppm² against 64 277, and the skewness from 0.39
-# to 0.97 against 1.12. Every statistic moves toward the truth. The CV rises from 0.65 to 0.89 because the mean
+# The metal survey is one of the few datasets where you can check the answer. Declustering moves the mean from 407 to
+# 282 ppm against a true 280 ppm, the variance from 74 235 to 57 810 ppm² against 64 277, and the skewness from 0.65
+# to 1.12 against 1.12. Every statistic moves toward the truth. The CV rises from 0.67 to 0.85 because the mean
 # falls faster than the standard deviation.
 #
 # !!! key "Key idea"
@@ -182,7 +182,7 @@ print(f"{len(quartz)} composites; declustered mean {raw['mean']:.2f} g/t, CV {ra
 print(f"largest five: {np.round(np.sort(au)[::-1][:5], 0)}")
 
 # %% [markdown]
-# The CV of 3.10 is high for a grade; the largest composite, 1192 g/t, is more than twice the next. `bt.capping`
+# The CV of 3.07 is high for a grade; the two largest composites, 1192 g/t, are more than twice the next. `bt.capping`
 # tries a cap at each of several high quantiles and reports the share of weight above it, the share of metal it
 # removes, and the capped mean and CV:
 
@@ -205,12 +205,12 @@ ax.legend(loc="lower right")
 save(fig, "probability")
 
 # %% [markdown]
-# A cap at the declustered 99th percentile, 155.5 g/t, cuts 40 composites and removes 12.2 % of the metal: the mean
-# falls from 12.40 to 10.89 g/t and the CV from 3.10 to 2.05. `Capping` follows the
+# A cap at the declustered 99th percentile, 110.4 g/t, cuts 89 composites and removes 11.1 % of the metal: the mean
+# falls from 10.80 to 9.60 g/t and the CV from 3.07 to 1.78. `Capping` follows the
 # library's transform pattern: `fit` learns the cap from the data, `transform` applies it to any values.
 #
 # Use the probability plot to choose the cap. On a log scale, a lognormal distribution plots as a straight line.
-# These composites follow one line from about 0.1 g/t to beyond the cap, and the single 1192 g/t composite stands
+# These composites follow one line from about 0.1 g/t to beyond the cap, and the two 1192 g/t composites stand
 # apart at the top.
 #
 # !!! pitfall "Pitfall"
@@ -249,9 +249,9 @@ ax.set(title="Zn by lithology, 2 m composites", ylabel="Zn (%)")
 save(fig, "domains")
 
 # %% [markdown]
-# Zinc averages 8.27 % in massive sulfide (`MS`), 3.24 % in semi-massive sulfide (`SMS`), 0.37 % in the stringer
-# zone (`STR`) and 0.05 to 0.06 % in the host rocks. Within each lithology the CV lies between 0.48 and 0.71;
-# pooled, it is 3.46. Mixing the populations creates the pooled spread.
+# Zinc averages 8.52 % in massive sulfide (`MS`), 3.26 % in semi-massive sulfide (`SMS`), 0.40 % in the stringer
+# zone (`STR`) and 0.04 to 0.05 % in the host rocks. Within each lithology the CV lies between 0.20 and 0.72;
+# pooled, it is 3.47. Mixing the populations creates the pooled spread.
 #
 # Domains also constrain estimation. A variogram, a kriging estimate or a simulation assumes one population
 # throughout. Estimate the lenses and the host rock together and the high grades of `MS` leak into the waste around
@@ -288,9 +288,9 @@ print(f"U above 3000 ppm: {(u[both] > 3000).sum()} samples")
 
 # %% [markdown]
 # `U` was measured on 275 samples; the other 195 are nulls and drop out of the pairs. On those 275, the Pearson
-# coefficient is 0.58 and the Spearman coefficient 0.69. The gap comes from the tail of `U`: seven samples above
+# coefficient is 0.60 and the Spearman coefficient 0.63. The gap comes from the tail of `U`: five samples above
 # 3000 ppm sit far from any straight line, and Pearson pays for them. In the massive sulfide, zinc and lead reach a
-# Pearson coefficient of 0.99: the two metals rise together.
+# Pearson coefficient of 0.98: the two metals rise together.
 #
 # ## A first look at the normal-score transform
 #
@@ -332,10 +332,10 @@ print(f"back-transform: largest error {np.abs(transform.inverse_transform(scores
 #
 # !!! check "Check before you move on"
 #     - Why does the mean of a positively skewed variable exceed its median?
-#     - the metal survey's declustered mean is 285 ppm. Why is it lower than the naive 428 ppm, and what would make
+#     - the metal survey's declustered mean is 282 ppm. Why is it lower than the naive 407 ppm, and what would make
 #       declustering raise the mean instead?
-#     - A cap at the 99th percentile removes 12.2 % of the gold. What must you report next to the capped mean?
-#     - The pooled CV of zinc is 3.46 while each lithology's CV is below 0.8. What does that tell you?
+#     - A cap at the 99th percentile removes 11.1 % of the gold. What must you report next to the capped mean?
+#     - The pooled CV of zinc is 3.47 while each lithology's CV is below 0.8. What does that tell you?
 #     - Why can the Spearman coefficient differ from the Pearson coefficient on the same pairs?
 #
 # !!! seealso "See also"

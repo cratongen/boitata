@@ -44,12 +44,14 @@ for name in names[counts > 1]:
 </details>
 
 ```text
-DD0060 and DD0121: 3.0 m apart
-DD0065 and RC0003 and RC0036: 4.8 m apart
-DD0069 and DD0070: 3.1 m apart
+DD0060 and DD0121: 2.4 m apart
+DD0065 and RC0003 and RC0036: 4.6 m apart
+DD0069 and DD0070: 0.9 m apart
+DD0155 and DD0156: 4.7 m apart
 DD0224 and DD0224: 0.0 m apart
-RC0001 and RC0038: 4.0 m apart
-RC0004 and RC0045: 1.3 m apart
+RC0001 and RC0038: 4.1 m apart
+RC0004 and RC0045: 0.9 m apart
+RC0005 and RC0031: 4.9 m apart
 DD0032 twice: 225 m apart
 DD0224 twice: 0 m apart
 ```
@@ -83,7 +85,7 @@ print(f"{len(samples)} samples at their midpoints")
 </details>
 
 ```text
-19055 samples at their midpoints
+19149 samples at their midpoints
 ```
 
 With a tolerance of 0, only samples at the same location are grouped: three intervals of DD0216 were entered twice,
@@ -125,9 +127,9 @@ save(fig, "duplicates")
 </details>
 
 ```text
-DD0216 at 725.5 m: Zn 0.031 and 0.032 %
-DD0216 at 727.5 m: Zn 0.035 and 0.033 %
-DD0216 at 729.5 m: Zn 0.050 and 0.050 %
+DD0216 at 719.6 m: Zn 0.132 and 0.134 %
+DD0216 at 721.6 m: Zn 0.123 and 0.117 %
+DD0216 at 723.5 m: Zn 0.150 and 0.150 %
 ```
 
 ![duplicates](duplicates.png)
@@ -148,7 +150,7 @@ print(f"{len(merged)} samples, {int(twins.sum())} of them merged pairs, Zn {mean
 </details>
 
 ```text
-19052 samples, 3 of them merged pairs, Zn 0.032, 0.034, 0.050 %
+19146 samples, 3 of them merged pairs, Zn 0.133, 0.120, 0.150 %
 ```
 
 Full script: [`example_02_04.py`](example_02_04.py)

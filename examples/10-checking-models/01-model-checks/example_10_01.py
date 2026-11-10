@@ -68,8 +68,8 @@ for row in zip(
     )
 
 # %% [markdown]
-# The blocks reproduce the declustered mean within 0.3 %. Both sit about 2 % above the truth, a bias no check against
-# the samples can see. The blocks are 10 × 10 m averages smoothed by kriging, so their variance is much smaller. The
+# The blocks sit 2.1 % above the declustered mean and about 3 % above the truth; the declustered samples come within
+# 1 % of the truth. The blocks are 10 × 10 m averages smoothed by kriging, so their variance is much smaller. The
 # true blocks sit in between, since averaging over a block removes part of the sample variance. The cumulative
 # distributions show the same smoothing: the blocks have fewer low and high grades than the true blocks, the
 # declustered samples more. `bt.plot.grade_tonnage` draws the same comparison as tonnage and grade above cutoff

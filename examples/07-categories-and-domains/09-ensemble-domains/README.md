@@ -48,7 +48,7 @@ print(f"{len(composites):,} composites in {len(drillholes)} holes")
 </details>
 
 ```text
-6,502 composites in 289 holes
+6,473 composites in 289 holes
 ```
 
 ## Three domains
@@ -74,17 +74,17 @@ for c, name in enumerate(domains.names):
 </details>
 
 ```text
-Domains  3 domains, 6,502 samples
-  wcss             0.8862
-  spatial entropy  0.5179
+Domains  3 domains, 6,473 samples
+  wcss             0.8939
+  spatial entropy  0.5127
   domain  samples
-  D1        2,855
-  D2        2,699
-  D3          948
+  D1        2,925
+  D2        2,587
+  D3          961
          n   Zn %   Pb %   Cu %  Ag g/t
-D1    2855   0.03   0.01   0.01     0.6
-D2    2699   0.09   0.04   0.06     2.1
-D3     948   3.84   1.53   0.66    35.2
+D1    2925   0.03   0.01   0.01     0.6
+D2    2587   0.09   0.04   0.05     2.0
+D3     961   3.94   1.59   0.76    36.7
 ```
 
 The domains were drawn from the metals only, yet they line up with the logged rock: `D3` holds the sulfides and
@@ -106,12 +106,12 @@ for r, name in enumerate(rocks.names):
 
 ```text
          D1    D2    D3      n
-OB      61%   39%    0%     23
-HWS     73%   27%    0%    210
-VCL     58%   40%    3%   3788
-SUL      0%   18%   82%   1008
-FWV     34%   65%    1%   1454
-DYK     26%   68%    5%     19
+OB      96%    4%    0%     26
+HWS     81%   19%    0%    188
+VCL     57%   41%    2%   3812
+SUL      0%   13%   86%   1014
+FWV     39%   60%    1%   1421
+DYK     33%   67%    0%     12
 ```
 
 ## On a section
@@ -145,7 +145,7 @@ save(fig, "section")
 ## The three methods
 
 A lower `wcss` means domains more uniform in the metals, a lower `spatial_entropy` domains less mixed among
-neighbors. Here the consensus gives the most uniform domains and a single autocorrelation clustering the least
+neighbors. Here the consensus gives the most uniform domains and a single dual-space clustering the least
 mixed ones. The two scores pull against each other, so they compare candidate domainings (methods, columns, `k`)
 rather than pick one alone.
 
@@ -162,9 +162,9 @@ for method in ["autocorrelation", "dual", "consensus"]:
 
 ```text
 method             wcss  entropy
-autocorrelation   0.937    0.516
-dual              0.943    0.509
-consensus         0.886    0.518
+autocorrelation   0.928    0.514
+dual              0.959    0.501
+consensus         0.894    0.513
 ```
 
 Full script: [`example_07_09.py`](example_07_09.py)

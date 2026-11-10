@@ -64,14 +64,14 @@ print(f"validation points inside their 10-90% interval: {inside:.0%}")
 </details>
 
 ```text
-ordinary kriging: RMSE 0.764 mg/kg
-per-threshold variograms: E-type RMSE 0.744 mg/kg, mean P(Cd > 0.8) 0.75 where true exceedance, 0.61 elsewhere, mean correction 0.079
-median indicator: E-type RMSE 0.765 mg/kg, mean P(Cd > 0.8) 0.75 where true exceedance, 0.63 elsewhere, mean correction 0.000
-validation points inside their 10-90% interval: 80%
+ordinary kriging: RMSE 1.030 mg/kg
+per-threshold variograms: E-type RMSE 0.994 mg/kg, mean P(Cd > 0.8) 0.78 where true exceedance, 0.59 elsewhere, mean correction 0.047
+median indicator: E-type RMSE 0.984 mg/kg, mean P(Cd > 0.8) 0.78 where true exceedance, 0.57 elsewhere, mean correction 0.001
+validation points inside their 10-90% interval: 77%
 ```
 
 The E-type estimate, the mean of each distribution, has a lower error than ordinary kriging, and the median-indicator
-shortcut gives all of that gain back. The distributions also carry the uncertainty: those at the lowest and highest
+shortcut keeps that gain. The distributions also carry the uncertainty: those at the lowest and highest
 validation estimates sit on either side of the declustered global one:
 
 <details><summary>Python</summary>
@@ -132,18 +132,18 @@ save(fig, "accuracy")
 </details>
 
 ```text
-per-threshold: E-type RMSE 0.967 mg/kg, slope 1.06, goodness 0.948, Brier 0.157
-median indicator: E-type RMSE 0.993 mg/kg, slope 1.18, goodness 0.966, Brier 0.162
-validation targets with order-relation violations: 91%
+per-threshold: E-type RMSE 0.915 mg/kg, slope 1.21, goodness 0.957, Brier 0.152
+median indicator: E-type RMSE 0.947 mg/kg, slope 1.21, goodness 0.966, Brier 0.154
+validation targets with order-relation violations: 77%
 ```
 
 ![accuracy](accuracy.png)
 
 At a panel centroid the distribution describes Cd at that one point. Kriging the indicators over the panel instead,
 with `discretization=(4, 4, 1)`, gives the distribution of the point values within it, and `localize` takes the same
-argument. Each panel probability averages those of the points inside, so panels differ a little less and the order
-relations need less correction. Within 1 km the indicator variograms rise mostly at the nugget, which kriging at a
-centroid already filters, so the two stay close here:
+argument. Each panel probability averages those of the points inside, so the order relations need less correction.
+Within 1 km the indicator variograms rise mostly at the nugget, which kriging at a centroid already filters, so the
+two stay close here:
 
 <details><summary>Python</summary>
 
@@ -163,9 +163,9 @@ print(f"mean |panel - centroid| probability {shift:.3f}")
 </details>
 
 ```text
-centroids: std of P(Cd > 0.8) across panels 0.117, mean correction 0.0137
-1 km panels: std of P(Cd > 0.8) across panels 0.117, mean correction 0.0110
-mean |panel - centroid| probability 0.000
+centroids: std of P(Cd > 0.8) across panels 0.125, mean correction 0.0044
+1 km panels: std of P(Cd > 0.8) across panels 0.128, mean correction 0.0032
+mean |panel - centroid| probability 0.009
 ```
 
 Full script: [`example_06_11.py`](example_06_11.py)

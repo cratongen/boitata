@@ -120,7 +120,7 @@ b.set(xlabel="Zn (%)", title="Probability plot, three lenses")
 save(fig, "statistics")
 
 # %% [markdown]
-# Declustering lowers each lens mean by 0.2 to 0.5 % Zn, to about 6 %. The three lenses share one distribution,
+# Declustering lowers each lens mean by 0.4 to 1.0 % Zn, to 5.4 to 5.9 %. The three lenses share one distribution,
 # and the probability plot shows no break in the upper tail that would call for capping.
 #
 # ## Variography
@@ -158,8 +158,9 @@ b.set(xlabel="Lag distance (m)", ylabel="γ(h), normal scores", title="Normal sc
 save(fig, "variogram")
 
 # %% [markdown]
-# Half the variance is nugget, and zinc loses its correlation beyond about 46 m. The normal scores of lenses 2 and
-# 3 scatter around the same model.
+# A quarter of the variance is nugget, and zinc loses its correlation beyond about 69 m. The normal scores of lens 2
+# scatter around the same model; those of lens 3, the lens with the fewest composites, rise above it between 60 and
+# 110 m.
 #
 # ## Domaining
 #
@@ -188,7 +189,7 @@ host = composites["ZN_PCT"][names == "host"]
 print(f"host rock: {np.nanmean(host):.2f} % Zn over {np.isfinite(host).sum():,} composites")
 
 # %% [markdown]
-# Zinc reaches 7 to 10 % inside each lens and drops toward the contact; across it, the host averages 0.08 %. The
+# Zinc reaches 9 % or more inside each lens and drops toward the contact; across it, the host averages 0.08 %. The
 # contacts are hard, so host composites must not inform the lenses, and each lens gets its own estimate.
 #
 # ## A sparse grid of mining blocks
@@ -379,8 +380,8 @@ ax.set(xlabel="Distance along strike, N021° (m)", ylabel="Zn (%)", title="Swath
 save(fig, "swath")
 
 # %% [markdown]
-# Kriging and the E-type sit within 0.5 % Zn of the declustered composites in every lens. Nearest neighbor runs
-# 0.2 to 0.7 % lower in lenses 2 and 3, the two with the fewest composites.
+# Kriging and the E-type sit within 0.4 % Zn of the declustered composites in every lens. Nearest neighbor runs
+# 0.3 % higher in lens 1 and within 0.1 % in lenses 2 and 3.
 #
 # Simulated values must also reproduce the histogram and the variogram of the data. `check_realizations` compares
 # 20 more realizations, drawn at the centers of the SMUs wholly inside a lens so that their support matches the
@@ -450,9 +451,9 @@ for p, row in (("P10", p10), ("P50", p50), ("P90", p90)):
     print(f"simulated {p}, above 5 % Zn: {row[at] / 1e6:.1f} Mt at {row[n + at] / row[at]:.2f} % Zn")
 
 # %% [markdown]
-# Above 5 % Zn the sub-blocks hold 11.2 Mt at 6.83 % in situ. Mined as whole SMUs, kriging reports 8.8 Mt at
-# 6.83 % and the realizations 8.1 to 8.7 Mt at 7.5 to 7.7 %: dilution costs about a fifth of the ore, and the
-# simulated SMUs, which vary as much as real ones, select less of it at a higher grade.
+# Above 5 % Zn the sub-blocks hold 12.7 Mt at 7.83 % in situ. Mined as whole SMUs, kriging reports 10.2 Mt at
+# 7.82 % and the realizations 9.6 to 10.6 Mt at 8.1 to 8.4 %: dilution costs about a fifth of the ore, and the
+# simulated SMUs, which vary as much as real ones, select about as much of it at a higher grade.
 #
 # ## In 3D
 #

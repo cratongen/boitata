@@ -104,7 +104,7 @@ save(fig, "section")
 # ## The three methods
 #
 # A lower `wcss` means domains more uniform in the metals, a lower `spatial_entropy` domains less mixed among
-# neighbors. Here the consensus gives the most uniform domains and a single autocorrelation clustering the least
+# neighbors. Here the consensus gives the most uniform domains and a single dual-space clustering the least
 # mixed ones. The two scores pull against each other, so they compare candidate domainings (methods, columns, `k`)
 # rather than pick one alone.
 

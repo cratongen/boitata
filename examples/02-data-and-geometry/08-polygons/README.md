@@ -86,7 +86,7 @@ save(fig, "distance")
 
 ```text
 standoff: 596 cells, 6.0 km²
-holes from the boundary: 6.4 to 3576 m, 23 within 200 m
+holes from the boundary: 1.0 to 3887 m, 22 within 200 m
 ```
 
 ![distance](distance.png)
@@ -123,14 +123,14 @@ save(fig, "domains")
 </details>
 
 ```text
-MECHANIZED:  64.6% of the lease,  78.0% of the holes
- SELECTIVE:  29.7% of the lease,  18.6% of the holes
-UNECONOMIC:   5.7% of the lease,   3.4% of the holes
+MECHANIZED:  69.4% of the lease,  81.7% of the holes
+ SELECTIVE:  22.1% of the lease,  13.9% of the holes
+UNECONOMIC:   8.5% of the lease,   4.4% of the holes
 ```
 
 ![domains](domains.png)
 
-`MECHANIZED` holes are 78.0 % of the holes, but their domain covers 64.6 % of the lease, because the infill went
+`MECHANIZED` holes are 81.7 % of the holes, but their domain covers 69.4 % of the lease, because the infill went
 where the seam is thick. Counting cells instead of holes declusters the shares.
 
 ## Majority vote
@@ -163,17 +163,17 @@ save(fig, "majority")
 </details>
 
 ```text
-1383 of 7202 cells change label (19.2%)
-mean confidence: nearest 0.70, majority 0.77
-MECHANIZED:  74.7% of the lease
- SELECTIVE:  22.7% of the lease
-UNECONOMIC:   2.6% of the lease
+1128 of 7202 cells change label (15.7%)
+mean confidence: nearest 0.76, majority 0.82
+MECHANIZED:  76.8% of the lease
+ SELECTIVE:  17.6% of the lease
+UNECONOMIC:   5.6% of the lease
 ```
 
 ![majority](majority.png)
 
 The changed cells sit around isolated `SELECTIVE` holes, now outvoted by their `MECHANIZED` neighbors, and
-`MECHANIZED` grows from 64.6 % to 74.7 % of the lease. Majority smooths the map but gives back the declustering:
+`MECHANIZED` grows from 69.4 % to 76.8 % of the lease. Majority smooths the map but gives back the declustering:
 where the drilling is dense, one method wins most votes.
 
 ## A polygon with a hole

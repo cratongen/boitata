@@ -40,10 +40,10 @@ print(gaussian)
 ```text
 Variogram  sill 1, 1 structure
   rotation  azimuth 170°, dip 0°, rake 0°
-  ratios    semi/major 0.4202, minor/major 1
+  ratios    semi/major 0.4785, minor/major 1
   structure    sill  major   semi  minor
-  nugget     0.0801
-  spherical  0.9199  123.4  51.86  123.4
+  nugget     0.3786
+  spherical  0.6214  118.1  56.51  118.1
 ```
 
 Both methods normal-score the data, simulate and back-transform; `bands` sets how many lines turning bands sums.
@@ -68,8 +68,8 @@ for name, reals, seconds in (("SGS", by_sgs, sgs_seconds), ("turning bands", by_
 </details>
 
 ```text
-          SGS: 20 realizations in 0.01 s, mean 274 ppm, variance 62454 ppm²
-turning bands: 20 realizations in 0.10 s, mean 270 ppm, variance 60288 ppm²
+          SGS: 20 realizations in 0.01 s, mean 295 ppm, variance 64685 ppm²
+turning bands: 20 realizations in 0.08 s, mean 294 ppm, variance 64533 ppm²
 ```
 
 Both follow the same high-grade trends, with the same short-scale scatter:

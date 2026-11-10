@@ -72,7 +72,7 @@ show(scene, "grade", "Blocks at 4 % Zn or more")
 </details>
 
 ```text
-6,196 of 197,904 blocks at 4 % Zn or more
+6,839 of 197,904 blocks at 4 % Zn or more
 ```
 
 ![grade](grade.png)
@@ -98,7 +98,7 @@ show(scene, "lens", "The blocks of lens 2 at 2 % Zn or more")
 
 ```text
 filters: {'grid': {'lens': ['lens 2'], 'ZN_PCT': (2.0, None)}}
-2,616 of 3,809 blocks of lens 2 shown
+2,622 of 3,809 blocks of lens 2 shown
 ```
 
 ![lens](lens.png)

@@ -3,7 +3,7 @@
 
 The coal seam thins to the east. `detrend` fits that drift as a `Trend`. Universal kriging estimates the thickness with
 the drift re-fitted in every neighborhood, using the variogram of the residuals. Inside the drilled lease it agrees with
-ordinary kriging; beyond the last holes it keeps following the drift.
+ordinary kriging; beyond the last holes it extrapolates the local drift.
 """
 
 # %% [hidden]
@@ -101,7 +101,7 @@ save(fig, "maps")
 # %% [markdown]
 # Where holes surround a cell, the local drift and the local mean give nearly the same estimate, and the two
 # cross-validations are equally good. The differences sit at the edges of the lease, where the neighbors lie on one
-# side: universal kriging is thicker in the thick west corner and thinner in the thin northeast.
+# side: universal kriging is thicker on the thick western edge and thinner at the thin eastern tip.
 #
 # ## Beyond the data
 #
@@ -133,7 +133,8 @@ ax.legend(ncols=2)
 save(fig, "profile")
 
 # %% [markdown]
-# Past the last hole ordinary kriging levels off at the mean of its neighbors, about 1.2 m, while universal kriging
-# carries the thinning on, down to 0.59 m at 36 km against 0.29 m for the trend. Whether that is right is a geological
-# call. Universal kriging fits the local drift from the neighbors, so it needs a wider search than ordinary kriging:
-# with a few one-sided samples the drift is poorly determined and its extrapolation erratic.
+# Past the last hole ordinary kriging levels off near the mean of its neighbors, about 0.9 m, while universal kriging
+# carries the thinning on much faster than the trend, down to an impossible -3.04 m at 36 km against 0.80 m for the
+# trend. Whether the seam keeps thinning is a geological call; a negative thickness is not. Universal kriging fits the
+# local drift from the neighbors, so it needs a wider search than ordinary kriging: with a few one-sided samples the
+# drift is poorly determined and its extrapolation erratic.

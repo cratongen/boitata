@@ -99,9 +99,9 @@ save(fig, "grade-tonnage")
 
 
 # %% [markdown]
-# The model shrinks the point variance of 64 054 to 46 822 for 10 m blocks, below the true 50 729, so it pulls the rich
-# tail in too far: above 500 ppm it keeps 16.5% of the blocks against a true 17.1%, above 800 ppm 2.4% against 2.8%. The
-# point curves run a few percent high, since the declustered samples still overstate the rich grades.
+# The model shrinks the point variance of 57 756 to 37 266 for 10 m blocks, below the true 45 726, so it pulls the rich
+# tail in too far: above 500 ppm it keeps 13.2% of the blocks against a true 15.6%, above 800 ppm 1.6% against 1.9%. The
+# point curves already run low above 500 ppm, since the declustered samples understate the rich grades.
 # [Uniform conditioning](../../09-recoverable-resources/02-uniform-conditioning/README.md) and
 # [MIK localization](../../09-recoverable-resources/03-mik-localization/README.md) carry block support down to panels;
 # [simulation at block support](../../08-stochastic-simulation/03-simulation-at-block-support/README.md) reaches it by

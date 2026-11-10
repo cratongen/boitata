@@ -109,9 +109,10 @@ print(
 )
 
 # %% [markdown]
-# The realizations reproduce both declustered histograms and the correlation, and miss the variograms. The factors
-# came from omnidirectional models, so the realizations are nearly isotropic and smoother than the data, which are
-# more continuous down the holes than across them. The next step would be directional factor variograms.
+# The realizations reproduce both declustered histograms and, within the scatter of the data, the variograms. The weak
+# correlation comes out slightly stronger, -0.11 to -0.06 against -0.05 in the data. The factors came from
+# omnidirectional models, so the realizations are nearly isotropic; the data show no clear anisotropy down the holes
+# or across them, so directional factor variograms would add little here.
 
 # %%
 fig, axes = plt.subplots(1, 4, figsize=(15, 3.6), layout="constrained")

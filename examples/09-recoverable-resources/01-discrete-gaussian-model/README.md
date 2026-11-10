@@ -38,12 +38,12 @@ print(gaussian)
 </details>
 
 ```text
-Variogram  sill 0.8982, 1 structure
+Variogram  sill 0.9739, 1 structure
   rotation  azimuth 170°, dip 0°, rake 0°
-  ratios    semi/major 0.4627, minor/major 1
+  ratios    semi/major 0.4042, minor/major 1
   structure    sill  major   semi  minor
-  nugget     0.1314
-  spherical  0.7668  103.1  47.68  103.1
+  nugget     0.2365
+  spherical  0.7374    115  46.48    115
 ```
 
 `change_of_support` averages the Gaussian correlogram over a 10 × 10 m block and returns the change-of-support
@@ -63,7 +63,7 @@ print(
 </details>
 
 ```text
-r = 0.866; point variance 64054, block 46822, true block 50729
+r = 0.816; point variance 57756, block 37266, true block 45726
 ```
 
 Grade-tonnage curves, model against truth:
@@ -116,16 +116,16 @@ save(fig, "grade-tonnage")
 </details>
 
 ```text
-above 300 ppm: points 42.1% (true 39.3%), blocks 40.9% (true 38.3%)
-above 500 ppm: points 18.2% (true 18.9%), blocks 16.5% (true 17.1%)
-above 800 ppm: points 4.8% (true 4.1%), blocks 2.4% (true 2.8%)
+above 300 ppm: points 40.8% (true 39.3%), blocks 40.2% (true 40.3%)
+above 500 ppm: points 16.3% (true 18.9%), blocks 13.2% (true 15.6%)
+above 800 ppm: points 3.8% (true 4.1%), blocks 1.6% (true 1.9%)
 ```
 
 ![grade-tonnage](grade-tonnage.png)
 
-The model shrinks the point variance of 64 054 to 46 822 for 10 m blocks, below the true 50 729, so it pulls the rich
-tail in too far: above 500 ppm it keeps 16.5% of the blocks against a true 17.1%, above 800 ppm 2.4% against 2.8%. The
-point curves run a few percent high, since the declustered samples still overstate the rich grades.
+The model shrinks the point variance of 57 756 to 37 266 for 10 m blocks, below the true 45 726, so it pulls the rich
+tail in too far: above 500 ppm it keeps 13.2% of the blocks against a true 15.6%, above 800 ppm 1.6% against 1.9%. The
+point curves already run low above 500 ppm, since the declustered samples understate the rich grades.
 [Uniform conditioning](../../09-recoverable-resources/02-uniform-conditioning/README.md) and
 [MIK localization](../../09-recoverable-resources/03-mik-localization/README.md) carry block support down to panels;
 [simulation at block support](../../08-stochastic-simulation/03-simulation-at-block-support/README.md) reaches it by

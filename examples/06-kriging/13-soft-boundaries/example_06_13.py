@@ -62,7 +62,7 @@ ax.set(
 save(fig, "contact")
 
 # %% [markdown]
-# `LIM` is flat up to the contact. `SAP` loses grade toward it, from 1.75 % Ni 6 to 7 m below to 1.30 % in the last
+# `LIM` is flat up to the contact. `SAP` loses grade toward it, from 1.79 % Ni 6 to 7 m below to 1.35 % in the last
 # meter, and the step at the contact itself is small: the boundary is gradational on the saprolite side.
 #
 # One normal-score variogram serves both horizons: each is scored on its own, then the scores are pooled. The nugget and
@@ -82,9 +82,9 @@ print(model)
 
 # %% [markdown]
 # The holes on the 50 m mesh do the estimating; the 25 m infill holes are held out to check it. Three rules share one
-# search, flattened ten to one, near the seven to one of the variogram. The soft distance is measured in that ellipsoid,
-# so 50 reaches 50 m across and 5 m up or down, most of the transition. The one-way rule lets `SAP` draw on `LIM` but
-# not the other way round.
+# search, flattened ten to one, flatter than the three to one of the variogram. The soft distance is measured in that
+# ellipsoid, so 50 reaches 50 m across and 5 m up or down, most of the transition. The one-way rule lets `SAP` draw on
+# `LIM` but not the other way round.
 
 # %%
 collars = data["collars"]
@@ -171,8 +171,8 @@ axes[1].legend(loc="upper right")
 save(fig, "profiles")
 
 # %% [markdown]
-# In the last meter of `SAP` the hard boundary kriges 1.52 % Ni against 1.33 % held out: it sees only saprolite, richer
-# deeper down. Letting `SAP` draw on `LIM` brings it to 1.35 % and follows the gradient. Opened both ways, the boundary
-# also lifts the first meter of `LIM` from 1.07 % to 1.25 %, where the held-out samples stay at 1.08 %. SGS agrees: 1.60
-# % hard and 1.24 % one way in the last meter of `SAP`, and 1.32 % in the first meter of `LIM` when soft both ways. The
+# In the last meter of `SAP` the hard boundary kriges 1.57 % Ni against 1.35 % held out: it sees only saprolite, richer
+# deeper down. Letting `SAP` draw on `LIM` brings it to 1.47 %, closer to the gradient. Opened both ways, the boundary
+# also lifts the first meter of `LIM` from 1.14 % to 1.26 %, where the held-out samples stay at 1.14 %. SGS agrees: 1.68
+# % hard and 1.41 % one way in the last meter of `SAP`, and 1.28 % in the first meter of `LIM` when soft both ways. The
 # contact profile says which way to open a boundary; here only the saprolite side is gradational.

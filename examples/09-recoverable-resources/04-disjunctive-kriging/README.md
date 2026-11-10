@@ -37,12 +37,12 @@ print(gaussian)
 </details>
 
 ```text
-Variogram  sill 0.8982, 1 structure
+Variogram  sill 0.9739, 1 structure
   rotation  azimuth 170°, dip 0°, rake 0°
-  ratios    semi/major 0.4627, minor/major 1
+  ratios    semi/major 0.4042, minor/major 1
   structure    sill  major   semi  minor
-  nugget     0.1314
-  spherical  0.7668  103.1  47.68  103.1
+  nugget     0.2365
+  spherical  0.7374    115  46.48    115
 ```
 
 `predict_tonnage` gives P(V > cutoff) on a 5 m grid. Binned against the truth, a calibrated estimate would sit on the
@@ -100,23 +100,23 @@ save(fig, "disjunctive")
 </details>
 
 ```text
-mean predicted P(V > 500) 0.188, true proportion 0.187
-bin 0.0–0.1: 1675 nodes, predicted 0.02, observed 0.01
-bin 0.1–0.2: 426 nodes, predicted 0.15, observed 0.10
-bin 0.2–0.3: 284 nodes, predicted 0.25, observed 0.24
-bin 0.3–0.4: 186 nodes, predicted 0.35, observed 0.37
-bin 0.4–0.5: 147 nodes, predicted 0.45, observed 0.44
-bin 0.5–0.6: 106 nodes, predicted 0.54, observed 0.57
-bin 0.6–0.7: 90 nodes, predicted 0.65, observed 0.74
-bin 0.7–0.8: 79 nodes, predicted 0.75, observed 0.91
-bin 0.8–0.9: 56 nodes, predicted 0.85, observed 0.95
-bin 0.9–1.0: 71 nodes, predicted 0.98, observed 1.00
+mean predicted P(V > 500) 0.175, true proportion 0.194
+bin 0.0–0.1: 1679 nodes, predicted 0.03, observed 0.03
+bin 0.1–0.2: 525 nodes, predicted 0.15, observed 0.12
+bin 0.2–0.3: 294 nodes, predicted 0.25, observed 0.28
+bin 0.3–0.4: 155 nodes, predicted 0.34, observed 0.36
+bin 0.4–0.5: 128 nodes, predicted 0.45, observed 0.54
+bin 0.5–0.6: 110 nodes, predicted 0.55, observed 0.65
+bin 0.6–0.7: 73 nodes, predicted 0.65, observed 0.79
+bin 0.7–0.8: 71 nodes, predicted 0.75, observed 0.96
+bin 0.8–0.9: 43 nodes, predicted 0.85, observed 0.93
+bin 0.9–1.0: 42 nodes, predicted 0.97, observed 1.00
 ```
 
 ![disjunctive](disjunctive.png)
 
-On average the estimate says 18.8% of the nodes exceed 500 ppm; 18.7% do. The error sits in the low bins, which hold
-most nodes: where it predicts 0.1 to 0.4, you observe half to two thirds of that. From 0.5 to 0.9 the error reverses,
-and more nodes exceed the cutoff than it predicts.
+On average the estimate says 17.5% of the nodes exceed 500 ppm; 19.4% do. The low bins, which hold most nodes, sit
+close to the diagonal: where it predicts 0.1 to 0.4, you observe within 0.03 of that. From 0.4 to 0.9 more nodes
+exceed the cutoff than it predicts, by up to 0.21.
 
 Full script: [`example_09_04.py`](example_09_04.py)

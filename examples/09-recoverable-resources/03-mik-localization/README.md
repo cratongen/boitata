@@ -44,13 +44,13 @@ print(grade)
 </details>
 
 ```text
-Variogram  sill 78396.3, 2 structures
+Variogram  sill 72199, 2 structures
   rotation  azimuth 170°, dip 0°, rake 0°
-  ratios    semi/major 0.4316, minor/major 1
+  ratios    semi/major 0.4121, minor/major 1
   structure     sill  major   semi  minor
-  nugget     11558.1
-  spherical   8962.1  10.62  4.585  10.62
-  spherical  57876.1     99  42.73     99
+  nugget      3605.9
+  spherical  33465.1   11.3  4.659   11.3
+  spherical  35127.9    115   47.4    115
 ```
 
 The 50 × 50 m panels over the western 250 m hold 25 blocks of 10 m each, ranked by their ordinary block kriging.
@@ -78,9 +78,9 @@ print(f"true blocks: variance {true_smu.var():.0f}")
 </details>
 
 ```text
-kriged: variance 41398, correlation with truth 0.92
-localized: variance 54909, correlation with truth 0.85
-true blocks: variance 50084
+kriged: variance 29140, correlation with truth 0.87
+localized: variance 44139, correlation with truth 0.83
+true blocks: variance 44183
 ```
 
 Grade-tonnage of the three sets of blocks:
@@ -130,17 +130,18 @@ save(fig, "localized-mik")
 </details>
 
 ```text
-above 300 ppm: localized 47.5%, kriged 42.3%, true 38.9%
-above 500 ppm: localized 19.9%, kriged 14.0%, true 16.9%
-above 800 ppm: localized 4.4%, kriged 1.6%, true 2.7%
+above 300 ppm: localized 45.1%, kriged 38.7%, true 40.0%
+above 500 ppm: localized 19.9%, kriged 11.7%, true 15.5%
+above 800 ppm: localized 2.4%, kriged 1.2%, true 1.6%
 ```
 
 ![localized-mik](localized-mik.png)
 
-The localized blocks spread wider than the true ones (variance 54 909 against 50 084), while kriging smooths them to
-41 398. Block by block they follow the truth a little less well than kriging (correlation 0.85 against 0.92). The
+The localized blocks spread as wide as the true ones (variance 44 139 against 44 183), while kriging smooths them to
+29 140. Block by block they follow the truth a little less well than kriging (correlation 0.83 against 0.87). The
 affine correction keeps the shape of each point distribution, so its long upper tail survives the shrinking: at 500
-ppm the localized blocks put 19.9% above cutoff against a true 16.9%, overshooting by as much as kriging falls short.
+ppm the localized blocks put 19.9% above cutoff against a true 15.5%, overshooting by about as much as kriging falls
+short.
 [Uniform conditioning](../../09-recoverable-resources/02-uniform-conditioning/README.md) localizes the same panels
 from a Gaussian model.
 

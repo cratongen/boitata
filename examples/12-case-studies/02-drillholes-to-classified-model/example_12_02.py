@@ -90,7 +90,7 @@ b.set(xlabel="Zn (%)", title="Probability plot")
 save(fig, "statistics")
 
 # %% [markdown]
-# Declustering lowers every lens mean, most in lens 1. Capping the top 1 % of composites at 23.3 % Zn removes 0.8 %
+# Declustering lowers every lens mean, most in lens 3. Capping the top 1 % of composites at 22.0 % Zn removes 0.9 %
 # of the metal, and the probability plot shows no break in the upper tail: leave the grades uncapped.
 
 # %% [markdown]
@@ -98,7 +98,7 @@ save(fig, "statistics")
 #
 # Lens 1 has the most composites. A thin lens leaves few pairs across it, so the variogram is omnidirectional;
 # kriging uses the variogram of the grades, simulation that of the declustered normal scores, rescaled to a unit
-# sill. Both are fitted up to 60 m, just past the 45 m where γ first reaches its plateau: the longer lags hold three
+# sill. Both are fitted up to 60 m, just past the 35 m where γ first reaches its plateau: the longer lags hold three
 # to four times as many pairs, so with the fit weighted by pair count their scatter about the plateau would set the
 # model and stretch the range to the end of the lags.
 
@@ -192,7 +192,7 @@ sure = np.mean(summary.probability_above[:, 0] > 0.9)
 print(f"mean {summary.mean.mean():.2f} % Zn; blocks above 5 % in more than 90 % of realizations: {sure:.0%}")
 
 # %% [markdown]
-# In eight realizations out of ten, between 36 and 46 % of the parent blocks exceed 5 % Zn, yet only 1 % of them do
+# In eight realizations out of ten, between 42 and 49 % of the parent blocks exceed 5 % Zn, yet only 5 % of them do
 # so in more than 90 % of the realizations: at this drill spacing few single blocks are certain ore, although the
 # share of ore across the lens is well known.
 #
@@ -237,8 +237,9 @@ fig.legend(*axes[0].get_legend_handles_labels(), loc="outside lower center", nco
 save(fig, "swath")
 
 # %% [markdown]
-# In lens 1 the kriged mean lies 3 % below the nearest-neighbor model and 7 % below the declustered composites; in
-# lenses 2 and 3 it is 2 and 6 % below the declustered composites but 1 and 4 % above nearest neighbor. The two references disagree with each other as much as with the model: nearest neighbor spreads each
+# In lens 1 the kriged mean lies 4 % below the nearest-neighbor model and 1 % above the declustered composites; in
+# lens 2 it matches the declustered composites and lies 2 % above nearest neighbor, and in lens 3 it is 6 and 4 %
+# above them. The two references disagree with each other as much as with the model: nearest neighbor spreads each
 # edge composite over the blocks around it, and cell declustering depends on the cell size it settles on. Along
 # northing and elevation, kriged blocks and nearest neighbor follow the same course, and the composites swing
 # around both, as raw data do.
@@ -246,8 +247,8 @@ save(fig, "swath")
 # ## Classification
 #
 # Measured blocks come from the first pass with a slope of regression of at least 0.6; indicated, from the first
-# two passes with a slope of 0.3; the rest is inferred. With a nugget of 45 % of the sill and a 56 m range, only
-# blocks close to several holes qualify as measured.
+# two passes with a slope of 0.3; the rest is inferred. With a nugget of 31 % of the sill and an 82 m range, the
+# first pass reaches nearly every block, and most of them qualify as measured.
 
 # %%
 rules = [
@@ -304,9 +305,9 @@ for groups in (block_lens, classes):
         print(f"{category:10} ≥ {cutoff:1.0f} % Zn{tonnes / 1e3:8.0f}{grade:7.2f}{metal / 1e5:8.1f}")
 
 # %% [markdown]
-# The three lenses hold 22.3 Mt at 5.69 % Zn, 1.27 Mt of zinc, of which 11.9 Mt at 7.50 % lie above 5 % Zn. Lens 1
-# carries 38 % of the metal. Measured blocks, 8.9 Mt at 5.80 % Zn, gather around the holes; inferred ones fill the
-# edges of the lenses and the gaps between holes.
+# The three lenses hold 22.7 Mt at 6.00 % Zn, 1.36 Mt of zinc, of which 12.7 Mt at 7.75 % lie above 5 % Zn. Lens 1
+# carries 45 % of the metal. Measured blocks, 20.9 Mt at 6.00 % Zn, cover nearly all of each lens; indicated and
+# inferred ones, 1.8 Mt together, sit at the edges beyond the last holes.
 #
 # The model, sub-blocks, lens names, grades, classes and all, goes to Parquet and back unchanged.
 

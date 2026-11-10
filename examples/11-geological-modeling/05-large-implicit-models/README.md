@@ -32,8 +32,8 @@ for length, c in composites.items():
 </details>
 
 ```text
-  12 m:  3,332 composites,   530 at or above 60 % Fe
-   2 m: 19,542 composites, 4,436 at or above 60 % Fe
+  12 m:  3,304 composites,   528 at or above 60 % Fe
+   2 m: 19,367 composites, 4,505 at or above 60 % Fe
 ```
 
 `patch` picks the solver. `patch=0` solves one dense system; the default does so up to 2000 samples, and above
@@ -78,13 +78,13 @@ print(f"dense and patches put {same.mean():.2%} of the blocks on the same side")
 </details>
 
 ```text
-  Dense, 12 m:         dense,  5.14 s, 100.0% of composites on their side, 50.8 Mm3, covers 56% of the solid, 33% outside it
-Patches, 12 m:   169 patches,  0.02 s, 100.0% of composites on their side, 50.8 Mm3, covers 56% of the solid, 33% outside it
- Patches, 2 m: 1,219 patches,  0.14 s, 100.0% of composites on their side, 71.3 Mm3, covers 63% of the solid, 46% outside it
-dense and patches put 99.93% of the blocks on the same side
+  Dense, 12 m:         dense,  6.35 s, 100.0% of composites on their side, 47.1 Mm3, covers 50% of the solid, 32% outside it
+Patches, 12 m:   162 patches,  0.03 s, 100.0% of composites on their side, 47.2 Mm3, covers 50% of the solid, 32% outside it
+ Patches, 2 m: 1,226 patches,  0.19 s, 100.0% of composites on their side, 66.0 Mm3, covers 61% of the solid, 41% outside it
+dense and patches put 99.95% of the blocks on the same side
 ```
 
-On the 12 m composites the two solvers give the same volume and put all but one block in a thousand on the same
+On the 12 m composites the two solvers give the same volume and put all but one block in two thousand on the same
 side, the dense one in seconds and the patches in hundredths of a second. Both honor every code. Six times as many
 composites cost the patches a fraction of a second more, and the shell grows by two fifths. On the section of grade
 shells, at true scale, with the trace of the solid in black and topography as a thin line:
@@ -147,9 +147,9 @@ for patch in (1600, 400, 100):
 </details>
 
 ```text
-patch=1600:   232 patches,  7.27 s, 100.00% of the blocks on the side patch=1600 puts them
-patch=400 : 1,219 patches,  0.15 s, 99.05% of the blocks on the side patch=1600 puts them
-patch=100 : 3,746 patches,  0.05 s, 98.59% of the blocks on the side patch=1600 puts them
+patch=1600:   232 patches,  7.67 s, 100.00% of the blocks on the side patch=1600 puts them
+patch=400 : 1,226 patches,  0.21 s, 99.62% of the blocks on the side patch=1600 puts them
+patch=100 : 3,872 patches,  0.07 s, 98.53% of the blocks on the side patch=1600 puts them
 ```
 
 The default of 400 stays within 1 % of the blocks of `patch=1600` at a small fraction of its time.

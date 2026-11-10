@@ -57,8 +57,8 @@ save(fig, "cross_validation")
 
 
 # %% [markdown]
-# The slope is close to 1 and the mean error small against an RMSE of about 154. The accuracy curve runs above the
-# diagonal and error²/variance is 0.7: the kriging variance is too large for these errors, so its intervals are too
+# The slope is close to 1 and the mean error small against an RMSE of about 166. The accuracy curve runs above the
+# diagonal and error²/variance is 0.75: the kriging variance is too large for these errors, so its intervals are too
 # wide. It also depends on the data layout alone and ignores the local grade, and the Gaussian interval ignores the
 # skew of `V`. Indicator kriging builds each sample's distribution from indicators at several thresholds instead. Its
 # cross-validation gives the probability of each actual value in its own distribution, and the same plot reads it:
@@ -86,7 +86,7 @@ save(fig, "indicator_accuracy")
 # fraction of its tonnage at the lowest cutoff, so declustered samples and 10 × 10 m blocks share one axis. Kriged
 # blocks against true blocks (block averages of the exhaustive grid) and against the samples show the smoothing:
 # kriging puts too much tonnage above low cutoffs and too little above high ones, at a lower grade than the true
-# blocks up to 300 ppm. The true blocks sit between the samples and the kriged blocks: averaging over 10 × 10 m
+# blocks up to about 700 ppm. The true blocks sit between the samples and the kriged blocks: averaging over 10 × 10 m
 # narrows the distribution, and kriging narrows it further.
 
 # %%

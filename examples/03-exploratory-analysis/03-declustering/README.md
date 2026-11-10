@@ -60,8 +60,8 @@ save(fig, "cell_sizes")
 </details>
 
 ```text
-cell size 800 m, declustered mean 1.75 m
-scanned mean at that size 1.75 m
+cell size 800 m, declustered mean 1.80 m
+scanned mean at that size 1.80 m
 ```
 
 ![cell_sizes](cell_sizes.png)
@@ -97,7 +97,7 @@ save(fig, "weights")
 </details>
 
 ```text
-polygonal declustered mean 1.71 m
+polygonal declustered mean 1.74 m
 ```
 
 ![weights](weights.png)

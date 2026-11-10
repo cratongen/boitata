@@ -82,10 +82,10 @@ for name, s in searches.items():
     )
 
 # %% [markdown]
-# Unrestricted, the halo blocks are overestimated by 6 ppm on average. Dropping the rich samples beyond 20 m takes a
-# third of that off, and clamp lands between the two, as it must: a far rich sample enters at 600 ppm instead of at its
-# grade or not at all. The ellipse, which lets rich samples reach twice as far along the continuity, does almost as well
-# as the circle. The restricted passes correct as much as the single restricted search.
+# Unrestricted, the halo blocks are overestimated by 12 ppm on average. Dropping the rich samples beyond 20 m takes four
+# fifths of that off, and clamp lands between the two, as it must: a far rich sample enters at 600 ppm instead of at its
+# grade or not at all. The ellipse, which lets rich samples reach twice as far along the continuity, takes off about
+# half. The restricted passes correct nearly as much as the single restricted search.
 #
 # ## Metal above cutoff
 #
@@ -114,11 +114,11 @@ save(fig, "modes")
 
 # %% [markdown]
 # At low cutoffs the unrestricted estimate puts a little too much metal, and dropping brings it closest to the truth.
-# From 400 ppm up every estimate falls about a fifth short: that is the smoothing of kriging, which no restriction
-# cures. Above 650 ppm the restriction even adds metal. Inside dense clusters of rich samples, ordinary kriging gives
-# the screened far ones small negative weights ([search](../../06-kriging/06-search/README.md)). Dropping a negative
-# weight on a high value raises the estimate, and clamping, which swaps it for a negative weight on the lower threshold,
-# raises it too.
+# From 300 ppm up every estimate falls short, more so as the cutoff rises: that is the smoothing of kriging, which no
+# restriction cures. Above 700 ppm the restrictions take less metal off. Inside dense clusters of rich samples,
+# ordinary kriging gives the screened far ones small negative weights ([search](../../06-kriging/06-search/README.md)).
+# Dropping a negative weight on a high value raises the estimate, and clamping, which swaps it for a negative weight on
+# the lower threshold, raises it too.
 #
 # The cross-validation mean error follows little of this: the samples sit in the clusters, where the restriction acts
 # through those negative weights, and not in the halos. Judge a restriction against the truth, or a simulated one.

@@ -31,11 +31,11 @@ print(f"{len(data)} sulphide samples, density measured in {seen.sum()}")
 </details>
 
 ```text
-density missing in 94% of 20095 samples
-3325 sulphide samples, density measured in 1221
+density missing in 94% of 20215 samples
+3317 sulphide samples, density measured in 1217
 ```
 
-The spatial model is the variogram of the density normal scores, on 2 m lags: a small nugget and a range of about 14
+The spatial model is the variogram of the density normal scores, on 2 m lags: a small nugget and a range of about 19
 m, shorter than the spacing between holes, so most of the information comes from the samples above and below in the
 same hole. The imputer rescales its sill to one.
 
@@ -55,7 +55,7 @@ save(fig, "variogram")
 </details>
 
 ```text
-nugget 0.11, spherical sill 0.85, range 14.0 m
+nugget 0.17, spherical sill 0.77, range 19.0 m
 ```
 
 ![variogram](variogram.png)
@@ -95,16 +95,16 @@ for test, hidden in tests.items():
 
 ```text
 hidden              imputer       one draw   mean    sd
-every other hole    same sample      0.172  0.073  0.45
-every other hole    spatial          0.178  0.074  0.46
-every other hole    truth                          0.43
-every other sample  same sample      0.148  0.071  0.47
-every other sample  spatial          0.129  0.078  0.47
-every other sample  truth                          0.46
+every other hole    same sample      0.178  0.084  0.52
+every other hole    spatial          0.172  0.081  0.51
+every other hole    truth                          0.50
+every other sample  same sample      0.191  0.083  0.50
+every other sample  spatial          0.144  0.091  0.50
+every other sample  truth                          0.48
 ```
 
 Across holes the neighbors add almost nothing, since the hidden holes lie beyond the range of the variogram. Within
-holes, one spatial draw errs by 0.13 t/m³ against 0.15 from the same sample alone, and both keep the spread of the
+holes, one spatial draw errs by 0.14 t/m³ against 0.19 from the same sample alone, and both keep the spread of the
 truth. Along one hole, the spatial draws follow the level of the measured densities around them.
 
 <details><summary>Python</summary>
@@ -161,9 +161,9 @@ print(f"{'fitted':12}" + "".join(f"{target[j]:7.2f}" for j in (0, 1, 3)))
 </details>
 
 ```text
-same sample    0.94   0.94   0.94
-spatial        0.94   0.95   0.94
-fitted         0.95   0.95   0.94
+same sample    0.93   0.93   0.93
+spatial        0.93   0.94   0.94
+fitted         0.93   0.94   0.93
 ```
 
 Both stay within 0.03 of the fitted correlations. Only the missing entries change, and the imputer returns measured

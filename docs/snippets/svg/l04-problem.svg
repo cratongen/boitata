@@ -1,26 +1,26 @@
 <svg class="bt-svg" viewBox="0 0 640 330" role="img" aria-labelledby="l04-prob-t">
 <title id="l04-prob-t">The estimation problem: an unknown value at a target, surrounded by samples of known value</title>
-<line class="s-muted a-draw" pathLength="1" style="--d:0.30s" x1="365.4" y1="226.1" x2="310.6" y2="179.1" stroke-width="1.2"/>
-<line class="s-muted a-draw" pathLength="1" style="--d:0.42s" x1="356.1" y1="254.1" x2="307.8" y2="181.6" stroke-width="1.2"/>
-<line class="s-muted a-draw" pathLength="1" style="--d:0.54s" x1="384.1" y1="95.2" x2="310.5" y2="160.7" stroke-width="1.2"/>
-<line class="s-muted a-draw" pathLength="1" style="--d:0.66s" x1="412.2" y1="188.7" x2="313.8" y2="172.3" stroke-width="1.2"/>
-<line class="s-muted a-draw" pathLength="1" style="--d:0.78s" x1="337.4" y1="282.2" x2="304.4" y2="183.3" stroke-width="1.2"/>
-<line class="s-muted a-draw" pathLength="1" style="--d:0.90s" x1="402.8" y1="235.4" x2="311.8" y2="177.5" stroke-width="1.2"/>
-<line class="s-muted a-draw" pathLength="1" style="--d:1.02s" x1="421.5" y1="235.4" x2="312.3" y2="176.6" stroke-width="1.2"/>
-<circle class="f-night" cx="365.4" cy="226.1" r="6"/>
-<text x="355.4" y="231.1" text-anchor="end">412</text>
-<circle class="f-night" cx="356.1" cy="254.1" r="6"/>
-<text x="346.1" y="259.1" text-anchor="end">614</text>
-<circle class="f-night" cx="384.1" cy="95.2" r="6"/>
-<text x="394.1" y="100.2" text-anchor="start">248</text>
-<circle class="f-night" cx="412.2" cy="188.7" r="6"/>
-<text x="422.2" y="193.7" text-anchor="start">714</text>
-<circle class="f-night" cx="337.4" cy="282.2" r="6"/>
-<text x="327.4" y="287.2" text-anchor="end">561</text>
-<circle class="f-night" cx="402.8" cy="235.4" r="6"/>
-<text x="392.8" y="240.4" text-anchor="end">384</text>
-<circle class="f-night" cx="421.5" cy="235.4" r="6"/>
-<text x="431.5" y="240.4" text-anchor="start">542</text>
+<line class="s-muted a-draw" pathLength="1" style="--d:0.30s" x1="383.7" y1="95.6" x2="310.5" y2="160.7" stroke-width="1.2"/>
+<line class="s-muted a-draw" pathLength="1" style="--d:0.42s" x1="179.1" y1="151.4" x2="286.2" y2="167.9" stroke-width="1.2"/>
+<line class="s-muted a-draw" pathLength="1" style="--d:0.54s" x1="383.7" y1="263.0" x2="309.4" y2="180.4" stroke-width="1.2"/>
+<line class="s-muted a-draw" pathLength="1" style="--d:0.66s" x1="253.5" y1="49.1" x2="295.0" y2="156.9" stroke-width="1.2"/>
+<line class="s-muted a-draw" pathLength="1" style="--d:0.78s" x1="393.0" y1="272.3" x2="309.4" y2="180.4" stroke-width="1.2"/>
+<line class="s-muted a-draw" pathLength="1" style="--d:0.90s" x1="188.4" y1="67.7" x2="289.7" y2="160.5" stroke-width="1.2"/>
+<line class="s-muted a-draw" pathLength="1" style="--d:1.02s" x1="197.7" y1="281.6" x2="290.5" y2="180.3" stroke-width="1.2"/>
+<circle class="f-night" cx="383.7" cy="95.6" r="6"/>
+<text x="393.7" y="100.6" text-anchor="start">300</text>
+<circle class="f-night" cx="179.1" cy="151.4" r="6"/>
+<text x="169.1" y="156.4" text-anchor="end">550</text>
+<circle class="f-night" cx="383.7" cy="263.0" r="6"/>
+<text x="373.7" y="268.0" text-anchor="end">455</text>
+<circle class="f-night" cx="253.5" cy="49.1" r="6"/>
+<text x="243.5" y="54.1" text-anchor="end">996</text>
+<circle class="f-night" cx="393.0" cy="272.3" r="6"/>
+<text x="403.0" y="277.3" text-anchor="start">740</text>
+<circle class="f-night" cx="188.4" cy="67.7" r="6"/>
+<text x="178.4" y="72.7" text-anchor="end">849</text>
+<circle class="f-night" cx="197.7" cy="281.6" r="6"/>
+<text x="187.7" y="286.6" text-anchor="end">730</text>
 <circle class="f-ember-soft s-ember a-pulse" cx="300" cy="170" r="14" stroke-width="2"/>
 <text x="295" y="175">?</text>
 <text class="math" x="470" y="60">z* = λ₁z₁ + … + λₙzₙ</text>

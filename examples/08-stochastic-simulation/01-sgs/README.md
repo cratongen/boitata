@@ -42,10 +42,10 @@ print(gaussian)
 ```text
 Variogram  sill 1, 1 structure
   rotation  azimuth 170°, dip 0°, rake 0°
-  ratios    semi/major 0.4202, minor/major 1
+  ratios    semi/major 0.4785, minor/major 1
   structure    sill  major   semi  minor
-  nugget     0.0801
-  spherical  0.9199  123.4  51.86  123.4
+  nugget     0.3786
+  spherical  0.6214  118.1  56.51  118.1
 ```
 
 SGS normal-scores the data, simulates along a random path and back-transforms. The 50 realizations come out the
@@ -81,10 +81,10 @@ print(
 </details>
 
 ```text
-realization means 260-297, true 280
-realization variance 61057, true 65444
-area above 500 ppm: P10 17.3%, P90 19.2%, true 18.7%
-median cv 0.58; nodes within ±50 % at 90 % confidence: 19%
+realization means 273-325, true 279
+realization variance 64956, true 64436
+area above 500 ppm: P10 17.7%, P90 20.1%, true 19.4%
+median cv 0.67; nodes within ±50 % at 90 % confidence: 2%
 ```
 
 Each realization looks like the truth; their mean is smooth like kriging, and their spread measures uncertainty.

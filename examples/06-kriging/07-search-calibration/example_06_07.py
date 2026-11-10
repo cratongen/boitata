@@ -74,8 +74,8 @@ for i, n in enumerate(counts):
 # %% [markdown]
 # Every score moves with the truth. More samples raise the slope, and the cross-validation slope follows the true one;
 # the mean predicted slope sits lower. Estimates grow smoother, so the variance ratio falls and fewer blocks clear 500
-# ppm. The true variance ratio sits higher because the blocks of this 260 × 300 m area vary less than the sill implies,
-# and the discrete Gaussian reference puts about 11 % fewer blocks above 500 ppm than the truth. Past 16 to 24 samples
+# ppm. The true variance ratio sits lower because the blocks of this 260 × 300 m area vary more than the sill implies,
+# and the discrete Gaussian reference puts about 22 % fewer blocks above 500 ppm than the truth. Past 16 to 24 samples
 # the slope rises little while the negative weights keep growing; you settle that trade-off.
 
 # %%
@@ -128,8 +128,8 @@ for i in range(table.num_rows):
     )
 
 # %% [markdown]
-# A quarter of the radius reaches a third of the blocks and half reaches 98 %, so their slopes do not count. At the
-# full radius 8 samples reach a mean slope of 0.9 and 12 reach 0.95. The true slopes sit near 1, as in the first table,
+# A quarter of the radius reaches a third of the blocks and half reaches 99 %, so their slopes do not count. At the
+# full radius 8 samples reach a mean slope of 0.9 and 16 reach 0.95. The true slopes sit near 1, as in the first table,
 # where the predicted slope runs low.
 #
 # `calibrate_search` picks one search for every block. A search with `target_slope` (or `target_efficiency`) calibrates
@@ -159,9 +159,9 @@ for target in (0.85, 0.9, 0.95):
 
 # %% [markdown]
 # A higher target takes more samples, raises the true slope and smooths more, as a larger fixed search does. At about
-# the same mean count as a fixed search, the calibrated one smooths a little less for a slightly lower slope. It sends
-# the samples where the drilling is sparse: the dense clusters keep the minimum, the edges and gaps take the most, and a
-# few edge blocks fall short even at `max_samples`.
+# the same mean count as a fixed search, the calibrated one gives about the same slope and smoothing. It sends the
+# samples where the drilling is sparse: the dense clusters keep the minimum, the edges and gaps take the most, and a few
+# edge blocks fall short even at `max_samples`.
 
 # %%
 fig, axes = plt.subplots(1, 3, figsize=(11, 4), layout="constrained")

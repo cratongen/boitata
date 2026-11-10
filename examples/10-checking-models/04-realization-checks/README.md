@@ -64,10 +64,10 @@ for name in ["mean", "std", "P50", "P90"]:
 </details>
 
 ```text
-mean  data    285   realizations    260 to    297
-std   data    253   realizations    238 to    261
-P50   data    234   realizations    191 to    253
-P90   data    676   realizations    602 to    701
+mean  data    282   realizations    273 to    325
+std   data    240   realizations    239 to    278
+P50   data    249   realizations    240 to    281
+P90   data    612   realizations    610 to    721
 ```
 
 The realizations' distributions straddle the declustered data's in grades and in normal scores, except for the step
@@ -130,12 +130,13 @@ print(
 </details>
 
 ```text
-28,900 nodes; correlation data 0.11, realizations 0.04 to 0.20
+28,900 nodes; correlation data -0.05, realizations -0.11 to -0.06
 ```
 
-The realizations reproduce both declustered histograms and the correlation, and miss the variograms. The factors
-came from omnidirectional models, so the realizations are nearly isotropic and smoother than the data, which are
-more continuous down the holes than across them. The next step would be directional factor variograms.
+The realizations reproduce both declustered histograms and, within the scatter of the data, the variograms. The weak
+correlation comes out slightly stronger, -0.11 to -0.06 against -0.05 in the data. The factors came from
+omnidirectional models, so the realizations are nearly isotropic; the data show no clear anisotropy down the holes
+or across them, so directional factor variograms would add little here.
 
 <details><summary>Python</summary>
 

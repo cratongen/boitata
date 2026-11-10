@@ -89,7 +89,7 @@ show(scene, "lenses", "Lens of each composite and sub-block, one color per lens"
 </details>
 
 ```text
-2,818 sub-blocks, 1,489 of 16,070 composites in a lens
+2,818 sub-blocks, 1,466 of 16,002 composites in a lens
 ```
 
 ![lenses](lenses.png)
@@ -118,7 +118,7 @@ show(scene, "holes", "Zn assays down a fence of holes, as tubes")
 </details>
 
 ```text
-21 of 289 holes, 1,429 intervals
+17 of 289 holes, 1,146 intervals
 ```
 
 ![holes](holes.png)

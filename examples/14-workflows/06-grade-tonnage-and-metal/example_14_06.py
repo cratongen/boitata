@@ -120,9 +120,9 @@ for cutoff in (0, 100, 200, 300, 400, 425, 600):
         )
 
 # %% [markdown]
-# Read the kriging rows against the truth. At 100 and 200 ppm kriging reports 4.5 % and 8.8 % too many tonnes at a
-# grade 2.3 % and 5.2 % too low; the metal is off by 2.1 % and 3.1 %, because the two errors partly cancel.
-# From 425 ppm up kriging reports too few tonnes (−1.6 % at 425, −17.9 % at 600). Figure 1 shows why.
+# Read the kriging rows against the truth. At 100 and 200 ppm kriging reports 17.7 % and 16.5 % too many tonnes at a
+# grade 10.6 % and 11.7 % too low; the metal is off by 5.2 % and 2.9 %, because the two errors partly cancel.
+# From 300 ppm up kriging reports too few tonnes (−5.4 % at 300, −34.6 % at 600). Figure 1 shows why.
 #
 # <figure class="bt-figure">
 # --8<-- "svg/w2-smoothing-cutoff.svg"
@@ -171,14 +171,14 @@ for key, unit, scale in (("tonnage", "kt", 1e3), ("mean_grade", "ppm", 1), ("met
     )
 
 # %% [markdown]
-# Switching to kriging removes 226.8 kt (−15.1 %), 2.8 ppm of grade (−0.7 %) and 96.9 t of metal (−15.7 %).
-# Kriging's 521.4 t is still 3.1 % above the true 505.9 t; inverse distance was 22.2 % above it. At cutoff 0, where
-# no block is selected out, inverse distance holds 16.4 % more metal than the truth, against 1.6 % for
+# Switching to kriging removes 110.7 kt (−7.4 %), 17.4 ppm of grade (−4.5 %) and 67.3 t of metal (−11.5 %).
+# Kriging's 517.6 t is still 2.9 % above the true 502.9 t; inverse distance was 16.3 % above it. At cutoff 0, where
+# no block is selected out, inverse distance holds 12.9 % more metal than the truth, against 2.8 % for
 # kriging: most of its excess is the clustering bias of the previous tutorial.
 #
 # !!! pitfall "Pitfall: quoting only the tonnage change"
-#     "Kriging loses 15.1 % of the tonnes" is not the metal change, which is 15.7 % here. Tonnage alone can
-#     get the sign wrong: at 400 ppm kriging reports 0.5 % more tonnes than the truth but 6.1 % less metal.
+#     "Kriging loses 7.4 % of the tonnes" is not the metal change, which is 11.5 % here. Tonnage alone can
+#     get the sign wrong: at 400 ppm inverse distance reports 2.0 % more tonnes than the truth but 1.7 % less metal.
 #     Report tonnes, grade and metal together, each in absolute and relative terms.
 #
 # !!! check "Check before you move on"
@@ -202,14 +202,14 @@ for name, label in labels.items():
     )
 
 # %% [markdown]
-# All three models balance: for kriging, 598.0 t in the whole model, 521.4 t of it in the 472 blocks above
+# All three models balance: for kriging, 605.2 t in the whole model, 517.6 t of it in the 515 blocks above
 # 200 ppm. A metal figure that does not balance usually means blocks without a grade (null) were counted in the
 # tonnes, or the density was applied twice.
 #
 # ## The decision
 #
-# Report the kriging: 1 274.4 kt at 409.1 ppm, 521.4 t of metal above 200 ppm. The change from the scoping
-# model is −96.9 t of metal (−15.7 %), which the clustering bias found in [compare two estimates](../../14-workflows/05-compare-two-estimates/README.md)
+# Report the kriging: 1 390.5 kt at 372.2 ppm, 517.6 t of metal above 200 ppm. The change from the scoping
+# model is −67.3 t of metal (−11.5 %), which the clustering bias found in [compare two estimates](../../14-workflows/05-compare-two-estimates/README.md)
 # explains. The remaining smoothing (too many tonnes at too low a grade at this cutoff) is a change-of-support
 # problem: the [discrete Gaussian model](../../09-recoverable-resources/01-discrete-gaussian-model/README.md) and
 # [uniform conditioning](../../09-recoverable-resources/02-uniform-conditioning/README.md) estimate the tonnage a

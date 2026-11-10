@@ -42,15 +42,15 @@ for code in ["CG", "HF", "HC", "IF", "IC", "LAT", "MAF"]:
 </details>
 
 ```text
-9721 composites; mean grade (%) by lithology
+13077 composites; mean grade (%) by lithology
           n      FE    SIO2   AL2O3       P      MN     LOI
-CG      188  58.035   2.593   5.375   0.152   0.325   6.165
-HF      898  66.404   0.909   1.031   0.053   0.321   1.545
-HC     1505  66.186   1.387   0.665   0.035   0.181   0.848
-IF     2285  50.306  23.620   1.219   0.040   0.201   1.526
-IC     3300  40.096  39.835   0.500   0.029   0.115   0.532
-LAT     187  35.060  13.559  17.066   0.080   0.156  10.715
-MAF    1358  14.922  42.960  14.716   0.045   0.153   2.939
+CG      188  58.083   2.552   5.382   0.165   0.348   6.112
+HF     1147  66.413   0.913   1.051   0.053   0.316   1.514
+HC     2283  66.189   1.408   0.672   0.035   0.179   0.836
+IF     3648  50.080  23.939   1.228   0.039   0.202   1.524
+IC     4287  39.836  40.199   0.497   0.029   0.116   0.532
+LAT     187  33.213  14.828  16.799   0.081   0.164  10.564
+MAF    1337  14.281  42.734  14.639   0.045   0.149   2.953
 ```
 
 Friable (`HF`) and compact (`HC`) hematite hold 66 % Fe; friable (`IF`) and compact (`IC`) itabirite are banded
@@ -94,12 +94,12 @@ save(fig, "closure")
 </details>
 
 ```text
-HF   oxides total P1  98.5, P50  99.0, P99  99.3 %
-HC   oxides total P1  96.9, P50  97.8, P99  99.0 %
-IF   oxides total P1  98.2, P50  98.6, P99  99.0 %
-IC   oxides total P1  97.6, P50  98.4, P99  99.2 %
-MAF  oxides total P1  57.6, P50  82.9, P99  99.0 %
-ore composites: r(Fe, SiO2) = -1.00, r(Fe, LOI) = 0.35, r(Al2O3, LOI) = 0.54
+HF   oxides total P1  98.3, P50  99.0, P99  99.3 %
+HC   oxides total P1  96.8, P50  97.8, P99  99.0 %
+IF   oxides total P1  98.1, P50  98.7, P99  99.0 %
+IC   oxides total P1  97.5, P50  98.4, P99  99.3 %
+MAF  oxides total P1  54.2, P50  81.3, P99  99.0 %
+ore composites: r(Fe, SiO2) = -1.00, r(Fe, LOI) = 0.29, r(Al2O3, LOI) = 0.50
 ```
 
 ![closure](closure.png)
@@ -136,7 +136,7 @@ print(f"{len(blocks)} blocks: " + ", ".join(f"{n} {np.sum(block_domain == n)}" f
 </details>
 
 ```text
-396 blocks: hematite 231, friable itabirite 101, compact itabirite 64
+396 blocks: hematite 236, friable itabirite 110, compact itabirite 50
 ```
 
 The block model carries the lithology at each block center, and at 25 m it often disagrees with the logging: a
@@ -160,9 +160,9 @@ for name, codes in domains.items():
 </details>
 
 ```text
-hematite: 2387 composites in its blocks, 56% logged as such
-friable itabirite: 2017 composites in its blocks, 54% logged as such
-compact itabirite: 3363 composites in its blocks, 68% logged as such
+hematite: 3560 composites in its blocks, 53% logged as such
+friable itabirite: 2994 composites in its blocks, 51% logged as such
+compact itabirite: 4583 composites in its blocks, 59% logged as such
 ```
 
 ## Log-ratios, PPMT and simulation
@@ -210,9 +210,9 @@ for name, codes in domains.items():
 </details>
 
 ```text
-hematite: 210 composites, 1848 nodes, 1094 blastholes
-friable itabirite: 134 composites, 808 nodes, 501 blastholes
-compact itabirite: 66 composites, 512 nodes, 358 blastholes
+hematite: 302 composites, 1888 nodes, 1132 blastholes
+friable itabirite: 187 composites, 880 nodes, 531 blastholes
+compact itabirite: 85 composites, 400 nodes, 290 blastholes
 ```
 
 ## Do the blocks still close?
@@ -250,10 +250,10 @@ print(
 </details>
 
 ```text
-largest departure of a block total from 100 %: 5.7e-14
-smallest simulated part: 0.028 %
-hematite nodes simulated apart: Fe2O3 + SiO2 above 100 % at 32%
-r(Fe, SiO2): composites -1.00, hematite blocks -0.99, nodes simulated apart -0.00
+largest departure of a block total from 100 %: 4.3e-14
+smallest simulated part: 0.030 %
+hematite nodes simulated apart: Fe2O3 + SiO2 above 100 % at 27%
+r(Fe, SiO2): composites -0.95, hematite blocks -0.92, nodes simulated apart -0.03
 ```
 
 Simulated apart, over a quarter of the hematite nodes hold more Fe2O3 and SiO2 than a sample can, and the two grades
@@ -338,31 +338,33 @@ save(fig, "reconciliation")
 ```text
 345 blocks hold blastholes, 6 per block (median)
                    Fe blast  Fe sim Fe drill SiO2 blast SiO2 sim SiO2 drill
-hematite              61.99   57.46    58.73       7.42    13.40      11.85
-friable itabirite     51.04   50.17    52.45      22.84    24.09      21.03
-compact itabirite     45.54   47.58    41.79      31.40    28.09      36.98
-87 composites from 8 holes in the window
-Fe variance: blastholes 99, simulated at the blastholes 142, blasthole means per block 80, simulated blocks 42
-blasthole means per block against the mean of the simulations: r 0.76, slope 1.55
+hematite              62.43   58.39    57.55       6.24    11.18      12.97
+friable itabirite     55.32   51.00    54.99      16.17    22.83      17.42
+compact itabirite     50.69   48.27    52.86      23.71    27.07      18.39
+143 composites from 8 holes in the window
+Fe variance: blastholes 58, simulated at the blastholes 132, blasthole means per block 42, simulated blocks 38
+blasthole means per block against the mean of the simulations: r 0.70, slope 1.03
 ```
 
 ![reconciliation](reconciliation.png)
 
-Per domain the simulation sits near the drilling in the window, not the blastholes: 87 composites from 8 holes,
-against 1953 blastholes. Hematite blocks come out 4.5 % Fe poorer than the blastholes say, compact itabirite blocks
-2.0 % richer; friable itabirite is close. The spreads order as the supports do: 142 at 6 m points, 99 for the
-12 m blastholes, 80 for the mean of about six blastholes per block, 42 for simulated blocks. The mean of six
+In every domain the simulation comes out poorer than the blastholes say: hematite blocks by 4.0 % Fe, friable
+itabirite by 4.3 % and compact itabirite by 2.4 %. Hematite sits near the drilling in the window, 143 composites
+from 8 holes against 1953 blastholes; the itabirites fall below both. The spreads order as the supports do: 132 at
+6 m points, 58 for the 12 m blastholes, 42 for the mean of about six blastholes per block, 38 for simulated blocks. The mean of six
 blastholes still carries their analytical error and short-scale variation, so it varies more than the block
 itself would.
 
-Blocks rank well (r 0.76), but the blasthole means spread 1.55 times as far as the simulated means: with holes
-100 m apart, the model cannot place the 25 m contrasts between hematite and itabirite that grade control sees. Grade
+Blocks rank fairly (r 0.70), and the blasthole means rise one for one with the simulated means (slope 1.03), but
+scatter widely around them: with holes 100 m apart, the model cannot place every 25 m contrast between hematite and
+itabirite that grade control sees. Grade
 control drills blastholes to close that gap.
 
 ## A bench in plan
 
 The middle bench, 672 to 684 m: the mean of the simulated block Fe, with the blastholes on the same color scale.
-The low-grade itabirite band the blastholes trace to the northeast is in the model, wider and less sharp.
+The low-grade itabirite the blastholes trace at the north edge of the bench is in the model, wider and less sharp;
+several lean blocks elsewhere hold richer blastholes.
 
 <details><summary>Python</summary>
 

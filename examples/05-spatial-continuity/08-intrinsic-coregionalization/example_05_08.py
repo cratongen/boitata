@@ -61,9 +61,9 @@ for name, model in [("intrinsic", icm), ("full LMC", lmc)]:
 # %% [markdown]
 # The full linear model of coregionalization of
 # [coregionalization](../../05-spatial-continuity/07-coregionalization/README.md) gives each variable its own mix of the
-# shared structures: Cd puts 83 % of its sill in the short structure, Zn 53 %. The intrinsic model gives both the same
-# 68 %, a compromise, and one correlation, 0.64, at every lag. The total sills and the correlation differ little between
-# the two models, so the curves meet at large lags. At short lags the intrinsic model is too smooth for Cd and too rough
+# shared structures: Cd puts 77 % of its sill in the short structure, Zn 56 %. The intrinsic model gives both the same
+# 74 %, a compromise, and one correlation, 0.71, at every lag. The total sills and the correlation differ little between
+# the two models, so the curves meet at large lags. At short lags the intrinsic model is too rough for Cd and too smooth
 # for Zn:
 
 # %%
@@ -85,8 +85,8 @@ save(fig, "variograms")
 # ## Cokriging with either model
 #
 # Both models go to `Cokriging` the same way. The test kriges Cd at the 100 validation samples by collocated cokriging,
-# with Zn known there, as in [cokriging](../../06-kriging/09-cokriging/README.md). With correlations this close, the
-# simpler model predicts as well:
+# with Zn known there, as in [cokriging](../../06-kriging/09-cokriging/README.md). Even with correlations this close,
+# the full model predicts better, its RMSE about 7 % lower:
 
 # %%
 search = bt.Search(radius=1.5, max_samples=24, min_samples=4)

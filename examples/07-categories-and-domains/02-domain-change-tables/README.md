@@ -77,7 +77,7 @@ print(f"{len(section)} cells; {np.sum(section['rock'] != section['clean'])} chan
 </details>
 
 ```text
-5071 cells; 55 change rock
+5244 cells; 52 change rock
 ```
 
 ## The table
@@ -112,20 +112,17 @@ for a, b, t, g in zip(moved["from"], moved["to"], moved["tonnage"], moved["mean_
 ```text
 rows are the rocks before: True
 columns are the rocks after: True
-unchanged: 98.9% of 16.4 Mt
-zinc in the table 77.34 kt, in the model 77.34 kt
-  OB to HWS   10.1 kt at 0.05 % Zn
-  OB to VCL    6.9 kt at 0.04 % Zn
- HWS to VCL   26.1 kt at 0.19 % Zn
- VCL to HWS   76.1 kt at 0.90 % Zn
- VCL to SUL    6.1 kt at 0.24 % Zn
- VCL to FWV    3.3 kt at 0.13 % Zn
- SUL to HWS   14.1 kt at 1.28 % Zn
- SUL to VCL   40.2 kt at 1.33 % Zn
+unchanged: 99.0% of 17.1 Mt
+zinc in the table 86.02 kt, in the model 86.02 kt
+  OB to HWS    3.5 kt at 0.06 % Zn
+ HWS to VCL  104.2 kt at 0.73 % Zn
+ VCL to HWS   10.0 kt at 0.06 % Zn
+ VCL to SUL    6.6 kt at 1.22 % Zn
+ SUL to VCL   54.7 kt at 3.23 % Zn
 ```
 
-Under 1 % of the tonnage changes rock, at grades far from random: the volcanic cells taken into the sulfides run
-near 1.8 % Zn, while the sulfide specks given to the footwall hold 0.3 %. The matrices show each row as shares of
+About 1 % of the tonnage changes rock, at grades far from random: the volcanic cells taken into the sulfides run
+near 1.2 % Zn, while the sulfide specks given to the volcanics hold 3.2 %. The matrices show each row as shares of
 the rock it starts from, tonnage on the left and zinc on the right. The plot outlines the diagonal and leaves it
 blank, so the grays show only what moves.
 

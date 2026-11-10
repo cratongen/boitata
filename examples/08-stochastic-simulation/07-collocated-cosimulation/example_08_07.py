@@ -85,7 +85,7 @@ save(fig, "maps")
 
 # %% [markdown]
 # The cosimulated Co still reproduces its own histogram and variogram (the [realization checks](../../10-checking-models/04-realization-checks/README.md)), and its correlation
-# with Ni, 0.80 to 0.88 across realizations, brackets the samples' 0.81. Simulated alone, Co keeps little of it.
+# with Ni, 0.76 to 0.86 across realizations, brackets the samples' 0.79. Simulated alone, Co keeps little of it.
 
 # %%
 fig, axes = plt.subplots(1, 3, figsize=(13, 3.8), layout="constrained")
@@ -126,5 +126,5 @@ print(f"co-DSS: correlation of Co and Ni over the nodes {min(r):.2f} to {max(r):
 
 # %% [markdown]
 # The co-DSS realizations follow their Ni realizations as closely as the cosimulated SGS ones: their correlation with
-# Ni brackets the samples' 0.75. The block above silences the warning on nodes DSS draws from the nearest reachable
+# Ni brackets the samples' 0.79. The block above silences the warning on nodes DSS draws from the nearest reachable
 # mean and variance.

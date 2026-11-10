@@ -49,20 +49,20 @@ BlockModel  regular, 78,000 blocks
   crs     local grid
   bounds  x 0.5 to 260.5, y 0.5 to 300.5, z 0 to 1
   column    type     unit  nulls     min     mean      max
-  estimate  float64            0  -1.924    283.1   1447.1
-  variance  float64            0  8299.8  39229.2  72516.1
-BlockModel  masked, 11,361 of 78,000 blocks
+  estimate  float64            0  0.5147    287.2   1368.6
+  variance  float64            0  8835.1  44162.8  73477.1
+BlockModel  masked, 10,155 of 78,000 blocks
   count   260 × 300 × 1
   size    1 × 1 × 1
   origin  0.5, 0.5, 0
   crs     local grid
-  bounds  x 16.5 to 259.5, y 0.5 to 300.5, z 0 to 1
-  column    type     unit  nulls     min     mean     max
-  estimate  float64            0     500    651.2  1447.1
-  variance  float64            0  8914.9  30476.5   56006
+  bounds  x 7.5 to 260.5, y 3.5 to 300.5, z 0 to 1
+  column    type     unit  nulls     min     mean      max
+  estimate  float64            0   500.1    643.4   1368.6
+  variance  float64            0  9107.1  37382.9  57586.8
 ```
 
-The masked model keeps 11361 of the 78000 cells and stores its cell index with the attributes.
+The masked model keeps 10155 of the 78000 cells and stores its cell index with the attributes.
 
 <details><summary>Python</summary>
 
@@ -82,22 +82,22 @@ print("same cells:", np.array_equal(back.index, rich.index), "| crs:", back.crs)
 </details>
 
 ```text
- grid.parquet: 1.04 MB
- rich.parquet: 0.16 MB
+ grid.parquet: 1.03 MB
+ rich.parquet: 0.14 MB
      grid.csv: 4.05 MB
-BlockModel  masked, 11,361 of 78,000 blocks
+BlockModel  masked, 10,155 of 78,000 blocks
   count   260 × 300 × 1
   size    1 × 1 × 1
   origin  0.5, 0.5, 0
   crs     local grid
-  bounds  x 16.5 to 259.5, y 0.5 to 300.5, z 0 to 1
-  column    type     unit  nulls     min     mean     max
-  estimate  float64            0     500    651.2  1447.1
-  variance  float64            0  8914.9  30476.5   56006
+  bounds  x 7.5 to 260.5, y 3.5 to 300.5, z 0 to 1
+  column    type     unit  nulls     min     mean      max
+  estimate  float64            0   500.1    643.4   1368.6
+  variance  float64            0  9107.1  37382.9  57586.8
 same cells: True | crs: local grid
 ```
 
-The full grid takes 1.04 MB in parquet against 4.04 MB as CSV. Polars reads the same file and handles grouping and
+The full grid takes 1.03 MB in parquet against 4.05 MB as CSV. Polars reads the same file and handles grouping and
 summaries. A regular model stores no coordinates: its geometry is implicit and the row number is the cell index,
 x fastest, so a 1 m row of 260 cells is one northing.
 
@@ -126,12 +126,12 @@ shape: (6, 3)
 │ ---           ┆ ---    ┆ ---         │
 │ i64           ┆ f64    ┆ f64         │
 ╞═══════════════╪════════╪═════════════╡
-│ 0             ┆ 371.0  ┆ 0.225       │
-│ 50            ┆ 402.0  ┆ 0.302       │
-│ 100           ┆ 304.0  ┆ 0.134       │
-│ 150           ┆ 266.0  ┆ 0.172       │
-│ 200           ┆ 175.0  ┆ 0.024       │
-│ 250           ┆ 181.0  ┆ 0.017       │
+│ 0             ┆ 204.0  ┆ 0.006       │
+│ 50            ┆ 207.0  ┆ 0.006       │
+│ 100           ┆ 250.0  ┆ 0.062       │
+│ 150           ┆ 338.0  ┆ 0.236       │
+│ 200           ┆ 374.0  ┆ 0.282       │
+│ 250           ┆ 350.0  ┆ 0.189       │
 └───────────────┴────────┴─────────────┘
 ```
 
@@ -157,9 +157,9 @@ shape: (3, 7)
 │ ---  ┆ ---  ┆ --- ┆ ---   ┆ ---  ┆ ---            ┆ ---    │
 │ f64  ┆ f64  ┆ f64 ┆ f64   ┆ f64  ┆ f64            ┆ f64    │
 ╞══════╪══════╪═════╪═══════╪══════╪════════════════╪════════╡
-│ 12.0 ┆ 9.0  ┆ 0.0 ┆ 323.8 ┆ null ┆ 0.0            ┆ null   │
-│ 28.0 ┆ 8.0  ┆ 0.0 ┆ 534.5 ┆ null ┆ 0.0            ┆ null   │
-│ 49.0 ┆ 11.0 ┆ 0.0 ┆ 760.8 ┆ null ┆ 0.0            ┆ null   │
+│ 12.0 ┆ 9.0  ┆ 0.0 ┆ 748.2 ┆ null ┆ 0.0            ┆ null   │
+│ 28.0 ┆ 8.0  ┆ 0.0 ┆ 2.6   ┆ null ┆ 0.0            ┆ null   │
+│ 49.0 ┆ 11.0 ┆ 0.0 ┆ 0.0   ┆ null ┆ 0.0            ┆ null   │
 └──────┴──────┴─────┴───────┴──────┴────────────────┴────────┘
 same estimates: True
 ```
@@ -191,15 +191,15 @@ print(
 
 ```text
 shape: (3, 3)
-┌────────────┬──────────┬──────────┐
-│ correction ┆ p_0      ┆ p_1      │
-│ ---        ┆ ---      ┆ ---      │
-│ f64        ┆ f64      ┆ f64      │
-╞════════════╪══════════╪══════════╡
-│ 1.2490e-16 ┆ 0.063047 ┆ 0.936953 │
-│ 2.3592e-16 ┆ 0.087127 ┆ 0.912873 │
-│ 0.0        ┆ 0.114355 ┆ 0.885645 │
-└────────────┴──────────┴──────────┘
+┌────────────┬─────┬─────┐
+│ correction ┆ p_0 ┆ p_1 │
+│ ---        ┆ --- ┆ --- │
+│ f64        ┆ f64 ┆ f64 │
+╞════════════╪═════╪═════╡
+│ 0.109905   ┆ 0.0 ┆ 1.0 │
+│ 0.049994   ┆ 0.0 ┆ 1.0 │
+│ 0.053672   ┆ 0.0 ┆ 1.0 │
+└────────────┴─────┴─────┘
 same scheme: True | same probabilities: True
 ```
 

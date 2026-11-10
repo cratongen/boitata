@@ -36,7 +36,7 @@ print(f"{len(data)} sulphide samples, density measured in {seen.sum()}")
 
 
 # %% [markdown]
-# The spatial model is the variogram of the density normal scores, on 2 m lags: a small nugget and a range of about 14
+# The spatial model is the variogram of the density normal scores, on 2 m lags: a small nugget and a range of about 19
 # m, shorter than the spacing between holes, so most of the information comes from the samples above and below in the
 # same hole. The imputer rescales its sill to one.
 
@@ -83,7 +83,7 @@ for test, hidden in tests.items():
 
 # %% [markdown]
 # Across holes the neighbors add almost nothing, since the hidden holes lie beyond the range of the variogram. Within
-# holes, one spatial draw errs by 0.13 t/m³ against 0.15 from the same sample alone, and both keep the spread of the
+# holes, one spatial draw errs by 0.14 t/m³ against 0.19 from the same sample alone, and both keep the spread of the
 # truth. Along one hole, the spatial draws follow the level of the measured densities around them.
 
 # %%

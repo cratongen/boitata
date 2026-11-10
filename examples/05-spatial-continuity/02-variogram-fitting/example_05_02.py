@@ -48,13 +48,14 @@ print(single, along, minor.fit(["spherical", "spherical"], weighting=weighting),
 
 
 # %% [markdown]
-# Along the major axis γ climbs to half of the sill within 25 m, then rises slowly to about 105 m: two scales of
-# continuity. One structure (dashed below) splits the difference, overshoots the first lags and puts a fifth of the sill
-# in the nugget. Two nested spherical structures follow both scales and halve the nugget. Across the axis the short
-# structure takes no sill: γ reaches the sill by 25 m, and the data support one structure.
+# Along the major axis γ climbs to three fifths of the sill within 25 m, then rises slowly past the last lag: two scales
+# of continuity. One structure (dashed below) splits the difference, overshoots the first lag and puts two fifths of the
+# sill in the nugget. Two nested spherical structures follow both scales and cut the nugget to a quarter of the sill.
+# Across the axis the nugget fits to zero and a 7 m structure takes its place: γ is past half the sill at the first lag
+# and reaches the sill by 35 m.
 #
 # The structures share one anisotropy. Fitting the minor direction with the nugget and sills fixed at their major-axis
-# values moves only its ranges; the long structure, with two thirds of the sill, sets the minor/major ratio. `rotation`
+# values moves only its ranges; the long structure, with more than half the sill, sets the minor/major ratio. `rotation`
 # is azimuth, dip, rake in degrees; `ratios` are semi-major/major and minor/major ranges.
 
 # %%
@@ -68,7 +69,7 @@ print(model)
 
 
 # %% [markdown]
-# The ellipse on the map is the model range in each direction:
+# The ellipse on the map is the model range in each direction; along the major axis it reaches past the last lag:
 
 # %%
 variance = v.var()
@@ -85,7 +86,7 @@ a_minor = a_major * ratio
 ellipse = a_major * a_minor / np.hypot(a_minor * np.cos(t - direction), a_major * np.sin(t - direction))
 a.plot(t, ellipse, color=HIGHLIGHT, lw=1.4)
 a.text(direction, a_major * 1.05, f"{a_major:.0f} m", color=HIGHLIGHT, fontsize=8)
-a.set_rlim(0, radius[-1])
+a.set_rlim(0, max(radius[-1], 1.15 * a_major))
 a.set_xticks(np.radians([0, 90, 180, 270]), ["E", "N", "W", "S"])
 a.set_rlabel_position(200)
 a.tick_params(labelsize=7)
@@ -126,10 +127,10 @@ print(joint)
 
 
 # %% [markdown]
-# The joint fit puts the major axis at N0°, five degrees off the map's pick, with the same one-third ratio. Its long
+# The joint fit puts the major axis at N2°, three degrees off the map's pick, with about the same 0.4 ratio. Its long
 # range stops at 115 m, the largest lag, where free ranges are capped unless `ranges` bounds them. Spread over all eight
-# directions, it fits the major and minor axes worse than the fits made along them: the dashed curves fall below the
-# short lags on both.
+# directions, it fits the major and minor axes worse than the fits made along them: the dashed curves start from a
+# nugget near zero, run above the major-axis points between 40 and 90 m and level off below the minor-axis points.
 # %%
 fig, ax = plt.subplots(figsize=(6, 3.4), layout="constrained")
 origin = np.zeros((h.size, 3))

@@ -55,7 +55,7 @@ print(
 # The two estimates are close, and block kriging is a little more accurate against the block averages. The larger
 # difference is in the variance: point kriging reports the error of predicting one point, nugget included, while block
 # kriging reports the error of predicting the block mean, a third of it here. The actual mean squared error of the block
-# estimates, 8 269, is below even that, as the model's variance was pessimistic in
+# estimates, 11 326, is below even that, as the model's variance was pessimistic in
 # [ordinary kriging](../../06-kriging/01-ordinary-kriging/README.md) too.
 
 # %%
@@ -111,7 +111,7 @@ ax.legend()
 save(fig, "sizes")
 
 # %% [markdown]
-# The variance of true block values falls with block size, from 55 716 for 5 m blocks to 42 878 for 20 m blocks, and the
+# The variance of true block values falls with block size, from 52 686 for 5 m blocks to 35 753 for 20 m blocks, and the
 # estimates stay below it at every size. Kriging smooths, so selecting blocks on the estimates misclassifies some of
 # them. The gap narrows as the blocks grow, one reason not to estimate blocks much smaller than the data spacing. The
-# model overstates both variances, the true one most for small blocks, but gets their order and trend right.
+# model lands within a few percent of both variances at every size and gets their order and trend right.

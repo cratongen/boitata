@@ -23,7 +23,7 @@ from common import save
 # ## Rock types
 #
 # The topsoil survey's rock types are known at each node of the prediction grid. SIS ([sequential indicator simulation](../../07-categories-and-domains/06-sis/README.md)) draws 10 rock-type realizations from
-# indicator variograms fitted to the samples; Portlandian, with 3 samples, gets a guessed one.
+# indicator variograms fitted to the samples; Portlandian, with 5 samples, gets a guessed one.
 
 # %%
 data = bt.datasets.topsoil_metals()
@@ -94,7 +94,7 @@ for ax, (image, title, label, top) in zip(axes, panels):
 save(fig, "grades-in-rock-types")
 
 # %% [markdown]
-# Within the true rock types, Co drops at each Argovian contact and averages 5.52 ppm on Argovian. Within the SIS rock
+# Within the true rock types, Co drops at each Argovian contact and averages 6.02 ppm on Argovian. Within the SIS rock
 # types the contacts move from one realization to the next, so the lean Argovian Co spreads over its uncertain margin:
-# the true Argovian averages 7.11 ppm. Where SIS is unsure of Argovian (over half of the nodes), the spread of Co across
-# realizations is 3.40 ppm against 2.59 ppm with the domains fixed.
+# the true Argovian averages 7.57 ppm. Where SIS is unsure of Argovian (over half of the nodes), the spread of Co across
+# realizations is 3.11 ppm against 2.54 ppm with the domains fixed.

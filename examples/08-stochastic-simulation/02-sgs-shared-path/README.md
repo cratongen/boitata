@@ -58,7 +58,7 @@ for path in ["shared", "random"]:
 
 ```text
 shared path:  0.12 s for 20 realizations of 78,000 nodes
-random path:  1.73 s for 20 realizations of 78,000 nodes
+random path:  1.67 s for 20 realizations of 78,000 nodes
 ```
 
 `batch` changes memory and speed and leaves the realizations alone: one at a time gives the same grades as all

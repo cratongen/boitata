@@ -73,9 +73,9 @@ print(
 )
 
 # %% [markdown]
-# The kriged map has a standard deviation of 208 ppm against 256 ppm for the truth, and its highest node reaches
-# 1 379 ppm where the truth reaches 1 629 ppm. Above a 500 ppm cutoff, kriging reports 14.7 % of the area and the truth
-# holds 18.7 %. A mine plan built on the kriged map would miss a fifth of the ground above cutoff. The
+# The kriged map has a standard deviation of 181 ppm against 254 ppm for the truth, and its highest node reaches
+# 1 369 ppm where the truth reaches 1 598 ppm. Above a 500 ppm cutoff, kriging reports 13.1 % of the area and the truth
+# holds 19.4 %. A mine plan built on the kriged map would miss a third of the ground above cutoff. The
 # cumulative distributions show the squeeze: kriging has fewer low and fewer high values than the truth.
 
 # %%
@@ -115,7 +115,7 @@ save(fig, "smoothing")
 # ## The normal-score transform
 #
 # SGS works with Gaussian values, whose conditional distribution kriging describes fully by a mean and a variance.
-# Grades are rarely Gaussian: The metal survey `V` is skewed, with 12 samples at 0 ppm. The normal-score transform sorts
+# Grades are rarely Gaussian: The metal survey `V` is skewed, with 11 samples at 0 ppm. The normal-score transform sorts
 # the data, gives each value its cumulative probability and replaces the value with the standard Gaussian score at
 # the same cumulative probability (Figure 3). The back-transform follows the same arrows in reverse, from a score to a
 # value in ppm.
@@ -148,7 +148,7 @@ print(f"largest round-trip error: {np.abs(score.inverse_transform(y) - v).max():
 
 # %% [markdown]
 # The scores have a declustered mean of 0.00 and variance of 0.98, close to the standard Gaussian. A score of 0, the
-# median, maps back to 234 ppm, and the cutoff of 500 ppm sits at a score of 0.88. The round trip returns every sample
+# median, maps back to 249 ppm, and the cutoff of 500 ppm sits at a score of 0.96. The round trip returns every sample
 # unchanged. The spike at the left of the score histogram holds the zeros: tied values share one score, so the 5 % of
 # declustered weight at 0 ppm cannot spread into a Gaussian tail.
 
@@ -167,8 +167,8 @@ save(fig, "normal_scores")
 #     \[ y = G^{-1}\big(F(z)\big), \qquad z = F^{-1}\big(G(y)\big). \]
 #     Both are monotonic, so they keep the order of values: the highest sample gets the highest score.
 #
-# SGS needs the variogram of the scores. Fit it along N170°, the direction of greatest continuity, and across it, then
-# scale it to a sill of 1, the variance of a standard Gaussian:
+# SGS needs the variogram of the scores. Fit it along N170°, close to the direction of greatest continuity, and across
+# it, then scale it to a sill of 1, the variance of a standard Gaussian:
 
 # %%
 azimuth, lag, max_lag = 170.0, 10.0, 120.0
@@ -184,7 +184,7 @@ gaussian = bt.Variogram(
 print(gaussian)
 
 # %% [markdown]
-# The model has a nugget of 0.09 and one spherical structure reaching its sill at 119 m along N170° and at 0.48 of that
+# The model has a nugget of 0.37 and one spherical structure reaching its sill at 121 m along N170° and at 0.48 of that
 # across it.
 #
 # ## Sequential Gaussian simulation, step by step
@@ -231,7 +231,7 @@ print(
 )
 
 # %% [markdown]
-# Each realization has a standard deviation between 238 and 254 ppm, against 208 ppm for kriging and 256 ppm for the
+# Each realization has a standard deviation between 245 and 266 ppm, against 181 ppm for kriging and 254 ppm for the
 # truth. The maps share the texture of the truth: the high-grade trend runs north-northwest, with sharp local contrasts
 # that kriging erases. They differ from each other where samples are sparse.
 
@@ -291,9 +291,9 @@ for name in ["mean", "std", "P90"]:
     )
 
 # %% [markdown]
-# The declustered data have a mean of 285 ppm, and the realization means range from 260 to 287 ppm around it. The
-# realizations' 90th percentiles, 607 to 676 ppm, bracket the data's 676 ppm. Their standard deviations, 258 to
-# 273 ppm, sit just above the data's 255 ppm. The variograms follow the model up to its range along and across N170°,
+# The declustered data have a mean of 282 ppm, and the realization means range from 273 to 309 ppm around it. The
+# realizations' 90th percentiles, 609 to 680 ppm, bracket the data's 612 ppm. Their standard deviations, 245 to
+# 266 ppm, sit just above the data's 240 ppm. The variograms follow the model up to its range along and across N170°,
 # then scatter around the sill. A single 260 × 300 m field cannot settle on the sill, and the band shows how far it
 # wanders.
 
@@ -335,15 +335,15 @@ print(
 )
 
 # %% [markdown]
-# The E-type map is smooth, with a standard deviation of 213 ppm, and the cutoff applied to it gives 15.2 % of the
-# area, the same as kriging. The realizations give a range: between 20.7 % (P10) and 24.5 % (P90) of the area lies
-# above 500 ppm. The true 18.9 % falls just below that range. The realizations reproduce the declustered histogram,
-# whose mean is 285 ppm against 280 ppm for the truth, so they inherit its excess of high values. Simulation measures
-# uncertainty given the data and the model, and it cannot correct a biased histogram.
+# The E-type map is smooth, with a standard deviation of 181 ppm, and the cutoff applied to it gives 13.4 % of the
+# area, close to kriging's 13.1 %. The realizations give a range: between 17.6 % (P10) and 20.0 % (P90) of the area
+# lies above 500 ppm. The true 19.4 % falls inside that range. The realizations reproduce the declustered histogram,
+# whose mean is 282 ppm against 279 ppm for the truth, so they would inherit any excess of high values it had.
+# Simulation measures uncertainty given the data and the model, and it cannot correct a biased histogram.
 #
 # The probability map is the practical output. Its bright areas are high grade in almost every realization, and the
-# outlined true areas above 500 ppm sit mostly inside them. The spread map is highest in the high-grade zone and
-# lowest in the low-grade trough to its east, since skewed grades vary most where they are high.
+# outlined true areas above 500 ppm sit mostly inside them. The spread map is highest in the high-grade zones and
+# lowest in the low-grade ground, such as the southwest corner, since skewed grades vary most where they are high.
 
 # %%
 fig, axes = plt.subplots(1, 3, figsize=(12, 4.2), layout="constrained")

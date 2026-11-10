@@ -24,9 +24,9 @@ PointSet  470 points
   bounds  x 8 to 252, y 8 to 292, z 0 to 0
   column  type     unit  nulls  min   mean     max
   ID      float64            0    1  235.5     470
-  V       float64            0    0  427.7  1547.1
-  U       float64          195  2.5  883.2    8839
-  T       float64            0    1  1.819       2
+  V       float64            0    0  406.7  1445.3
+  U       float64          195    0  692.5  9402.9
+  T       float64            0    1  1.866       2
 ```
 
 `bt.datasets` generates a dataset on the call. The samples load as a `PointSet`: coordinates, plus one column
@@ -68,18 +68,18 @@ save(fig, "samples")
 </details>
 
 ```text
-declustering cell 22.5 m
+declustering cell 20.0 m
               mean    CV   P50   P90   max
-naive          428  0.65   411   795  1547
-declustered    285  0.89   234   676  1547
+naive          407  0.67   376   757  1445
+declustered    282  0.85   249   612  1445
 exhaustive     280  0.91   221   634  1630
 ```
 
 ![samples](samples.png)
 
-Declustering takes the mean from 428 to 285 ppm, 5 ppm above the exhaustive mean, and brings the median and P90
+Declustering takes the mean from 407 to 282 ppm, 2 ppm above the exhaustive mean, and brings the median and P90
 close to the true ones. The histogram is skewed to the right, with a peak of near-zero values and a thin tail up to
-1547 ppm.
+1445 ppm.
 
 ## Top cut
 
@@ -100,7 +100,7 @@ print(
 </details>
 
 ```text
-cap 1004 ppm: 12 samples cut, 0.4% of the metal removed
+cap 995 ppm: 12 samples cut, 0.6% of the metal removed
 ```
 
 The cap trims less than 1 % of the metal, since V has no erratic tail. The later steps use the capped column `V_cut`.
@@ -141,19 +141,19 @@ save(fig, "variogram")
 </details>
 
 ```text
-Variogram  sill 74228.6, 2 structures
-  rotation  azimuth 1.802°, dip 0°, rake 0°
-  ratios    semi/major 0.3798, minor/major 1
+Variogram  sill 68785.6, 2 structures
+  rotation  azimuth 0.5579°, dip 0°, rake 0°
+  ratios    semi/major 0.4128, minor/major 1
   structure     sill  major   semi  minor
-  nugget      5178.5
-  spherical  17712.6  12.74  4.837  12.74
-  spherical  51337.4    115  43.67    115
+  nugget      4765.4
+  spherical  22163.9  10.19  4.207  10.19
+  spherical  41856.3    115  47.47    115
 ```
 
 ![variogram](variogram.png)
 
-V is most continuous along N2°, with a range of 115 m. Across it the range drops to about 44 m (a ratio of
-0.38). The nugget holds 7 % of the sill.
+V is most continuous along N1°, with a range of 115 m. Across it the range drops to about 47 m (a ratio of
+0.41). The nugget holds 7 % of the sill.
 
 ## Kriging
 
@@ -193,13 +193,13 @@ BlockModel  regular, 3,120 blocks
   origin  3, 3, 0
   bounds  x 3 to 263, y 3 to 303, z 0 to 1
   column    type     unit  nulls     min   mean     max
-  estimate  float64            0  -6.249  280.7   990.6
-  truth     float64            0       0  278.3  1542.9
+  estimate  float64            0  -1.212  285.8   935.7
+  truth     float64            0       0  279.2  1596.6
 ```
 
 ![estimate](estimate.png)
 
-The estimate draws the NNW-trending rich zones of the truth, smoothed. Kriging averages samples, so it misses the
+The estimate draws the north-trending rich zones of the truth, smoothed. Kriging averages samples, so it misses the
 short-scale highs and lows.
 
 ## Checks
@@ -239,16 +239,16 @@ save(fig, "checks")
 </details>
 
 ```text
-cross-validation: RMSE 150 ppm, correlation 0.83, slope 1.04
-against the truth: RMSE 136 ppm, correlation 0.84
-mean: estimate 281, declustered samples 285, truth 278 ppm
+cross-validation: RMSE 160 ppm, correlation 0.79, slope 1.04
+against the truth: RMSE 162 ppm, correlation 0.77
+mean: estimate 286, declustered samples 282, truth 279 ppm
 ```
 
 ![checks](checks.png)
 
-The slope of 1.04 shows no conditional bias. Cross-validation (RMSE 150 ppm) and the truth (RMSE 136 ppm) give
-errors of the same size. The estimate follows the swath of the truth and flattens its peaks. Its mean matches the
-declustered samples and sits 1 % above the truth, a bias that no check against the samples can detect.
+The slope of 1.04 shows no conditional bias. Cross-validation (RMSE 160 ppm) and the truth (RMSE 162 ppm) give
+errors of the same size. The estimate follows the swath of the truth and flattens its peaks. Its mean sits near the
+declustered samples and 2 % above the truth, a bias that no check against the samples can detect.
 [Storing containers in parquet](../../01-first-steps/04-parquet/README.md) saves a grid like this one to a file.
 
 Full script: [`example_01_01.py`](example_01_01.py)

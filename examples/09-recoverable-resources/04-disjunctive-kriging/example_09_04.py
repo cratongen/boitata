@@ -90,6 +90,6 @@ save(fig, "disjunctive")
 
 
 # %% [markdown]
-# On average the estimate says 18.8% of the nodes exceed 500 ppm; 18.7% do. The error sits in the low bins, which hold
-# most nodes: where it predicts 0.1 to 0.4, you observe half to two thirds of that. From 0.5 to 0.9 the error reverses,
-# and more nodes exceed the cutoff than it predicts.
+# On average the estimate says 17.5% of the nodes exceed 500 ppm; 19.4% do. The low bins, which hold most nodes, sit
+# close to the diagonal: where it predicts 0.1 to 0.4, you observe within 0.03 of that. From 0.4 to 0.9 more nodes
+# exceed the cutoff than it predicts, by up to 0.21.

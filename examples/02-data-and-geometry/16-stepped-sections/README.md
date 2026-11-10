@@ -48,7 +48,7 @@ print(f"{len(model):,} blocks of 20 m")
 </details>
 
 ```text
-45,146 blocks of 20 m
+45,524 blocks of 20 m
 ```
 
 ## The old way: a manual loop

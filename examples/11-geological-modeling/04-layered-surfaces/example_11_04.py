@@ -25,7 +25,7 @@ from common import ACCENT, GRAY, HIGHLIGHT, INK, LIGHT, map_axes, save
 #
 # Gridded elevations are a 2D `BlockModel` with a `Z` column; `grid_surface` triangulates them through the block
 # centers. `Mesh.vertical_distance` is a point's elevation minus the surface's at the same easting and northing:
-# the collars sit on the topography.
+# the collars sit within about a meter of the topography.
 
 # %%
 data = bt.datasets.phosphate_weathering_profile()

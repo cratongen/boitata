@@ -43,7 +43,7 @@ print(f"spacing: median {np.median(spacing):.0f} m, 90th percentile {np.percenti
 </details>
 
 ```text
-spacing: median 560 m, 90th percentile 769 m
+spacing: median 550 m, 90th percentile 756 m
 ```
 
 ## By kriging diagnostics
@@ -93,16 +93,16 @@ print(f"{np.mean(smoothed != by_kriging):.1%} of blocks change class in smoothin
 
 ```text
            spacing  kriging  smoothed
- measured    26.0%    35.2%    35.3%
-indicated    57.0%    56.7%    56.9%
- inferred    17.0%     8.1%     7.8%
-0.8% of blocks change class in smoothing
+ measured    25.3%    36.3%    36.3%
+indicated    60.4%    56.1%    56.3%
+ inferred    14.3%     7.6%     7.4%
+1.0% of blocks change class in smoothing
 ```
 
-Spacing alone puts the infill, 26 % of the blocks, in measured, and the lease edge beyond the last holes in
-inferred. The kriging diagnostics also see how the holes surround a block: measured grows to 35 % and joins the
-infill patches, while blocks along the edge, with holes on one side only, stay inferred (8.1 % of the lease). The
-filter changes 0.8 % of the blocks, most of them single blocks and thin fringes.
+Spacing alone puts the infill, 25 % of the blocks, in measured, and the lease edge beyond the last holes in
+inferred. The kriging diagnostics also see how the holes surround a block: measured grows to 36 % and joins the
+infill patches, while blocks along the edge, with holes on one side only, stay inferred (7.6 % of the lease). The
+filter changes 1.0 % of the blocks, most of them single blocks and thin fringes.
 
 <details><summary>Python</summary>
 

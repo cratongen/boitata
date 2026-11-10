@@ -27,14 +27,14 @@ print(covariates)
 ```text
 PointSet  1,227 points
   bounds  x 3154.6 to 8900.1, y 7692 to 10905.3, z 0 to 0
-  column  type     unit  nulls  min    mean   max
-  ID      float64            0    1     614  1227
-  CU_PPM  float64            0   10   58.61   300
-  ZN_PPM  float64          363   16   77.95   340
-  AU_PPB  float64            0    2   5.911    77
-  AS_PPM  float64            0    5   11.29    76
-  AU_BDL  float64            0    0  0.3659     1
-  AS_BDL  float64            0    0  0.2698     1
+  column  type     unit  nulls  min    mean    max
+  ID      float64            0    1     614   1227
+  CU_PPM  float64            0   10   66.12    300
+  ZN_PPM  float64          363   16   94.88    360
+  AU_PPB  float64            0    2   7.556  161.9
+  AS_PPM  float64            0    5   15.11    126
+  AU_BDL  float64            0    0  0.3244      1
+  AS_BDL  float64            0    0  0.2021      1
 Polylines  1 feature, 1 part
   closed  1 of 1 part
   bounds  x 3137.7 to 8937.7, y 7044.8 to 10974.3, z 0 to 0
@@ -44,9 +44,9 @@ BlockModel  regular, 9,600 blocks
   origin  3000, 7000, 0
   bounds  x 3000 to 9000, y 7000 to 11000, z 0 to 1
   column       type     unit  nulls    min     mean    max
-  ELEVATION_M  float64            0  272.5    417.9  578.5
-  MAG_NT       float64            0  51522  52013.4  52476
-  LITHOLOGY    str                0  4 unique: GRANITE, FELSIC_VOLCANIC, MAFIC_VOLCANIC, …
+  ELEVATION_M  float64            0  279.2    423.1  577.5
+  MAG_NT       float64            0  51423  52038.8  52548
+  LITHOLOGY    str                0  4 unique: METASEDIMENT, MAFIC_VOLCANIC, FELSIC_VOLCANIC, …
   INSIDE       float64            0      0   0.7368      1
 ```
 
@@ -132,14 +132,14 @@ print(
 ```text
 PointSet  1,227 points
   bounds  x 3154.6 to 8900.1, y 7692 to 10905.3, z 0 to 0
-  column  type     unit  nulls  min    mean   max
-  ID      float64            0    1     614  1227
-  CU_PPM  float64            0   10   58.61   300
-  ZN_PPM  float64          363   16   77.95   340
-  AU_PPB  float64            0    2   5.911    77
-  AS_PPM  float64            0    5   11.29    76
-  AU_BDL  float64            0    0  0.3659     1
-  AS_BDL  float64            0    0  0.2698     1
+  column  type     unit  nulls  min    mean    max
+  ID      float64            0    1     614   1227
+  CU_PPM  float64            0   10   66.12    300
+  ZN_PPM  float64          363   16   94.88    360
+  AU_PPB  float64            0    2   7.556  161.9
+  AS_PPM  float64            0    5   15.11    126
+  AU_BDL  float64            0    0  0.3244      1
+  AS_BDL  float64            0    0  0.2021      1
 same points: True | CRS: None
 same boundary area: True
 ```
@@ -188,15 +188,15 @@ BlockModel  regular, 9,600 blocks
   origin  3000, 7000, 0
   bounds  x 3000 to 9000, y 7000 to 11000, z 0 to 1
   column       type     unit  nulls    min     mean    max
-  ELEVATION_M  float64        2,527  278.1    416.4  529.1
-  MAG_NT       float64        2,527  51522  52027.2  52452
-  LITHOLOGY    float64        2,527      0    2.042      3
+  ELEVATION_M  float64        2,527  279.2    419.7    570
+  MAG_NT       float64        2,527  51423  52037.8  52548
+  LITHOLOGY    float64        2,527      0    1.697      3
 0.04 MB
 same origin: True | cells with data: 7073 of 9600
- FELSIC_VOLCANIC: 1042 cells
-         GRANITE: 391 cells
-  MAFIC_VOLCANIC: 2871 cells
-    METASEDIMENT: 2769 cells
+ FELSIC_VOLCANIC: 1378 cells
+         GRANITE: 1141 cells
+  MAFIC_VOLCANIC: 2802 cells
+    METASEDIMENT: 1752 cells
 ```
 
 The raster comes back as a regular grid: the 2527 cells outside the survey area are null in every band.
@@ -259,7 +259,7 @@ BlockModel  regular, 9,600 blocks
   crs     local survey grid
   bounds  x 3000 to 9000, y 7000 to 11000, z 0 to 1
   column  type     unit  nulls  min   mean  max
-  band_1  float64            0    0  131.3  255
+  band_1  float64            0    0  139.6  255
 ['magnetics.jgw', 'magnetics.jpg', 'magnetics.jpg.aux.xml']
 same origin: True | CRS: local survey grid | largest change: 1 levels
 ```

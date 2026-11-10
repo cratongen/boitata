@@ -49,29 +49,30 @@ print(single, along, minor.fit(["spherical", "spherical"], weighting=weighting),
 </details>
 
 ```text
-Variogram  sill 78743.5, 1 structure
+Variogram  sill 80913.1, 1 structure
   structure     sill  range
-  nugget       17467
-  spherical  61276.5    101
-Variogram  sill 79895.9, 2 structures
+  nugget     32352.4
+  spherical  48560.7  156.5
+Variogram  sill 81665.3, 2 structures
   structure     sill  range
-  nugget     14667.3
-  spherical  13171.7  46.19
-  spherical  52056.8  114.9
-Variogram  sill 78042.4, 2 structures
+  nugget       20133
+  spherical    17253  27.33
+  spherical  44279.3  172.5
+Variogram  sill 74304.6, 2 structures
   structure     sill  range
-  nugget      5473.1
-  spherical  38981.9  9.505
-  spherical  33587.4  59.82
+  nugget           0
+  spherical  41934.2  6.904
+  spherical  32370.4  52.52
 ```
 
-Along the major axis γ climbs to half of the sill within 25 m, then rises slowly to about 105 m: two scales of
-continuity. One structure (dashed below) splits the difference, overshoots the first lags and puts a fifth of the sill
-in the nugget. Two nested spherical structures follow both scales and halve the nugget. Across the axis the short
-structure takes no sill: γ reaches the sill by 25 m, and the data support one structure.
+Along the major axis γ climbs to three fifths of the sill within 25 m, then rises slowly past the last lag: two scales
+of continuity. One structure (dashed below) splits the difference, overshoots the first lag and puts two fifths of the
+sill in the nugget. Two nested spherical structures follow both scales and cut the nugget to a quarter of the sill.
+Across the axis the nugget fits to zero and a 7 m structure takes its place: γ is past half the sill at the first lag
+and reaches the sill by 35 m.
 
 The structures share one anisotropy. Fitting the minor direction with the nugget and sills fixed at their major-axis
-values moves only its ranges; the long structure, with two thirds of the sill, sets the minor/major ratio. `rotation`
+values moves only its ranges; the long structure, with more than half the sill, sets the minor/major ratio. `rotation`
 is azimuth, dip, rake in degrees; `ratios` are semi-major/major and minor/major ranges.
 
 <details><summary>Python</summary>
@@ -89,21 +90,21 @@ print(model)
 </details>
 
 ```text
-Variogram  sill 79895.9, 2 structures
+Variogram  sill 81665.3, 2 structures
   structure     sill  range
-  nugget     14667.3
-  spherical  13171.7    2.5
-  spherical  52056.8  45.59
-Variogram  sill 79895.9, 2 structures
-  rotation  azimuth 175°, dip 0°, rake 0°
-  ratios    semi/major 0.3969, minor/major 1
+  nugget       20133
+  spherical    17253  5.996
+  spherical  44279.3  64.39
+Variogram  sill 81665.3, 2 structures
+  rotation  azimuth 5°, dip 0°, rake 0°
+  ratios    semi/major 0.3733, minor/major 1
   structure     sill  major   semi  minor
-  nugget     14667.3
-  spherical  13171.7  46.19  18.33  46.19
-  spherical  52056.8  114.9  45.59  114.9
+  nugget       20133
+  spherical    17253  27.33   10.2  27.33
+  spherical  44279.3  172.5  64.39  172.5
 ```
 
-The ellipse on the map is the model range in each direction:
+The ellipse on the map is the model range in each direction; along the major axis it reaches past the last lag:
 
 <details><summary>Python</summary>
 
@@ -122,7 +123,7 @@ a_minor = a_major * ratio
 ellipse = a_major * a_minor / np.hypot(a_minor * np.cos(t - direction), a_major * np.sin(t - direction))
 a.plot(t, ellipse, color=HIGHLIGHT, lw=1.4)
 a.text(direction, a_major * 1.05, f"{a_major:.0f} m", color=HIGHLIGHT, fontsize=8)
-a.set_rlim(0, radius[-1])
+a.set_rlim(0, max(radius[-1], 1.15 * a_major))
 a.set_xticks(np.radians([0, 90, 180, 270]), ["E", "N", "W", "S"])
 a.set_rlabel_position(200)
 a.tick_params(labelsize=7)
@@ -170,19 +171,19 @@ print(joint)
 </details>
 
 ```text
-Variogram  sill 77760.1, 2 structures
-  rotation  azimuth 0.4915°, dip 0°, rake 0°
-  ratios    semi/major 0.343, minor/major 1
+Variogram  sill 75304.4, 2 structures
+  rotation  azimuth 2.076°, dip 0°, rake 0°
+  ratios    semi/major 0.3918, minor/major 1
   structure     sill  major   semi  minor
-  nugget      4206.7
-  spherical  22196.4  13.99  4.798  13.99
-  spherical    51357    115  39.45    115
+  nugget        3381
+  spherical  30138.9   11.4  4.467   11.4
+  spherical  41784.5    115  45.05    115
 ```
 
-The joint fit puts the major axis at N0°, five degrees off the map's pick, with the same one-third ratio. Its long
+The joint fit puts the major axis at N2°, three degrees off the map's pick, with about the same 0.4 ratio. Its long
 range stops at 115 m, the largest lag, where free ranges are capped unless `ranges` bounds them. Spread over all eight
-directions, it fits the major and minor axes worse than the fits made along them: the dashed curves fall below the
-short lags on both.
+directions, it fits the major and minor axes worse than the fits made along them: the dashed curves start from a
+nugget near zero, run above the major-axis points between 40 and 90 m and level off below the minor-axis points.
 
 <details><summary>Python</summary>
 

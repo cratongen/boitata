@@ -87,10 +87,10 @@ save(fig, "shapes")
 
 ```text
           search  RMSE  samples  mean distance  cross-validation RMSE
-          circle  144.7   22.1       31.0 m         153.2
-         ellipse  144.7   23.6       29.2 m         153.5
-ellipse, octants  144.5   20.9       29.3 m         153.7
-ellipse, 6 sectors  144.0   19.5       27.8 m         153.6
+          circle  163.3   22.8       30.7 m         166.0
+         ellipse  163.5   23.5       29.5 m         166.0
+ellipse, octants  163.0   21.3       29.7 m         165.3
+ellipse, 6 sectors  162.8   19.8       28.2 m         165.3
 ```
 
 ![shapes](shapes.png)
@@ -124,13 +124,13 @@ print(f"RMSE of all nodes {rmse(d['value']):.1f} ppm")
 </details>
 
 ```text
-pass 1:  42% of nodes, mean slope 0.98, RMSE 167 ppm
-pass 2:  58% of nodes, mean slope 0.96, RMSE 126 ppm
-RMSE of all nodes 144.6 ppm
+pass 1:  40% of nodes, mean slope 0.95, RMSE 187 ppm
+pass 2:  60% of nodes, mean slope 0.97, RMSE 148 ppm
+RMSE of all nodes 164.6 ppm
 ```
 
-Pass-1 nodes have the higher slope of regression and also the larger errors. The metal survey drilling is densest where
-`V` is high and variable, so the best-informed nodes are also the hardest ones.
+Pass-1 nodes have the larger errors, and a slope of regression no higher than the rest. The metal survey drilling is
+densest where `V` is high and variable, so the best-informed nodes are also the hardest ones.
 
 ## Sector rules
 
@@ -164,14 +164,14 @@ for name, first in rules.items():
 </details>
 
 ```text
-           3 of 4 quadrants, pass 1: 88.7% of nodes, mean error   +6 ppm, mean slope 0.99
-           3 of 4 quadrants, pass 2: 11.3% of nodes, mean error   +2 ppm, mean slope 0.87
-8 sectors, 3 empty in a row, pass 1: 88.7% of nodes, mean error   +6 ppm, mean slope 0.99
-8 sectors, 3 empty in a row, pass 2: 11.3% of nodes, mean error   +2 ppm, mean slope 0.87
+           3 of 4 quadrants, pass 1: 90.8% of nodes, mean error  +10 ppm, mean slope 0.99
+           3 of 4 quadrants, pass 2:  9.2% of nodes, mean error   -6 ppm, mean slope 0.84
+8 sectors, 3 empty in a row, pass 1: 90.8% of nodes, mean error   +7 ppm, mean slope 0.99
+8 sectors, 3 empty in a row, pass 2:  9.2% of nodes, mean error   -6 ppm, mean slope 0.84
 ```
 
-Both rules send about 11 % of the nodes, those with samples on one side, to the second pass. Their estimates run over
-70 ppm high on average, against 11 to 13 ppm for the rest, with a lower slope of regression. The second pass still
+Both rules send about 9 % of the nodes, those with samples on one side, to the second pass. Their estimates run 6 ppm
+low on average, against 7 to 10 ppm high for the rest, with a lower slope of regression. The second pass still
 estimates them; without it they stay unestimated.
 
 ## High-grade restriction
@@ -203,10 +203,10 @@ print(
 </details>
 
 ```text
-9% of the samples are above 800 ppm
-591 nodes lowered by over 5 ppm; their mean error goes from +12 ppm to -11 ppm
-53 nodes raised by over 5 ppm; their mean error goes from -17 ppm to -9 ppm
-cross-validation mean error +7.2 ppm without the restriction, +1.7 with
+8% of the samples are above 800 ppm
+555 nodes lowered by over 5 ppm; their mean error goes from +15 ppm to -11 ppm
+20 nodes raised by over 5 ppm; their mean error goes from -23 ppm to -15 ppm
+cross-validation mean error +8.6 ppm without the restriction, +2.4 with
 ```
 
 <details><summary>Python</summary>
@@ -248,10 +248,10 @@ save(fig, "passes")
 
 ![passes](passes.png)
 
-Around isolated rich samples the restriction lowers the estimates where kriging overestimates most, and brings the
-mean error of those nodes to zero. Inside the dense cluster of rich samples it raises them instead. There the rich
-samples 20 to 30 m away sit behind closer samples that screen them, so ordinary kriging gives them small negative
-weights, and dropping a negative weight on a high value raises the estimate. The restriction suits isolated high
-values; over all samples the cross-validation mean error changes little.
+Around isolated rich samples the restriction lowers the estimates where kriging overestimates most, and turns the mean
+error of those nodes from +15 ppm to -11 ppm. Inside the dense cluster of rich samples it raises them instead. There
+the rich samples 20 to 30 m away sit behind closer samples that screen them, so ordinary kriging gives them small
+negative weights, and dropping a negative weight on a high value raises the estimate. The restriction suits isolated
+high values; over all samples the cross-validation mean error changes little.
 
 Full script: [`example_06_06.py`](example_06_06.py)

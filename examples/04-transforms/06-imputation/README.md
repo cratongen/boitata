@@ -29,7 +29,7 @@ print(
 </details>
 
 ```text
-3325 sulphide samples, missing: Zn 0, Pb 0, Cu 0, Ag 0, Au 741, density 2104
+3317 sulphide samples, missing: Zn 0, Pb 0, Cu 0, Ag 0, Au 731, density 2100
 ```
 
 The scores of density follow Zn, Pb and Ag closely. Gold is weakly tied to the others, so its drawn values carry more
@@ -50,12 +50,12 @@ for name, row in zip(labels, imputer.correlation_):
 ```text
 score correlation
               Zn      Pb      Cu      Ag      Au density
-Zn          1.00    1.00   -0.11    0.94    0.49    0.94
-Pb          1.00    1.00   -0.08    0.96    0.52    0.95
-Cu         -0.11   -0.08    1.00    0.10    0.63    0.04
-Ag          0.94    0.96    0.10    1.00    0.66    0.94
-Au          0.49    0.52    0.63    0.66    1.00    0.58
-density     0.94    0.95    0.04    0.94    0.58    1.00
+Zn          1.00    1.00   -0.10    0.94    0.47    0.94
+Pb          1.00    1.00   -0.07    0.96    0.50    0.94
+Cu         -0.10   -0.07    1.00    0.11    0.65    0.06
+Ag          0.94    0.96    0.11    1.00    0.64    0.94
+Au          0.47    0.50    0.65    0.64    1.00    0.57
+density     0.94    0.94    0.06    0.94    0.57    1.00
 ```
 
 To check the method, hide the measured density of every other hole, impute it, and compare with the truth: one draw,
@@ -89,16 +89,16 @@ save(fig, "check")
 </details>
 
 ```text
-609 densities hidden
-truth       q10, q50, q90: 2.86, 3.05, 3.83   sd 0.44
-one draw    q10, q50, q90: 2.87, 3.06, 3.70   sd 0.45   rmse 0.16
-mean of 50  q10, q50, q90: 2.87, 3.06, 3.82   sd 0.44   rmse 0.05
+604 densities hidden
+truth       q10, q50, q90: 2.87, 3.10, 3.92   sd 0.48
+one draw    q10, q50, q90: 2.87, 3.08, 3.93   sd 0.48   rmse 0.14
+mean of 50  q10, q50, q90: 2.88, 3.10, 3.94   sd 0.47   rmse 0.06
 ```
 
 ![check](check.png)
 
-One draw keeps the spread of the hidden densities (sd 0.45 against 0.44), with a root-mean-square error of 0.16 t/m³.
-The mean of 50 draws cuts the error to 0.05 but narrows the spread to 0.44, like any prediction. Draws suit simulation
+One draw keeps the spread of the hidden densities (sd 0.48 against 0.48), with a root-mean-square error of 0.14 t/m³.
+The mean of 50 draws cuts the error to 0.06 but narrows the spread to 0.47, like any prediction. Draws suit simulation
 and tonnage uncertainty; the mean suits a single best value per sample.
 
 One draw fills every gap below. The imputed densities follow the trend of the measured ones against zinc, with the
@@ -123,7 +123,7 @@ print(f"density mean {np.nanmean(data[:, 5]):.3f} measured, {filled[:, 5].mean()
 </details>
 
 ```text
-density mean 3.245 measured, 3.245 after imputation
+density mean 3.293 measured, 3.260 after imputation
 ```
 
 ![filled](filled.png)

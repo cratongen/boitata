@@ -48,14 +48,14 @@ for name, a, b in zip(scheme.names, naive, declustered):
 </details>
 
 ```text
-24501 composites
+24863 composites
        naive  declustered
-OB     0.015        0.032
-HWS    0.561        0.551
-VCL    0.244        0.212
+OB     0.015        0.031
+HWS    0.567        0.554
+VCL    0.241        0.212
 SUL    0.041        0.031
-FWV    0.135        0.171
-DYK    0.004        0.003
+FWV    0.133        0.169
+DYK    0.003        0.003
 ```
 
 ## Variograms and the estimate
@@ -122,9 +122,9 @@ section = section.with_columns({**columns, "most_likely": summary.most_likely, "
 </details>
 
 ```text
-7992 of 9366 cells estimated, 2274 in the second pass
+8149 of 9484 cells estimated, 2312 in the second pass
 rows sum to 1: True
-correction: 21% of the cells had a category kriged outside [0, 1]; mean size 0.019
+correction: 20% of the cells had a category kriged outside [0, 1]; mean size 0.019
 ```
 
 ## Probability maps
@@ -199,11 +199,11 @@ for c, name in enumerate(scheme.names):
 ```text
 the most likely rock is the logged one at 89% of the composites
        Brier  p(1-p)
-OB     0.005   0.031
+OB     0.005   0.030
 HWS    0.031   0.247
 VCL    0.069   0.167
-SUL    0.028   0.030
-FWV    0.027   0.142
+SUL    0.027   0.030
+FWV    0.027   0.140
 DYK    0.004   0.003
 ```
 

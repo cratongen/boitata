@@ -48,10 +48,11 @@ for length in lengths:
 
 
 # %% [markdown]
-# At 1 m the limonite carries a seventh of its Ni variance in the nugget, the saprolite about a tenth; 1.5 m composites
-# give nearly the same. At 2 m the first three lags span 6 m, most of the limonite's 6.8 m. The line then reaches zero
-# across the bend of the variogram, and the nugget comes out larger in both horizons. Carry the nugget of the shortest
-# composites into the fits between holes, whose closest spacing is 25 m.
+# At 1 m the limonite carries a sixth of its Ni variance in the nugget, the saprolite about an eighth; 1.5 m composites,
+# which average more, give less in both. At 2 m the first three lags span 6 m, most of the limonite's 7.3 m. The line
+# then reaches zero across the bend of the variogram, and the limonite nugget comes out larger again, while the thicker
+# saprolite keeps falling. Carry the nugget of the shortest composites into the fits between holes, whose closest
+# spacing is 25 m.
 
 # %%
 fig, (a, b) = plt.subplots(1, 2, figsize=(9.2, 3.4), layout="constrained")

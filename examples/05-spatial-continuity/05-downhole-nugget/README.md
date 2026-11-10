@@ -23,8 +23,8 @@ for name in ["FERR", "LIM", "SAP", "BRK"]:
 
 ```text
 FERR  mean thickness   2.4 m
-LIM   mean thickness   6.8 m
-SAP   mean thickness  11.2 m
+LIM   mean thickness   7.3 m
+SAP   mean thickness  11.0 m
 BRK   mean thickness   4.0 m
 ```
 
@@ -55,15 +55,16 @@ for length in lengths:
 ```text
 nugget / variance
           LIM    SAP
-1.0 m    0.15   0.10
-1.5 m    0.11   0.07
-2.0 m    0.09   0.04
+1.0 m    0.16   0.13
+1.5 m    0.09   0.08
+2.0 m    0.12   0.07
 ```
 
-At 1 m the limonite carries a seventh of its Ni variance in the nugget, the saprolite about a tenth; 1.5 m composites
-give nearly the same. At 2 m the first three lags span 6 m, most of the limonite's 6.8 m. The line then reaches zero
-across the bend of the variogram, and the nugget comes out larger in both horizons. Carry the nugget of the shortest
-composites into the fits between holes, whose closest spacing is 25 m.
+At 1 m the limonite carries a sixth of its Ni variance in the nugget, the saprolite about an eighth; 1.5 m composites,
+which average more, give less in both. At 2 m the first three lags span 6 m, most of the limonite's 7.3 m. The line
+then reaches zero across the bend of the variogram, and the limonite nugget comes out larger again, while the thicker
+saprolite keeps falling. Carry the nugget of the shortest composites into the fits between holes, whose closest
+spacing is 25 m.
 
 <details><summary>Python</summary>
 

@@ -119,8 +119,8 @@ for i in np.flatnonzero(surveys["HOLE_ID"] == hole)[[0, 1, 2, -1]]:
     )
 
 # %% [markdown]
-# Hole `DD0187` leaves the collar dipping 59.3° toward azimuth 300.3° (west-northwest) and ends, 813.2 m down, at
-# 46.9° toward 309.7°. `Drillholes` desurveys every hole when you build it. `merge_intervals` first combines the assay
+# Hole `DD0187` leaves the collar dipping 59.4° toward azimuth 300.0° (west-northwest) and ends, 810.2 m down, at
+# 47.3° toward 307.2°. `Drillholes` desurveys every hole when you build it. `merge_intervals` first combines the assay
 # and lithology tables so that each interval carries its grades and its rock type; `at` returns the coordinates of
 # any depth:
 
@@ -146,13 +146,13 @@ b.set(title="Looking north: easting against elevation", xlabel="Easting (m)", yl
 save(fig, "holes")
 
 # %% [markdown]
-# At 800 m down the hole, `DD0187` sits 395.1 m west, 271.9 m north and 638.0 m below its collar. The orange trace
+# At 800 m down the hole, `DD0187` sits 388.7 m west, 260.5 m north and 646.9 m below its collar. The orange trace
 # in both views is this hole; the gray ones are the other 288.
 #
 # ## Compositing
 #
-# Assays come in whatever lengths the geologist chose to split the core. Here the lengths run from 0.02 m to
-# 2.00 m, and 83 % lie within 0.1 m of 1 m or 2 m. A 0.02 m assay and a 2.00 m assay have different supports,
+# Assays come in whatever lengths the geologist chose to split the core. Here the lengths run from 0.10 m to
+# 2.00 m, and 83 % lie within 0.1 m of 1 m or 2 m. A 0.10 m assay and a 2.00 m assay have different supports,
 # so their values do not share one distribution. Compositing combines the assays into intervals of one length, so
 # every value represents the same volume (Figure 3).
 #
@@ -181,8 +181,8 @@ print(f"Zn metal: assays {metal_assays:.1f}, composites {metal_composites:.1f}")
 assert abs(metal_composites / metal_assays - 1) < 1e-9
 
 # %% [markdown]
-# The 19 247 assays become 16 864 composites of 2 m. Keep the final check in any compositing script:
-# zinc metal, grade × sampled length summed over all intervals, is 19 829.1 before and after. Compositing
+# The 19 340 assays become 16 811 composites of 2 m. Keep the final check in any compositing script:
+# zinc metal, grade × sampled length summed over all intervals, is 20 514.3 before and after. Compositing
 # moves metal between intervals; it must not create or lose any.
 #
 # !!! pitfall "Pitfall"
@@ -214,7 +214,7 @@ for size in (1.0, 2.0, 4.0, 8.0):
     print(f"{size:>6.0f}m{ms.sum():>7}{stats['mean']:>8.2f}{stats['variance']:>10.1f}")
 
 # %% [markdown]
-# The mean zinc grade stays at 8.15 % for every length. The variance falls from 29.2 %² at 1 m to 25.3 %² at 8 m.
+# The mean zinc grade stays at 8.51 % for every length. The variance falls from 31.0 %² at 1 m to 26.9 %² at 8 m.
 #
 # The metal survey lets you watch the same effect in two dimensions, with the truth in hand. Besides the 470 samples,
 # the dataset has an exhaustive grid: 78 000 values, one per square meter. `row_at` returns the block each value
@@ -244,11 +244,11 @@ axes[0].set_ylabel("Proportion")
 save(fig, "support")
 
 # %% [markdown]
-# Every block size gives a mean of 280 ppm. The variance falls from 64 277 ppm² for 1 m cells to 42 878 ppm² for
+# Every block size gives a mean of 280 ppm. The variance falls from 64 277 ppm² for 1 m cells to 35 753 ppm² for
 # 20 m blocks, and the histogram loses its spike near zero and its tail above 1000 ppm.
 #
 # The last column matters most to a mine. Suppose rock above 500 ppm is ore. On 1 m cells, 18.9 % of the
-# area is ore; on 20 m blocks, 14.4 % is. A mine that selects ore in 20 m blocks cannot recover the 18.9 % that
+# area is ore; on 20 m blocks, 12.8 % is. A mine that selects ore in 20 m blocks cannot recover the 18.9 % that
 # the small-scale data suggest. A resource estimate must therefore state its
 # support. Chapters 4 and 5 return to this: kriging estimates block averages, and simulation lets you average to any
 # support you choose.
@@ -306,8 +306,8 @@ b.legend()
 save(fig, "clustering")
 
 # %% [markdown]
-# Ground above 500 ppm covers 18.9 % of the area but holds 39.4 % of the samples. The plain mean of the samples,
-# 428 ppm, overstates the true mean of 280 ppm by more than half. Declustering corrects this by giving each sample
+# Ground above 500 ppm covers 18.9 % of the area but holds 35.3 % of the samples. The plain mean of the samples,
+# 407 ppm, overstates the true mean of 280 ppm by almost half. Declustering corrects this by giving each sample
 # a weight in proportion to the area it represents; [chapter 2](../02-describing-data/learn_02.md) shows how.
 #
 # !!! check "Check before you move on"
@@ -316,7 +316,7 @@ save(fig, "clustering")
 #     - Why must a composite not cross a lithology contact?
 #     - What does boitatá store for an assay that was never taken, and why not -999?
 #     - After compositing, which quantity must match the assays exactly?
-#     - 39.4 % of the metal survey samples sit on ground above 500 ppm. Why does that not mean 39 % of the area is
+#     - 35.3 % of the metal survey samples sit on ground above 500 ppm. Why does that not mean 35 % of the area is
 #       ore?
 #
 # !!! seealso "See also"

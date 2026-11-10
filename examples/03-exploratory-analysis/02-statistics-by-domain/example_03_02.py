@@ -37,8 +37,8 @@ for row in zip(*(stats[c] for c in ["category", "n", "mean", "cv", "P10", "P50",
     print(f"{row[0]:<6}{row[1]:>7.0f}{row[2]:>8.2f}{row[3]:>6.2f}" + "".join(f"{v:>8.2f}" for v in row[4:]))
 
 # %% [markdown]
-# Mean Zn falls from 8.27 % in MS to 3.24 % in SMS and 0.37 % in STR; the host rocks and the dike hold 0.05 to 0.06 %.
-# Each lithology has a CV between 0.48 and 0.71, and all of them pooled reach 3.46: mixing populations makes that
+# Mean Zn falls from 8.52 % in MS to 3.26 % in SMS and 0.40 % in STR; the host rocks and the dike hold 0.04 to 0.05 %.
+# Each lithology has a CV between 0.20 and 0.72, and all of them pooled reach 3.47: mixing populations makes that
 # spread.
 #
 # Box plots show the same quantiles side by side, sorted by median. The box spans P25 to P75, the whiskers P10 to P90,

@@ -46,11 +46,11 @@ print(f"GP ranges {[round(r) for r in models['GP'].report['lengthscales']]} m")
 </details>
 
 ```text
-3332 composites, 530 at or above 60 % Fe
+3304 composites, 528 at or above 60 % Fe
       RBF: 100.0% of composites on their side
 RBF, flat: 100.0% of composites on their side
-       GP: 87.1% of composites on their side
-GP ranges [12232, 761, 98] m
+       GP: 87.3% of composites on their side
+GP ranges [9335, 668, 94] m
 ```
 
 Each field goes onto the supplied block model, 25 × 25 × 12 m blocks below topography, and against the solid: the
@@ -76,15 +76,15 @@ for name, model in models.items():
 </details>
 
 ```text
-    solid:  71.5 Mm3, 86.2% of composites on their side
-      RBF:  32.0 Mm3, covers 36% of the solid, 31% outside it
-RBF, flat:  50.8 Mm3, covers 56% of the solid, 33% outside it
-       GP:  37.4 Mm3, covers 58% of the solid, 5% outside it
+    solid:  71.5 Mm3, 85.7% of composites on their side
+      RBF:  31.6 Mm3, covers 33% of the solid, 32% outside it
+RBF, flat:  47.2 Mm3, covers 50% of the solid, 32% outside it
+       GP:  36.5 Mm3, covers 55% of the solid, 4% outside it
 ```
 
-Both RBFs honor each code, yet they cover only 36 % and 56 % of the solid, and the solid leaves 13.8 % of the
+Both RBFs honor each code, yet they cover only 33 % and 50 % of the solid, and the solid leaves 14.3 % of the
 composites on the wrong side: a cutoff on Fe and a solid interpreted around the shallow friable hematite are two
-different surfaces. Flattening the RBF adds a tenth of the solid at no cost in spill. The GP explains an eighth of
+different surfaces. Flattening the RBF adds a sixth of the solid at no cost in spill. The GP explains an eighth of
 the codes as noise and returns a smooth sheet. On an east-west section through the high-grade composites, at true
 scale, with the trace of the solid in black and topography as a thin line:
 
@@ -118,8 +118,8 @@ save(fig, "section")
 
 ![section](section.png)
 
-The isotropic RBF grows a round body around one deep high-grade composite; the flat one keeps it a thin pod, as
-the solid does. `isosurface` triangulates the zero level at the centroids of the block model and treats blocks
+The isotropic RBF draws small round bodies around isolated high-grade composites; the flat one stretches them into
+thin pods along the layers, as the solid does. `isosurface` triangulates the zero level at the centroids of the block model and treats blocks
 outside its mask, here those above topography, as outside the shell. With `closed=True` it caps the shell where it
 leaves the blocks, at the grid's faces and under topography, so the shell bounds a volume close to that of the
 blocks inside.
@@ -138,7 +138,7 @@ print(
 </details>
 
 ```text
-flat RBF shell: 71,372 triangles, closed True, 46.8 Mm3; blocks inside 50.8 Mm3
+flat RBF shell: 64,888 triangles, closed True, 43.3 Mm3; blocks inside 47.2 Mm3
 ```
 
 Full script: [`example_11_01.py`](example_11_01.py)

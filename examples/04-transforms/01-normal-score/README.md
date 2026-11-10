@@ -137,9 +137,9 @@ print(f"transform: {np.unique(ns.transform(v[zero]))[0]:.2f} for all")
 </details>
 
 ```text
-12 of 470 samples at 0 ppm
+11 of 470 samples at 0 ppm
 fit_transform: scores -2.81 to -1.67
-transform: -2.01 for all
+transform: -2.03 for all
 ```
 
 Neither order means anything. For a large spike, such as assays at a detection limit,

@@ -52,7 +52,7 @@ show(scene, "holes", "Drill holes, Zn composites and the three lenses")
 </details>
 
 ```text
-289 holes, 16,070 composites of 2 m, 1,489 inside a lens
+289 holes, 16,002 composites of 2 m, 1,466 inside a lens
 ```
 
 ![holes](holes.png)

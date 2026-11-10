@@ -67,7 +67,8 @@ print(f"logged lithology: lens mean Zn {lith_mean['lens']:.2f}%, n={lith_n['lens
 
 # %% [markdown]
 # The lithology domain takes in sulfide picked in the other two lenses. Nothing corrects it to the solid, so some
-# contacts sit a sample or two off the true one. Both effects pull its lens grade away from the mesh's.
+# contacts sit a sample or two off the true one. Here the two effects leave its lens grade close to the mesh's, but
+# on twice as many composites.
 
 # %%
 labels = ["lens", "other"]

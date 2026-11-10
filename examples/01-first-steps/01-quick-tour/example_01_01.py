@@ -58,9 +58,9 @@ b.set(title="Declustered histogram", xlabel="V (ppm)")
 save(fig, "samples")
 
 # %% [markdown]
-# Declustering takes the mean from 428 to 285 ppm, 5 ppm above the exhaustive mean, and brings the median and P90
+# Declustering takes the mean from 407 to 282 ppm, 2 ppm above the exhaustive mean, and brings the median and P90
 # close to the true ones. The histogram is skewed to the right, with a peak of near-zero values and a thin tail up to
-# 1547 ppm.
+# 1445 ppm.
 #
 # ## Top cut
 #
@@ -109,8 +109,8 @@ ax.legend(loc="lower right")
 save(fig, "variogram")
 
 # %% [markdown]
-# V is most continuous along N2°, with a range of 115 m. Across it the range drops to about 44 m (a ratio of
-# 0.38). The nugget holds 7 % of the sill.
+# V is most continuous along N1°, with a range of 115 m. Across it the range drops to about 47 m (a ratio of
+# 0.41). The nugget holds 7 % of the sill.
 #
 # ## Kriging
 #
@@ -139,7 +139,7 @@ fig.colorbar(image, ax=axes, shrink=0.8, label="V (ppm)")
 save(fig, "estimate")
 
 # %% [markdown]
-# The estimate draws the NNW-trending rich zones of the truth, smoothed. Kriging averages samples, so it misses the
+# The estimate draws the north-trending rich zones of the truth, smoothed. Kriging averages samples, so it misses the
 # short-scale highs and lows.
 #
 # ## Checks
@@ -174,7 +174,7 @@ b.set(title="Swath along northing, 20 m slices", xlabel="Northing (m)", ylabel="
 save(fig, "checks")
 
 # %% [markdown]
-# The slope of 1.04 shows no conditional bias. Cross-validation (RMSE 150 ppm) and the truth (RMSE 136 ppm) give
-# errors of the same size. The estimate follows the swath of the truth and flattens its peaks. Its mean matches the
-# declustered samples and sits 1 % above the truth, a bias that no check against the samples can detect.
+# The slope of 1.04 shows no conditional bias. Cross-validation (RMSE 160 ppm) and the truth (RMSE 162 ppm) give
+# errors of the same size. The estimate follows the swath of the truth and flattens its peaks. Its mean sits near the
+# declustered samples and 2 % above the truth, a bias that no check against the samples can detect.
 # [Storing containers in parquet](../../01-first-steps/04-parquet/README.md) saves a grid like this one to a file.

@@ -18,7 +18,7 @@ from common import save
 ## Rock types
 
 The topsoil survey's rock types are known at each node of the prediction grid. SIS ([sequential indicator simulation](../../07-categories-and-domains/06-sis/README.md)) draws 10 rock-type realizations from
-indicator variograms fitted to the samples; Portlandian, with 3 samples, gets a guessed one.
+indicator variograms fitted to the samples; Portlandian, with 5 samples, gets a guessed one.
 
 <details><summary>Python</summary>
 
@@ -51,11 +51,11 @@ for k, name in enumerate(names):
 ```text
 rock-type realizations: (10, 6751)
 Co (ppm)       samples   mean
-Argovian            53   5.16
-Kimmeridgian        85   9.20
-Sequanian           63   9.06
-Portlandian          3   7.43
-Quaternary          55   8.70
+Argovian            54   5.90
+Kimmeridgian        85  10.73
+Sequanian           61   9.84
+Portlandian          5   8.48
+Quaternary          54   9.10
 ```
 
 ## Grades within the rock types
@@ -95,11 +95,11 @@ print(f"SIS is unsure whether {unsure.mean():.0%} of the nodes are Argovian")
 
 ```text
 Co (ppm)                                   true rock types  SIS rock types
-mean                                                  8.31            8.29
-mean on true Argovian                                 5.52            7.11
-std where SIS is unsure of Argovian                   2.59            3.40
-std elsewhere                                         2.50            2.67
-SIS is unsure whether 55% of the nodes are Argovian
+mean                                                  9.15            9.09
+mean on true Argovian                                 6.02            7.57
+std where SIS is unsure of Argovian                   2.54            3.11
+std elsewhere                                         2.57            2.60
+SIS is unsure whether 52% of the nodes are Argovian
 ```
 
 <details><summary>Python</summary>
@@ -123,9 +123,9 @@ save(fig, "grades-in-rock-types")
 
 ![grades-in-rock-types](grades-in-rock-types.png)
 
-Within the true rock types, Co drops at each Argovian contact and averages 5.52 ppm on Argovian. Within the SIS rock
+Within the true rock types, Co drops at each Argovian contact and averages 6.02 ppm on Argovian. Within the SIS rock
 types the contacts move from one realization to the next, so the lean Argovian Co spreads over its uncertain margin:
-the true Argovian averages 7.11 ppm. Where SIS is unsure of Argovian (over half of the nodes), the spread of Co across
-realizations is 3.40 ppm against 2.59 ppm with the domains fixed.
+the true Argovian averages 7.57 ppm. Where SIS is unsure of Argovian (over half of the nodes), the spread of Co across
+realizations is 3.11 ppm against 2.54 ppm with the domains fixed.
 
 Full script: [`example_07_08.py`](example_07_08.py)

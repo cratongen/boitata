@@ -30,7 +30,7 @@ print(f"{crossings.num_rows} runs down {len(holes)} holes, {int(np.sum(crossings
 </details>
 
 ```text
-513 runs down 289 holes, 112 inside lens 1
+517 runs down 289 holes, 114 inside lens 1
 ```
 
 `mesh_intervals` samples each hole's path every `step` and bisects to `tolerance` wherever it crosses the mesh, so
@@ -79,12 +79,13 @@ print(f"logged lithology: lens mean Zn {lith_mean['lens']:.2f}%, n={lith_n['lens
 </details>
 
 ```text
-     mesh contact: lens mean Zn 5.90%, n=112
-logged lithology: lens mean Zn 6.61%, n=237
+     mesh contact: lens mean Zn 6.14%, n=114
+logged lithology: lens mean Zn 6.17%, n=236
 ```
 
 The lithology domain takes in sulfide picked in the other two lenses. Nothing corrects it to the solid, so some
-contacts sit a sample or two off the true one. Both effects pull its lens grade away from the mesh's.
+contacts sit a sample or two off the true one. Here the two effects leave its lens grade close to the mesh's, but
+on twice as many composites.
 
 <details><summary>Python</summary>
 

@@ -68,7 +68,7 @@ same = inside["Dense, 12 m"] == inside["Patches, 12 m"]
 print(f"dense and patches put {same.mean():.2%} of the blocks on the same side")
 
 # %% [markdown]
-# On the 12 m composites the two solvers give the same volume and put all but one block in a thousand on the same
+# On the 12 m composites the two solvers give the same volume and put all but one block in two thousand on the same
 # side, the dense one in seconds and the patches in hundredths of a second. Both honor every code. Six times as many
 # composites cost the patches a fraction of a second more, and the shell grows by two fifths. On the section of grade
 # shells, at true scale, with the trace of the solid in black and topography as a thin line:

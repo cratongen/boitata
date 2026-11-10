@@ -51,13 +51,13 @@ print(model)
 </details>
 
 ```text
-Variogram  sill 81263.5, 2 structures
+Variogram  sill 69864.6, 2 structures
   rotation  azimuth 170°, dip 0°, rake 0°
-  ratios    semi/major 0.3701, minor/major 1
+  ratios    semi/major 0.4172, minor/major 1
   structure     sill  major   semi  minor
-  nugget     10703.5
-  spherical   7726.2    7.5  2.776    7.5
-  spherical  62833.7  104.3  38.61  104.3
+  nugget     17461.8
+  spherical  20825.5  21.98  9.169  21.98
+  spherical  31577.2  104.9  43.77  104.9
 ```
 
 A quick isotropic estimate outlines the bodies, and the gradient of that map gives the orientation of least change.
@@ -81,12 +81,12 @@ print("azimuth percentiles (10, 50, 90):", np.percentile(lva.angles[:, 0] % 180,
 LocalAnisotropy  3,120 locations
   scales  given
   over the locations       min   mean  max
-  azimuth              0.00165  93.97  180
+  azimuth             0.002277  107.3  180
   dip                        0      0    0
-  rake                2.51e-15  85.73  180
+  rake                 2.6e-15   63.4  180
   semi/major               0.3    0.3  0.3
   minor/major                1      1    1
-azimuth percentiles (10, 50, 90): [  6. 115. 174.]
+azimuth percentiles (10, 50, 90): [  8. 127. 174.]
 ```
 
 <details><summary>Python</summary>
@@ -128,8 +128,8 @@ for name, estimate in ((f"global N{model.rotation[0]:.0f}°", global_estimate), 
 </details>
 
 ```text
- global N170°: RMSE 144.2 ppm, correlation 0.826
-        local: RMSE 145.6 ppm, correlation 0.823
+ global N170°: RMSE 160.8 ppm, correlation 0.777
+        local: RMSE 166.5 ppm, correlation 0.756
 ```
 
 <details><summary>Python</summary>
@@ -152,8 +152,8 @@ save(fig, "kriging")
 
 ![kriging](kriging.png)
 
-Local orientations lower the error and keep the north-eastern bodies elongated east-west, where the global direction
-crosses them.
+Here the local orientations raise the error a little. Most bodies run close to N170°, which the global direction
+already follows, and between them the gradient of the quick estimate turns the ellipses into swirls the truth lacks.
 
 Simulation takes the same field: each node's variogram and search follow the local direction, so continuity bends with
 the bodies instead of crossing them. The normal-score variogram is fitted along the major axis; the field supplies the

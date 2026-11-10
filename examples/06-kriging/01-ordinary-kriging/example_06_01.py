@@ -82,9 +82,9 @@ fig.colorbar(sd, ax=axes[2], shrink=0.8, label="ppm")
 save(fig, "maps")
 
 # %% [markdown]
-# Kriging smooths: the estimates vary less than the truth, a variance of 43 000 against 65 000 at the nodes.
+# Kriging smooths: the estimates vary less than the truth, a variance of 33 000 against 64 000 at the nodes.
 # Cross-validation shows no conditional bias (the slope of actual on estimate is near 1). A mean error² / variance of
-# 0.72 means the model's variance runs high here.
+# 0.75 means the model's variance runs high here.
 
 # %%
 fig, (a, b) = plt.subplots(1, 2, figsize=(9, 4), layout="constrained")

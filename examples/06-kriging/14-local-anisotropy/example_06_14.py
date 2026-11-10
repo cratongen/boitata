@@ -104,8 +104,8 @@ fig.colorbar(im, ax=axes, shrink=0.8, label="V (ppm)")
 save(fig, "kriging")
 
 # %% [markdown]
-# Local orientations lower the error and keep the north-eastern bodies elongated east-west, where the global direction
-# crosses them.
+# Here the local orientations raise the error a little. Most bodies run close to N170°, which the global direction
+# already follows, and between them the gradient of the quick estimate turns the ellipses into swirls the truth lacks.
 
 # %% [markdown]
 # Simulation takes the same field: each node's variogram and search follow the local direction, so continuity bends with

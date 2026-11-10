@@ -85,12 +85,12 @@ for name, estimate in (("kriging", ok), ("inverse distance", idw)):
     )
 
 # %% [markdown]
-# Kriging is within 0.3 % of the declustered mean; inverse distance is 14.2 % above it. That gap needs an
+# Kriging is 2.1 % above the declustered mean; inverse distance is 12.2 % above it. That gap needs an
 # explanation before anything else.
 #
 # !!! pitfall "Pitfall: checking against the naive mean"
-#     Against the naive sample mean of 427.7 ppm, inverse distance (325.4 ppm) looks closer than kriging
-#     (284.0 ppm), and a reviewer might conclude it "honors the data better". The naive mean counts every sample
+#     Against the naive sample mean of 406.7 ppm, inverse distance (315.9 ppm) looks closer than kriging
+#     (287.4 ppm), and a reviewer might conclude it "honors the data better". The naive mean counts every sample
 #     in the high-grade clusters at full weight, which is the same error inverse distance makes. Compare with the
 #     declustered mean.
 #
@@ -138,7 +138,7 @@ print(
 )
 
 # %% [markdown]
-# Inverse distance is higher in 79 % of the blocks, by 41.5 ppm on average. The largest differences lie at the
+# Inverse distance is higher in 74 % of the blocks, by 28.5 ppm on average. The largest differences lie at the
 # edges of the dense clusters, where a block's search reaches a few isolated samples and many clustered ones, the
 # case Figure 1 draws.
 #
@@ -164,9 +164,9 @@ for low, high in ((0, 400), (400, 800), (800, 1300)):
     )
 
 # %% [markdown]
-# The two models rank the blocks alike (correlation 0.957), yet the cloud sits off the 1:1 line. Of the 575
-# blocks kriged below 400 ppm, inverse distance puts 84 % higher, by 49.7 ppm on average; of the 9 above 800 ppm,
-# it puts 78 % lower. Inverse distance lifts the low-grade blocks whose neighborhoods reach into a high-grade
+# The two models rank the blocks alike (correlation 0.963), yet the cloud sits off the 1:1 line. Of the 608
+# blocks kriged below 400 ppm, inverse distance puts 76 % higher, by 29.4 ppm on average; of the 9 above 800 ppm,
+# it puts 67 % lower. Inverse distance lifts the low-grade blocks whose neighborhoods reach into a high-grade
 # cluster.
 #
 # !!! step "Step 5: Swaths against the declustered samples"
@@ -209,8 +209,8 @@ for row in zip(
     print(f"{cutoff:6.0f} {name:>5} {tonnage:16,.0f} {grade:7.1f} {dt:+10.1%} {dg:+11.1%}")
 
 # %% [markdown]
-# The shift carries into selection: at 200 ppm inverse distance reports 17.8 % more area above cutoff than
-# kriging, at a 0.7 % higher grade. The next tutorial turns this into tonnes and metal.
+# The shift carries into selection: at 200 ppm inverse distance reports 8.2 % more area above cutoff than
+# kriging, at a 4.6 % higher grade. The next tutorial turns this into tonnes and metal.
 #
 # !!! step "Step 7: Cross-validation"
 #     Leave-one-out cross-validation re-estimates each sample from its neighbors with itself left out. A small mean
@@ -224,9 +224,9 @@ for name, estimator in (("kriging", point_kriging), ("inverse distance", inverse
     print(f"{name:>16}  {cv.mean_error:10.1f} {cv.rmse:6.1f} {cv.correlation:6.3f} {cv.slope:6.2f}")
 
 # %% [markdown]
-# Kriging wins on every statistic: mean error 6.6 against 45.9 ppm, RMSE 153.5 against 180.5, and a slope of 1.04
-# against 1.09. A slope above 1 means the actual grades vary more than the estimates predict: inverse distance is
-# conditionally biased. (Cross-validation uses point kriging, since the samples are points.)
+# Kriging wins on mean error and RMSE: 8.9 against 47.4 ppm, and 166.0 against 187.8. The slopes are both near 1
+# (1.05 for kriging, 1.01 for inverse distance), so neither is clearly conditionally biased here: the inverse distance
+# error is a shift, not a smoothing. (Cross-validation uses point kriging, since the samples are points.)
 #
 # !!! check "Check before you move on"
 #     The metal survey has an exhaustive grid, so the true block averages are known here. They are never known on a real
@@ -244,23 +244,24 @@ for name, estimate in (("kriging", ok), ("inverse distance", idw)):
     )
 
 # %% [markdown]
-# The truth agrees with the samples: kriging overstates the mean by 1.6 %, inverse distance by 16.4 %, and the
-# kriged blocks are closer to the true ones (RMSE 90.6 against 115.2 ppm). Most of kriging's 1.6 % comes from the
-# declustered mean itself: 284.9 ppm is 1.9 % above the true 279.5 ppm, and no check against the samples can see
+# The truth agrees with the samples: kriging overstates the mean by 2.8 %, inverse distance by 13.0 %, and the
+# kriged blocks are closer to the true ones (RMSE 106.0 against 123.2 ppm). Part of kriging's 2.8 % comes from the
+# declustered mean itself: 281.6 ppm is 0.8 % above the true 279.5 ppm, and no check against the samples can see
 # that.
 #
 # ## The decision
 #
-# Keep the kriging. Every check made from the samples alone pointed the same way:
+# Keep the kriging. Every check made from the samples alone pointed the same way, except the cross-validation
+# slope, which is near 1 for both:
 #
 # <div class="bt-compare" markdown>
 #
 # | Check | Ordinary kriging | Inverse distance |
 # |---|---|---|
-# | Mean against declustered samples | −0.3 % | +14.2 % |
-# | Blocks above the other model | 21 % | 79 % |
+# | Mean against declustered samples | +2.1 % | +12.2 % |
+# | Blocks above the other model | 26 % | 74 % |
 # | Swaths | Follow the samples | Above them over most slices |
-# | Cross-validation RMSE, slope | 153.5 ppm, 1.04 | 180.5 ppm, 1.09 |
+# | Cross-validation RMSE, slope | 166.0 ppm, 1.05 | 187.8 ppm, 1.01 |
 #
 # </div>
 #

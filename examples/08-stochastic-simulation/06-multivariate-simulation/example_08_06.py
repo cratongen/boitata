@@ -56,7 +56,7 @@ print(f"{len(nodes.coords)} nodes, 20 realizations")
 # %% [markdown]
 # Both keep the correlation, the only dependence a linear rotation carries. PPMT also keeps the declustered
 # histograms and honors the composites. PCA factors depart from Gaussian, so simulating them as Gaussian shortens
-# the upper tail of chalcocite and puts high chalcocite with high tennantite twice as often.
+# the upper tail of chalcocite and puts high chalcocite with high tennantite 40 % more often.
 
 
 # %%

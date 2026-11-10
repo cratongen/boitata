@@ -38,7 +38,7 @@ print(f"{len(dd)} DD and {len(ch)} CH vein intercepts")
 </details>
 
 ```text
-260 DD and 2542 CH vein intercepts
+264 DD and 2542 CH vein intercepts
 ```
 
 `pairs` finds, for each DD intercept, the nearest CH intercept within 20 m, with each intercept in at most one pair
@@ -65,23 +65,24 @@ for lo, hi, n, rel in zip(bias["from"], bias["to"], bias["n"], bias["bias"], str
 </details>
 
 ```text
-59 pairs, mean Au DD 9.76 g/t, CH 29.13 g/t
-median Au DD 2.68 g/t, CH 4.42 g/t
-   1.7 m apart: DD    5.7, CH  1192.0 g/t
-   6.8 m apart: DD  184.0, CH     4.8 g/t
-   6.0 m apart: DD   59.5, CH     0.8 g/t
-without the first: mean Au DD 9.83 g/t, CH 9.08 g/t
-   0- 5 m:  22 pairs, bias of CH over DD  +777 %
-   5-10 m:  24 pairs, bias of CH over DD   -44 %
-  10-15 m:   8 pairs, bias of CH over DD    +3 %
-  15-20 m:   5 pairs, bias of CH over DD  +452 %
+54 pairs, mean Au DD 15.30 g/t, CH 33.12 g/t
+median Au DD 2.72 g/t, CH 4.89 g/t
+   0.4 m apart: DD    3.0, CH  1192.0 g/t
+   2.7 m apart: DD  521.0, CH     9.2 g/t
+   1.2 m apart: DD    8.2, CH   119.9 g/t
+without the first: mean Au DD 15.53 g/t, CH 11.26 g/t
+   0- 5 m:  24 pairs, bias of CH over DD  +139 %
+   5-10 m:  15 pairs, bias of CH over DD    -8 %
+  10-15 m:  11 pairs, bias of CH over DD  +149 %
+  15-20 m:   4 pairs, bias of CH over DD   +21 %
 ```
 
-One channel at 1192 g/t, paired with a DD intercept of 5.7 g/t, triples the CH mean on its own. Without it the paired
-means differ by less than 2 g/t, and the medians by less than 2 g/t. The bias swings from bin to bin with the few
-pairs in each, so the two sampling methods show no systematic difference. The pairs carry a warning instead: the Q-Q
-plot follows the 1:1 line except for its last few quantiles, and a mean of gold grades that rests on a few extreme
-values needs a top cut ([top cuts](../../03-exploratory-analysis/05-top-cuts/README.md)).
+One channel at 1192 g/t, paired with a DD intercept of 3.0 g/t, triples the CH mean on its own. Without it the paired
+means differ by about 4 g/t the other way, lifted by one DD intercept at 521 g/t, and the medians by about 2 g/t. The
+bias swings from bin to bin with the few pairs in each, too few to show a systematic difference between the two
+sampling methods. The pairs carry a warning instead: the Q-Q plot runs above the 1:1 line, furthest in its last few
+quantiles, and a mean of gold grades that rests on a few extreme values needs a top cut
+([top cuts](../../03-exploratory-analysis/05-top-cuts/README.md)).
 
 <details><summary>Python</summary>
 

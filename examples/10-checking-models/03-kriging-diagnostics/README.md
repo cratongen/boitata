@@ -56,9 +56,9 @@ save(fig, "diagnostics")
 
 ![diagnostics](diagnostics.png)
 
-The truth checks both. Over all blocks, the regression of true on estimated block grades has a slope close to the
-mean predicted slope. Blocks with efficiency of 0.7 or more sit closer to the truth; below 0.7, efficiency separates
-them poorly, one reason classification also uses sample spacing ([classification](../../10-checking-models/05-classification/README.md)).
+The truth checks both. Over all blocks, the regression of true on estimated block grades has a slope a little
+above the mean predicted slope. Blocks with efficiency of 0.7 or more sit closer to the truth; below 0.7, efficiency
+separates them poorly, one reason classification also uses sample spacing ([classification](../../10-checking-models/05-classification/README.md)).
 
 <details><summary>Python</summary>
 
@@ -77,10 +77,10 @@ for g, label in enumerate(("efficiency < 0.5", "0.5 to 0.7", ">= 0.7")):
 </details>
 
 ```text
-slope of regression: predicted mean 0.98, observed 1.02
-efficiency < 0.5:  11 blocks, RMSE 149.5 ppm, correlation with truth 0.05
-      0.5 to 0.7: 357 blocks, RMSE  97.1 ppm, correlation with truth 0.79
-          >= 0.7: 412 blocks, RMSE  82.4 ppm, correlation with truth 0.94
+slope of regression: predicted mean 0.98, observed 1.06
+efficiency < 0.5:  18 blocks, RMSE  98.5 ppm, correlation with truth 0.75
+      0.5 to 0.7: 525 blocks, RMSE 110.5 ppm, correlation with truth 0.79
+          >= 0.7: 237 blocks, RMSE  96.0 ppm, correlation with truth 0.90
 ```
 
 ## Neighborhood
@@ -114,17 +114,17 @@ print(f"{np.sum(d['value'] < 0)} negative estimates")
 </details>
 
 ```text
-    full search:  93% of blocks, mean distance 28.4 m, mean slope 0.99
-ellipse ran out:   7% of blocks, mean distance 39.2 m, mean slope 0.91
-negative weights    below -0.05: 222 blocks, RMSE  85.8 ppm, mean 123 ppm against 121 true
-negative weights -0.05 to -0.03: 205 blocks, RMSE  97.9 ppm, mean 265 ppm against 251 true
-negative weights    above -0.03: 353 blocks, RMSE  89.2 ppm, mean 396 ppm against 396 true
-2 negative estimates
+    full search:  90% of blocks, mean distance 28.6 m, mean slope 0.99
+ellipse ran out:  10% of blocks, mean distance 37.9 m, mean slope 0.91
+negative weights    below -0.05:  10 blocks, RMSE  65.5 ppm, mean 110 ppm against  67 true
+negative weights -0.05 to -0.03: 131 blocks, RMSE  95.3 ppm, mean 158 ppm against 157 true
+negative weights    above -0.03: 639 blocks, RMSE 108.6 ppm, mean 317 ppm against 308 true
+0 negative estimates
 ```
 
-Negative weights are strongest in and around the dense clusters of the west, where close samples screen the
-others. Those blocks lie in high grades and overstate the truth by about four times as much as the rest, with
-errors no larger; no estimate goes below zero.
+Negative weights are strongest in the sparse gaps between the clusters, where a few close samples screen the
+others. Those blocks lie in low grades and overstate the truth by about 40 ppm, where the rest come within 10 ppm,
+with errors no larger; no estimate goes below zero.
 
 <details><summary>Python</summary>
 

@@ -34,7 +34,7 @@ print(f"{len(drillholes)} holes, {len(samples)} assays")
 </details>
 
 ```text
-289 holes, 19247 assays
+289 holes, 19340 assays
 ```
 
 ## Samples inside each lens
@@ -70,9 +70,9 @@ for name in lenses:
 lens_1: closed True, 2.88 Mm3
 lens_2: closed True, 1.91 Mm3
 lens_3: closed True, 1.67 Mm3
-lens_1: 792 composites from 112 holes, 434 with a density
-lens_2: 427 composites from 78 holes, 298 with a density
-lens_3: 275 composites from 50 holes, 182 with a density
+lens_1: 793 composites from 113 holes, 442 with a density
+lens_2: 420 composites from 77 holes, 295 with a density
+lens_3: 271 composites from 48 holes, 205 with a density
 ```
 
 ## Declustering and capping
@@ -111,27 +111,27 @@ save(fig, "statistics")
 </details>
 
 ```text
-lens_1: mean 5.38 % Zn, declustered 5.18 % (25 m cells)
-lens_2: mean 6.32 % Zn, declustered 5.84 % (25 m cells)
-lens_3: mean 7.06 % Zn, declustered 6.87 % (10 m cells)
-cap  11.3 % Zn: 10.0% of composites cut,  8.8% of the metal removed
-cap  14.9 % Zn:  5.0% of composites cut,  4.4% of the metal removed
-cap  18.7 % Zn:  2.5% of composites cut,  2.0% of the metal removed
-cap  23.3 % Zn:  1.0% of composites cut,  0.8% of the metal removed
-cap  27.3 % Zn:  0.5% of composites cut,  0.3% of the metal removed
-cap  33.2 % Zn:  0.1% of composites cut,  0.0% of the metal removed
+lens_1: mean 6.16 % Zn, declustered 5.76 % (15 m cells)
+lens_2: mean 5.83 % Zn, declustered 5.35 % (20 m cells)
+lens_3: mean 6.91 % Zn, declustered 5.94 % (35 m cells)
+cap  11.0 % Zn: 10.0% of composites cut,  9.3% of the metal removed
+cap  15.1 % Zn:  5.0% of composites cut,  4.0% of the metal removed
+cap  18.1 % Zn:  2.5% of composites cut,  2.1% of the metal removed
+cap  22.0 % Zn:  1.0% of composites cut,  0.9% of the metal removed
+cap  25.6 % Zn:  0.5% of composites cut,  0.4% of the metal removed
+cap  37.4 % Zn:  0.1% of composites cut,  0.0% of the metal removed
 ```
 
 ![statistics](statistics.png)
 
-Declustering lowers every lens mean, most in lens 1. Capping the top 1 % of composites at 23.3 % Zn removes 0.8 %
+Declustering lowers every lens mean, most in lens 3. Capping the top 1 % of composites at 22.0 % Zn removes 0.9 %
 of the metal, and the probability plot shows no break in the upper tail: leave the grades uncapped.
 
 ## Zn variogram of lens 1
 
 Lens 1 has the most composites. A thin lens leaves few pairs across it, so the variogram is omnidirectional;
 kriging uses the variogram of the grades, simulation that of the declustered normal scores, rescaled to a unit
-sill. Both are fitted up to 60 m, just past the 45 m where γ first reaches its plateau: the longer lags hold three
+sill. Both are fitted up to 60 m, just past the 35 m where γ first reaches its plateau: the longer lags hold three
 to four times as many pairs, so with the fit weighted by pair count their scatter about the plateau would set the
 model and stretch the range to the end of the lags.
 
@@ -156,8 +156,8 @@ save(fig, "variogram")
 </details>
 
 ```text
-Zn: nugget 6.86, spherical sill 8.25, range 56 m
-normal scores: nugget 0.50, spherical sill 0.50, range 54 m
+Zn: nugget 8.67, spherical sill 19.64, range 82 m
+normal scores: nugget 0.35, spherical sill 0.65, range 82 m
 ```
 
 ![variogram](variogram.png)
@@ -232,10 +232,10 @@ print(f"density {np.nanmin(blocks['density']):.2f}-{np.nanmax(blocks['density'])
 </details>
 
 ```text
-pass 1: 78% of blocks
-pass 2: 22% of blocks
+pass 1: 94% of blocks
+pass 2: 6% of blocks
 pass 3: 0% of blocks
-density 2.92-4.54 t/m3
+density 2.93-4.74 t/m3
 ```
 
 ## Simulation at block support
@@ -262,11 +262,11 @@ print(f"mean {summary.mean.mean():.2f} % Zn; blocks above 5 % in more than 90 % 
 </details>
 
 ```text
-4394 parent blocks: P10 36%, P90 46% of them above 5 % Zn
-mean 4.96 % Zn; blocks above 5 % in more than 90 % of realizations: 1%
+4394 parent blocks: P10 42%, P90 49% of them above 5 % Zn
+mean 5.41 % Zn; blocks above 5 % in more than 90 % of realizations: 5%
 ```
 
-In eight realizations out of ten, between 36 and 46 % of the parent blocks exceed 5 % Zn, yet only 1 % of them do
+In eight realizations out of ten, between 42 and 49 % of the parent blocks exceed 5 % Zn, yet only 5 % of them do
 so in more than 90 % of the realizations: at this drill spacing few single blocks are certain ore, although the
 share of ore across the lens is well known.
 
@@ -316,15 +316,16 @@ save(fig, "swath")
 </details>
 
 ```text
-lens_1: kriged 4.80 % Zn, declustered composites 5.18 % (-7.2%), nearest neighbor 4.96 % (-3.2%)
-lens_2: kriged 5.74 % Zn, declustered composites 5.84 % (-1.8%), nearest neighbor 5.67 % (+1.2%)
-lens_3: kriged 6.49 % Zn, declustered composites 6.87 % (-5.6%), nearest neighbor 6.27 % (+3.5%)
+lens_1: kriged 5.82 % Zn, declustered composites 5.76 % (+1.0%), nearest neighbor 6.07 % (-4.2%)
+lens_2: kriged 5.34 % Zn, declustered composites 5.35 % (-0.1%), nearest neighbor 5.26 % (+1.5%)
+lens_3: kriged 6.28 % Zn, declustered composites 5.94 % (+5.7%), nearest neighbor 6.06 % (+3.8%)
 ```
 
 ![swath](swath.png)
 
-In lens 1 the kriged mean lies 3 % below the nearest-neighbor model and 7 % below the declustered composites; in
-lenses 2 and 3 it is 2 and 6 % below the declustered composites but 1 and 4 % above nearest neighbor. The two references disagree with each other as much as with the model: nearest neighbor spreads each
+In lens 1 the kriged mean lies 4 % below the nearest-neighbor model and 1 % above the declustered composites; in
+lens 2 it matches the declustered composites and lies 2 % above nearest neighbor, and in lens 3 it is 6 and 4 %
+above them. The two references disagree with each other as much as with the model: nearest neighbor spreads each
 edge composite over the blocks around it, and cell declustering depends on the cell size it settles on. Along
 northing and elevation, kriged blocks and nearest neighbor follow the same course, and the composites swing
 around both, as raw data do.
@@ -332,8 +333,8 @@ around both, as raw data do.
 ## Classification
 
 Measured blocks come from the first pass with a slope of regression of at least 0.6; indicated, from the first
-two passes with a slope of 0.3; the rest is inferred. With a nugget of 45 % of the sill and a 56 m range, only
-blocks close to several holes qualify as measured.
+two passes with a slope of 0.3; the rest is inferred. With a nugget of 31 % of the sill and an 82 m range, the
+first pass reaches nearly every block, and most of them qualify as measured.
 
 <details><summary>Python</summary>
 
@@ -352,9 +353,9 @@ for name in categories.names:
 </details>
 
 ```text
- measured: 36% of blocks
-indicated: 42% of blocks
- inferred: 21% of blocks
+ measured: 89% of blocks
+indicated: 8% of blocks
+ inferred: 3% of blocks
 ```
 
 Lens 1 is seen face on, on the plane through its middle, with its outline on that plane and its composites as
@@ -416,27 +417,27 @@ for groups in (block_lens, classes):
 
 ```text
                           kt   Zn %   kt Zn
-lens_1     ≥ 0 % Zn    9714   4.93   479.0
-lens_1     ≥ 5 % Zn    3767   7.16   269.8
-lens_2     ≥ 0 % Zn    6602   5.95   392.6
-lens_2     ≥ 5 % Zn    3762   7.76   291.9
-lens_3     ≥ 0 % Zn    5975   6.63   396.4
-lens_3     ≥ 5 % Zn    4402   7.58   333.7
-all        ≥ 0 % Zn   22291   5.69  1268.1
-all        ≥ 5 % Zn   11931   7.50   895.4
-indicated  ≥ 0 % Zn    9279   5.65   524.1
-indicated  ≥ 5 % Zn    4880   7.48   364.8
-inferred   ≥ 0 % Zn    4112   5.54   228.0
-inferred   ≥ 5 % Zn    2256   7.05   159.0
-measured   ≥ 0 % Zn    8899   5.80   515.9
-measured   ≥ 5 % Zn    4796   7.75   371.5
-all        ≥ 0 % Zn   22291   5.69  1268.1
-all        ≥ 5 % Zn   11931   7.50   895.4
+lens_1     ≥ 0 % Zn   10034   6.06   608.0
+lens_1     ≥ 5 % Zn    5370   8.10   434.7
+lens_2     ≥ 0 % Zn    6677   5.48   365.6
+lens_2     ≥ 5 % Zn    3545   7.04   249.7
+lens_3     ≥ 0 % Zn    5993   6.47   387.8
+lens_3     ≥ 5 % Zn    3773   7.91   298.5
+all        ≥ 0 % Zn   22703   6.00  1361.5
+all        ≥ 5 % Zn   12688   7.75   983.0
+indicated  ≥ 0 % Zn    1334   6.29    83.9
+indicated  ≥ 5 % Zn     889   7.53    67.0
+inferred   ≥ 0 % Zn     471   4.92    23.2
+inferred   ≥ 5 % Zn     231   6.02    13.9
+measured   ≥ 0 % Zn   20898   6.00  1254.5
+measured   ≥ 5 % Zn   11568   7.80   902.1
+all        ≥ 0 % Zn   22703   6.00  1361.5
+all        ≥ 5 % Zn   12688   7.75   983.0
 ```
 
-The three lenses hold 22.3 Mt at 5.69 % Zn, 1.27 Mt of zinc, of which 11.9 Mt at 7.50 % lie above 5 % Zn. Lens 1
-carries 38 % of the metal. Measured blocks, 8.9 Mt at 5.80 % Zn, gather around the holes; inferred ones fill the
-edges of the lenses and the gaps between holes.
+The three lenses hold 22.7 Mt at 6.00 % Zn, 1.36 Mt of zinc, of which 12.7 Mt at 7.75 % lie above 5 % Zn. Lens 1
+carries 45 % of the metal. Measured blocks, 20.9 Mt at 6.00 % Zn, cover nearly all of each lens; indicated and
+inferred ones, 1.8 Mt together, sit at the edges beyond the last holes.
 
 The model, sub-blocks, lens names, grades, classes and all, goes to Parquet and back unchanged.
 

@@ -78,7 +78,7 @@ save(fig, "simulated-blocks")
 
 
 # %% [markdown]
-# The band holds the true curve at each cutoff; at 300 ppm the truth sits at its lower edge.
+# The band holds the true curve at 300 and 800 ppm; at 500 ppm the truth sits just above its upper edge.
 
 
 # %% [markdown]
@@ -102,7 +102,7 @@ for label, volumes in (
 
 
 # %% [markdown]
-# The median error falls from 58 % on single blocks to 21 % on 50 m windows and 8 % on periods of 130 blocks.
+# The median error falls from 53 % on single blocks to 22 % on 50 m windows and 10 % on periods of 130 blocks.
 
 
 # %% [markdown]
@@ -123,8 +123,8 @@ print(f"at 500 ppm: type 1 {np.mean(table['type_1']):.1%}, type 2 {np.mean(table
 
 
 # %% [markdown]
-# Single 10 m blocks almost never meet ±15 % at 90 %. The truth lies within the MEE for 85 % of blocks, short of the
-# nominal 90 %, and 6 % of blocks fall on the wrong side of 500 ppm.
+# Single 10 m blocks almost never meet ±15 % at 90 %. The truth lies within the MEE for 82 % of blocks, short of the
+# nominal 90 %, and 8 % of blocks fall on the wrong side of 500 ppm.
 
 
 # %% [markdown]
@@ -177,7 +177,7 @@ save(fig, "localized-simulation")
 
 
 # %% [markdown]
-# Each panel keeps the mean of its realizations, and its blocks the spread the simulation gives them: variance 49 387,
-# between kriging's 41 398 and the true 50 084, with a correlation to the truth of 0.91 against kriging's 0.92. The
+# Each panel keeps the mean of its realizations, and its blocks the spread the simulation gives them: variance 40 077,
+# between kriging's 29 140 and the true 44 183, with a correlation to the truth of 0.88 against kriging's 0.87. The
 # pooling uses no change-of-support model, so its result depends on the realizations alone. [Uniform conditioning](../../09-recoverable-resources/02-uniform-conditioning/README.md) and [MIK localization](../../09-recoverable-resources/03-mik-localization/README.md)
 # localize the same panels from a change-of-support model.

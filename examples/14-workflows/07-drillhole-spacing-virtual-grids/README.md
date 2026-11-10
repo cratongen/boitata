@@ -28,8 +28,8 @@ from common import ACCENT, GRAY, HIGHLIGHT, INK, LIGHT, save
 
 ## The data
 
-The 470 samples of V (ppm), declustered with cell weights, give the normal-score variogram: a nugget of 0.11 and
-one spherical structure of range 105 m along azimuth 170°, half of that across. Turning bands with 500 bands
+The 470 samples of V (ppm), declustered with cell weights, give the normal-score variogram: a nugget of 0.24 and
+one spherical structure of range 115 m along azimuth 170°, 40 % of that across. Turning bands with 500 bands
 simulate on 2 m nodes. The production volumes are moving windows. For a quarter, `blocks=` averages the nodes to
 8 m panels and `window=(40, 40)` gives each panel the mean of the 5 × 5 panels around it, a 40 × 40 m window;
 for a year, 16 m panels and `window=(80, 80)`. A window spans an odd number of panels, so the panel side is a
@@ -73,10 +73,10 @@ print(f"{len(nodes.coords)} nodes, {inside(40).sum()} quarterly and {inside(80).
 ```text
 Variogram  sill 1, 1 structure
   rotation  azimuth 170°, dip 0°, rake 0°
-  ratios    semi/major 0.4845, minor/major 1
+  ratios    semi/major 0.4046, minor/major 1
   structure    sill  major   semi  minor
-  nugget     0.1106
-  spherical  0.8894  104.5  50.63  104.5
+  nugget     0.2395
+  spherical  0.7605    115  46.53    115
 19500 nodes, 924 quarterly and 168 yearly windows inside
 ```
 
@@ -103,7 +103,7 @@ print(
 </details>
 
 ```text
-candidate means 271 to 293 ppm; truths [3, 12, 5]: 280, 271, 276 ppm
+candidate means 269 to 294 ppm; truths [7, 13, 18]: 294, 282, 276 ppm
 ```
 
 !!! step "Step 2: Drill each truth on virtual grids"
@@ -202,18 +202,18 @@ save(fig, "virtual_grids")
 
 ```text
 spacing  median MEE 40 m  share ≤ 15 %: 40 m   80 m
-      5           7.0%              89.2%  100.0%
-    7.5          10.6%              70.9%  100.0%
-     10          13.4%              58.1%  99.8%
-   12.5          18.6%              32.9%  94.8%
-     15          21.8%              19.8%  78.6%
-     20          29.1%               6.6%  46.4%
+      5           9.2%              89.8%  100.0%
+    7.5          13.2%              63.2%  100.0%
+     10          16.8%              37.5%  98.0%
+   12.5          20.7%              18.2%  90.3%
+     15          24.2%               7.2%  68.1%
+     20          29.9%               1.6%  34.1%
 ```
 
 ![virtual_grids](virtual_grids.png)
 
-The median quarterly MEE grows from 7.0 % at 5 m to 29.1 % at 20 m. At 5 m, 89.2 % of the quarterly windows
-meet the criterion; at 7.5 m, 70.9 %; at 10 m, 58.1 %. A yearly window covers four times the area, and 99.8 %
+The median quarterly MEE grows from 9.2 % at 5 m to 29.9 % at 20 m. At 5 m, 89.8 % of the quarterly windows
+meet the criterion; at 7.5 m, 63.2 %; at 10 m, 37.5 %. A yearly window covers four times the area, and 98.0 %
 of them still meet it at 10 m.
 
 !!! step "Step 4: Required spacing"
@@ -246,15 +246,15 @@ save(fig, "required_spacing")
 </details>
 
 ```text
-40 m windows: P90 MEE at 5 m 15.4%; required spacing for the median window 10.8 m, for 90 % of windows nan m
-80 m windows: P90 MEE at 5 m 5.5%; required spacing for the median window 19.4 m, for 90 % of windows 13.5 m
+40 m windows: P90 MEE at 5 m 15.1%; required spacing for the median window 8.8 m, for 90 % of windows nan m
+80 m windows: P90 MEE at 5 m 6.7%; required spacing for the median window 17.3 m, for 90 % of windows 12.5 m
 ```
 
 ![required_spacing](required_spacing.png)
 
-The yearly volume needs holes every 13.5 m for 90 % of its windows, and its median window meets ±15 % up to
-19.4 m. The quarterly volume misses the 90 % mark on every grid tried: its P90 MEE is 15.4 % at 5 m, so
-`required_spacing` returns NaN. Its median window crosses 15 % at 10.8 m.
+The yearly volume needs holes every 12.5 m for 90 % of its windows, and its median window meets ±15 % up to
+17.3 m. The quarterly volume misses the 90 % mark on every grid tried: its P90 MEE is 15.1 % at 5 m, so
+`required_spacing` returns NaN. Its median window crosses 15 % at 8.8 m.
 
 !!! key "Key idea"
     The required spacing belongs to a volume and a confidence, not to the deposit. Averaging over a larger
@@ -298,21 +298,21 @@ for name in plans:
 </details>
 
 ```text
-40 m windows covered: 85.6%
-80 m windows covered: 87.8%
-holes between nodes, 5 m: 88.2% of quarterly windows; per truth 85.5% to 92.4%, standard deviation 2.2%
-holes between nodes, 10 m: 54.0% of quarterly windows; per truth 49.7% to 60.0%, standard deviation 3.9%
+40 m windows covered: 86.9%
+80 m windows covered: 87.7%
+holes between nodes, 5 m: 89.6% of quarterly windows; per truth 85.2% to 92.9%, standard deviation 2.3%
+holes between nodes, 10 m: 36.7% of quarterly windows; per truth 32.8% to 40.9%, standard deviation 2.7%
 ```
 
-The MEE covers the truth in 85.6 % of the quarterly windows and 87.8 % of the yearly ones, a little short of
-90 %. With the holes between nodes, 88.2 % of the quarterly windows meet ±15 % at 5 m and 54.0 % at 10 m. The
-share changes from truth to truth: at 10 m one truth scores 49.7 %, another 60.0 %, a standard deviation of
-3.9 points. The grids of Step 2 put holes on node centers, and they score 89.2 % at 5 m:
+The MEE covers the truth in 86.9 % of the quarterly windows and 87.7 % of the yearly ones, a little short of
+90 %. With the holes between nodes, 89.6 % of the quarterly windows meet ±15 % at 5 m and 36.7 % at 10 m. The
+share changes from truth to truth: at 10 m one truth scores 32.8 %, another 40.9 %, a standard deviation of
+2.7 points. The grids of Step 2 put holes on node centers, and they score 89.8 % at 5 m:
 a node that holds a sample keeps its value in every realization, which narrows its window.
 
 ## The decision
 
-Drill on 13 m or closer for yearly planning: at 12.5 m, 94.8 % of the 80 × 80 m windows meet ±15 % at 90 %.
+Drill on 12.5 m or closer for yearly planning: at 12.5 m, 90.3 % of the 80 × 80 m windows meet ±15 % at 90 %.
 A quarter needs holes closer than 5 m, which no resource drilling pays for; plan quarters from grade control.
 [The learning curve](../../14-workflows/08-drillhole-spacing-learning-curve/README.md) reads the same
 relation from one simulation of the current data.

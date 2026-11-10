@@ -29,7 +29,7 @@ print(f"{len(cd)} samples, corr(Cd, Zn) {np.corrcoef(cd, zn)[0, 1]:.2f}")
 # The cross-variogram is half the mean product of the Cd and Zn increments between co-located samples. The LMC fits the
 # two variograms and the cross-variogram together. The variables share the structures, a nugget and two spherical
 # ranges, and each structure's sill matrix stays positive semi-definite: its smallest eigenvalue is never negative. The
-# short structure takes the place of the nugget, which fits to zero.
+# short structure carries most of both variances; the long one adds a slow rise past 0.5 km.
 
 # %%
 experimentals = [

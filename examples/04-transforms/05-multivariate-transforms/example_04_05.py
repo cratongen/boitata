@@ -55,7 +55,8 @@ print("MAF variogram of each factor at 5 m:", np.round(transforms["MAF"].gammas_
 
 # %% [markdown]
 # The data and the four sets of factors. Linear factors are uncorrelated but keep the L-shaped cloud of two mineral
-# associations; the nonlinear ones fill the standard bivariate normal.
+# associations; the nonlinear ones move toward the standard bivariate normal, though the ties at the lowest grades stay
+# as lines.
 
 # %%
 fig, axes = plt.subplots(1, 5, figsize=(16, 3.5), layout="constrained")
@@ -70,6 +71,7 @@ for ax, (name, f) in zip(axes[1:], factors.items()):
 save(fig, "factors")
 
 # %% [markdown]
-# Every transform returns the data exactly and leaves uncorrelated factors. PCA and MAF keep some dependence (r(f1², f2)
-# of 0.07 and −0.08), and MAF leaves a skewed second factor (1.90). SCT and PPMT bring both to about 0, so you can
-# simulate their factors one at a time and keep the shape of the cloud.
+# Every transform returns the data exactly. PCA and MAF leave uncorrelated factors that keep strong dependence
+# (r(f1², f2) of 0.58 and 0.56) and a skewed second factor (0.91 and 0.98). SCT brings the dependence to about 0, so you
+# can simulate its factors one at a time and keep the shape of the cloud. PPMT, held back by the ties, leaves some
+# (r(f1, f2) of −0.14, r(f1², f2) of 0.20).

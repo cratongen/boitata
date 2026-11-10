@@ -20,38 +20,37 @@
 <text x="20" y="218" class="small">Variance 64,277</text>
 <text x="59.4" y="48" class="small">Mean 280</text>
 <line class="s-grid" x1="230" y1="200" x2="420" y2="200" stroke-width="1.5"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.40s" stroke-width=".8" x="230" y="73.3" width="15.8" height="126.7"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.43s" stroke-width=".8" x="245.8" y="127.2" width="15.8" height="72.8"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.46s" stroke-width=".8" x="261.7" y="142.1" width="15.8" height="57.9"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.49s" stroke-width=".8" x="277.5" y="154.2" width="15.8" height="45.8"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.52s" stroke-width=".8" x="293.3" y="170.6" width="15.8" height="29.4"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.55s" stroke-width=".8" x="309.2" y="180.7" width="15.8" height="19.3"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.58s" stroke-width=".8" x="325" y="190.6" width="15.8" height="9.4"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.61s" stroke-width=".8" x="340.8" y="196" width="15.8" height="4"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.64s" stroke-width=".8" x="356.7" y="198.3" width="15.8" height="1.7"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.67s" stroke-width=".8" x="372.5" y="199.1" width="15.8" height="0.9"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.70s" stroke-width=".8" x="388.3" y="199.6" width="15.8" height="0.4"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.73s" stroke-width=".8" x="404.2" y="199.8" width="15.8" height="0.2"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.40s" stroke-width=".8" x="230" y="79.5" width="15.8" height="120.5"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.43s" stroke-width=".8" x="245.8" y="124.9" width="15.8" height="75.1"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.46s" stroke-width=".8" x="261.7" y="134.8" width="15.8" height="65.2"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.49s" stroke-width=".8" x="277.5" y="154.6" width="15.8" height="45.4"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.52s" stroke-width=".8" x="293.3" y="170.2" width="15.8" height="29.8"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.55s" stroke-width=".8" x="309.2" y="184.8" width="15.8" height="15.2"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.58s" stroke-width=".8" x="325" y="189.6" width="15.8" height="10.4"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.61s" stroke-width=".8" x="340.8" y="195.4" width="15.8" height="4.6"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.64s" stroke-width=".8" x="356.7" y="198.5" width="15.8" height="1.5"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.67s" stroke-width=".8" x="372.5" y="199.3" width="15.8" height="0.7"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.70s" stroke-width=".8" x="388.3" y="199.9" width="15.8" height="0.1"/>
 <line class="s-ember a-fade" style="--d:0.9s" x1="265.4" y1="40" x2="265.4" y2="200" stroke-width="2"/>
 <line class="s-muted dash" x1="293.3" y1="60" x2="293.3" y2="200" stroke-width="1"/>
 <text x="230" y="26">5 × 5 m</text>
-<text x="297.3" y="70" class="small">18% above 500</text>
-<text x="230" y="218" class="small">Variance 55,716</text>
+<text x="297.3" y="70" class="small">17% above 500</text>
+<text x="230" y="218" class="small">Variance 52,686</text>
 <text x="269.4" y="48" class="small">Mean 280</text>
 <line class="s-grid" x1="440" y1="200" x2="630" y2="200" stroke-width="1.5"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.80s" stroke-width=".8" x="440" y="94.2" width="15.8" height="105.8"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.83s" stroke-width=".8" x="455.8" y="115" width="15.8" height="85"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.86s" stroke-width=".8" x="471.7" y="126.3" width="15.8" height="73.7"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.89s" stroke-width=".8" x="487.5" y="149" width="15.8" height="51"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.92s" stroke-width=".8" x="503.3" y="179.2" width="15.8" height="20.8"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.95s" stroke-width=".8" x="519.2" y="181.1" width="15.8" height="18.9"/>
-<rect class="f-night-soft s-night a-grow" style="--d:0.98s" stroke-width=".8" x="535" y="190.6" width="15.8" height="9.4"/>
-<rect class="f-night-soft s-night a-grow" style="--d:1.01s" stroke-width=".8" x="550.8" y="196.2" width="15.8" height="3.8"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.80s" stroke-width=".8" x="440" y="105.5" width="15.8" height="94.5"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.83s" stroke-width=".8" x="455.8" y="109.3" width="15.8" height="90.7"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.86s" stroke-width=".8" x="471.7" y="120.6" width="15.8" height="79.4"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.89s" stroke-width=".8" x="487.5" y="143.3" width="15.8" height="56.7"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.92s" stroke-width=".8" x="503.3" y="173.5" width="15.8" height="26.5"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.95s" stroke-width=".8" x="519.2" y="188.7" width="15.8" height="11.3"/>
+<rect class="f-night-soft s-night a-grow" style="--d:0.98s" stroke-width=".8" x="535" y="192.4" width="15.8" height="7.6"/>
+<rect class="f-night-soft s-night a-grow" style="--d:1.01s" stroke-width=".8" x="550.8" y="198.1" width="15.8" height="1.9"/>
 <line class="s-ember a-fade" style="--d:1.3s" x1="475.4" y1="40" x2="475.4" y2="200" stroke-width="2"/>
 <line class="s-muted dash" x1="503.3" y1="60" x2="503.3" y2="200" stroke-width="1"/>
 <text x="440" y="26">20 × 20 m</text>
-<text x="507.3" y="70" class="small">14% above 500</text>
-<text x="440" y="218" class="small">Variance 42,878</text>
+<text x="507.3" y="70" class="small">13% above 500</text>
+<text x="440" y="218" class="small">Variance 35,753</text>
 <text x="479.4" y="48" class="small">Mean 280</text>
 <text x="20" y="246" class="small">Metal survey V (ppm), 0 to 1500, same axes in each panel</text>
 </svg>

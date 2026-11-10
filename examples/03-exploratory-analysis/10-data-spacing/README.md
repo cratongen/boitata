@@ -55,8 +55,8 @@ save(fig, "plan")
 </details>
 
 ```text
-spacing in the lease: median 553 m, P10 361 m, P90 723 m
-6.9% of the lease lies outside the hull of the holes
+spacing in the lease: median 540 m, P10 372 m, P90 704 m
+6.6% of the lease lies outside the hull of the holes
 ```
 
 ![plan](plan.png)
@@ -94,8 +94,8 @@ for name, values in (("3D", volume), ("plan", plan)):
 </details>
 
 ```text
-  3D: median 108 m, P10 92 m, P90 148 m, blank 19.9%
-plan: median 96 m, P10 90 m, P90 103 m, blank 19.9%
+  3D: median 102 m, P10 87 m, P90 143 m, blank 19.8%
+plan: median 96 m, P10 90 m, P90 103 m, blank 19.8%
 ```
 
 The plan form also works on drill holes: `holes=` counts each hole once, at its nearest sample, so a hole with a

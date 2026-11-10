@@ -70,8 +70,8 @@ save(fig, "categories")
 # %% [markdown]
 # The single field keeps close to the sample proportions but allows contacts only between neighbors in the order, so
 # Portlandian appears as specks along each Sequanian-Quaternary contact. The hierarchical rule puts Portlandian next
-# to Kimmeridgian and under the cover, as in the true map, and matches 52 % of the nodes against 42 %. Neither
-# recovers Portlandian's 5 % of the area from 3 of 259 samples.
+# to Kimmeridgian and under the cover, as in the true map, and matches 52 % of the nodes against 41 %. Neither
+# recovers Portlandian's 5 % of the area from 5 of 259 samples.
 
 # %% [markdown]
 # ## Local proportions
@@ -108,15 +108,15 @@ bt.plot.category_legend(rock_types, fig, loc="outside lower center", ncol=5)
 save(fig, "local-proportions")
 
 # %% [markdown]
-# With local proportions, Argovian keeps to the north-west and the south, near its samples, and the realization
-# matches the true rock type at 55 % of the nodes, against 52 % with global proportions.
+# With local proportions, Argovian keeps to the north, the center and the south-west, near its samples, and the
+# realization matches the true rock type at 55 % of the nodes, against 52 % with global proportions.
 
 # %% [markdown]
 # ## Latent variograms
 #
 # The latent variograms so far were guesses. The rule and the latent variograms imply each rock type's indicator
 # variogram, so `fit_variograms` rescales the latent ranges until the implied variograms match the experimental ones.
-# The fit leaves out Portlandian, with 3 samples.
+# The fit leaves out Portlandian, with 5 samples.
 
 # %%
 experimental = [
@@ -148,6 +148,6 @@ axes[0].legend(loc="lower right")
 save(fig, "latent-variograms")
 
 # %% [markdown]
-# The fitted cover field is short (0.44 km) and the stages field long (1.25 km), so the stages form broad bands that
+# The fitted cover field is short (0.50 km) and the stages field long (1.16 km), so the stages form broad bands that
 # the cover patches over; with 0.8 km on both, the stages varied too fast. The fitted variograms follow the
-# experimental points of each rock type and bring the match to 59 %.
+# experimental points of each rock type and bring the match to 56 %.

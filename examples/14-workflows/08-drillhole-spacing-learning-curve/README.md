@@ -109,12 +109,12 @@ save(fig, "spacing_map")
 </details>
 
 ```text
-data spacing: median 15.29 m, P10 8.3 m, P90 20.6 m
+data spacing: median 15.09 m, P10 8.4 m, P90 20.5 m
 ```
 
 ![spacing_map](spacing_map.png)
 
-The median data spacing is 15.3 m; the infilled high-grade areas read under 8 m and the
+The median data spacing is 15.1 m; the infilled high-grade areas read under 8 m and the
 edges over 20 m.
 
 !!! step "Step 2: Uncertainty of every window"
@@ -145,8 +145,8 @@ for side in (40, 80):
 </details>
 
 ```text
-40 m windows: 924, MEE median 24.1%, 24.0% at or below 15 %
-80 m windows: 168, MEE median 12.1%, 67.3% at or below 15 %
+40 m windows: 924, MEE median 26.9%, 15.6% at or below 15 %
+80 m windows: 168, MEE median 14.5%, 55.4% at or below 15 %
 ```
 
 !!! step "Step 3: The learning curve"
@@ -173,12 +173,12 @@ for side, (summary, at_window, _) in windows.items():
 </details>
 
 ```text
-40 m windows: required spacing 11.3 m (median), 9.9 m (P90)
-80 m windows: required spacing 15.8 m (median), 14.5 m (P90)
+40 m windows: required spacing 10.5 m (median), nan m (P90)
+80 m windows: required spacing 15.4 m (median), 14.0 m (P90)
 ```
 
-A quarterly window meets ±15 % at the median up to 11.3 m of data spacing and at the P90 up to 9.9 m; a yearly
-window up to 15.8 m and 14.5 m.
+A quarterly window meets ±15 % at the median up to 10.5 m of data spacing, but its P90 stays above 15 % even in
+the densest bin, so `required_spacing` returns NaN. A yearly window meets it up to 15.4 m and 14.0 m.
 
 !!! step "Step 4: Overlay the virtual grids"
     Wilde (2010, §5.3) checks one method with the other. `spacing_study` repeats the quarterly virtual grids of the
@@ -224,19 +224,19 @@ for s, p50 in zip(grid["spacing"], grid["P50"], strict=True):
 </details>
 
 ```text
-virtual grid  5.0 m: median MEE 7.0%
-virtual grid  7.5 m: median MEE 10.7%
-virtual grid 10.0 m: median MEE 13.7%
-virtual grid 12.5 m: median MEE 17.8%
-virtual grid 15.0 m: median MEE 22.3%
-virtual grid 20.0 m: median MEE 28.5%
-virtual grid 25.0 m: median MEE 34.8%
+virtual grid  5.0 m: median MEE 8.6%
+virtual grid  7.5 m: median MEE 12.7%
+virtual grid 10.0 m: median MEE 15.8%
+virtual grid 12.5 m: median MEE 19.9%
+virtual grid 15.0 m: median MEE 23.1%
+virtual grid 20.0 m: median MEE 29.5%
+virtual grid 25.0 m: median MEE 36.7%
 ```
 
 ![learning_curve](learning_curve.png)
 
-Up to 12.5 m the virtual grids lie up to 4 points above the quarterly median of the learning curve: their
-median crosses 15 % near 11 m, against 11.3 m. Beyond 13 m they fall below it. The sparse windows of the learning
+Up to 12.5 m the virtual grids lie up to 2 points above the quarterly median of the learning curve: their
+median crosses 15 % near 9.4 m, against 10.5 m. Beyond 13 m they fall below it. The sparse windows of the learning
 curve sit at the edges of the area, with data on one side only, while a virtual grid has holes all around every
 window. Where the deposit has both kinds of data, the two methods agree within 2 m on the required spacing.
 
@@ -260,16 +260,16 @@ for side, (summary, _, true_window) in windows.items():
 </details>
 
 ```text
-40 m windows: truth within the MEE in 91.5%
-80 m windows: truth within the MEE in 87.5%
+40 m windows: truth within the MEE in 82.9%
+80 m windows: truth within the MEE in 85.7%
 ```
 
-The MEE covers the truth in 78.1 % of the quarterly windows and 84.5 % of the yearly ones, short of 90 %: the
+The MEE covers the truth in 82.9 % of the quarterly windows and 85.7 % of the yearly ones, short of 90 %: the
 model understates the uncertainty a little, so read the required spacings as upper bounds.
 
 ## The decision
 
-On the learning curve, 90 % of the yearly windows meet ±15 % where the data spacing is 14.5 m or less; the
-virtual grids gave 13.5 m. Drill to about 13 m for yearly planning, and leave the quarters to grade control.
+On the learning curve, 90 % of the yearly windows meet ±15 % where the data spacing is 14.0 m or less; the
+virtual grids gave 12.5 m. Drill to about 12.5 m for yearly planning, and leave the quarters to grade control.
 
 Full script: [`example_14_08.py`](example_14_08.py)

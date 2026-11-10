@@ -57,8 +57,8 @@ axes[0].set_ylabel("P2O5 (%)")
 save(fig, "swaths")
 
 # %% [markdown]
-# Within each horizon the swaths are flat. OXI stays between 11.0 and 13.8 % along easting and northing and SAP between
-# 8.0 and 9.4 %, about the noise that a hundred-odd samples per slice leave. The step between the two lines is much
+# Within each horizon the swaths are flat. OXI stays between 12.0 and 16.1 % along easting and northing and SAP between
+# 8.0 and 11.2 %, about the noise that a hundred-odd samples per slice leave. The step between the two lines is much
 # larger than any slope along them, so the horizon sets the grade: estimate each horizon on its own samples, with no
 # trend. In elevation the lines are noisier because the horizons follow the rolling topography, and one slice of
 # elevation cuts OXI on a hill and SAP in a valley. The slices at the ends hold few samples, and the bars tell you how

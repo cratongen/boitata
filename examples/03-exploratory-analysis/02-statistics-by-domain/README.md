@@ -22,7 +22,7 @@ print(f"{len(composites)} composites")
 </details>
 
 ```text
-16864 composites
+16811 composites
 ```
 
 `describe_by` gives the count, moments and quantiles of a column per category, then over all values on the last row.
@@ -42,18 +42,18 @@ for row in zip(*(stats[c] for c in ["category", "n", "mean", "cv", "P10", "P50",
 
 ```text
 LITH        n    mean    CV     P10     P50     P90     max
-DYK        45    0.06  0.48    0.02    0.06    0.11    0.12
-FWV      3606    0.06  0.71    0.02    0.05    0.12    0.39
-HWS       601    0.05  0.63    0.02    0.04    0.10    0.16
-MS        954    8.27  0.66    3.24    6.96   15.06   39.43
-SMS       826    3.24  0.65    1.23    2.72    5.96   15.20
-STR      1213    0.37  0.62    0.14    0.31    0.67    1.50
-VCL      9619    0.05  0.64    0.02    0.04    0.09    0.34
-all     16864    0.70  3.46    0.02    0.05    1.34   39.43
+DYK        32    0.04  0.20    0.03    0.04    0.05    0.05
+FWV      3534    0.05  0.71    0.02    0.04    0.10    0.45
+HWS       551    0.05  0.69    0.02    0.04    0.08    0.22
+MS        951    8.52  0.65    3.41    6.97   16.03   40.77
+SMS       831    3.26  0.69    1.28    2.70    5.93   23.61
+STR      1211    0.40  0.72    0.15    0.33    0.70    2.90
+VCL      9701    0.05  0.65    0.02    0.04    0.09    0.42
+all     16811    0.71  3.47    0.02    0.05    1.41   40.77
 ```
 
-Mean Zn falls from 8.27 % in MS to 3.24 % in SMS and 0.37 % in STR; the host rocks and the dike hold 0.05 to 0.06 %.
-Each lithology has a CV between 0.48 and 0.71, and all of them pooled reach 3.46: mixing populations makes that
+Mean Zn falls from 8.52 % in MS to 3.26 % in SMS and 0.40 % in STR; the host rocks and the dike hold 0.04 to 0.05 %.
+Each lithology has a CV between 0.20 and 0.72, and all of them pooled reach 3.47: mixing populations makes that
 spread.
 
 Box plots show the same quantiles side by side, sorted by median. The box spans P25 to P75, the whiskers P10 to P90,
@@ -98,7 +98,7 @@ print("MS over SMS at P10, P50, P90:", ", ".join(f"{r:.1f}" for r in ratio))
 </details>
 
 ```text
-MS over SMS at P10, P50, P90: 2.6, 2.6, 2.5
+MS over SMS at P10, P50, P90: 2.7, 2.6, 2.7
 ```
 
 ![distributions](distributions.png)

@@ -31,16 +31,16 @@ PointSet  470 points
   bounds  x 8 to 252, y 8 to 292, z 0 to 0
   column  type     unit  nulls  min   mean     max
   ID      float64            0    1  235.5     470
-  V       float64            0    0  427.7  1547.1
-  U       float64          195  2.5  883.2    8839
-  T       float64            0    1  1.819       2
+  V       float64            0    0  406.7  1445.3
+  U       float64          195    0  692.5  9402.9
+  T       float64            0    1  1.866       2
 BlockModel  regular, 3,120 blocks
   count   52 × 60 × 1
   size    5 × 5 × 1
   origin  2.5, 2.5, 0
   bounds  x 2.5 to 262.5, y 2.5 to 302.5, z 0 to 1
-  column  type     unit  nulls     min  mean   max
-  V       float64            0  0.2893   290  1050
+  column  type     unit  nulls    min   mean    max
+  V       float64            0  5.006  295.2  939.3
 ```
 
 ## Printing an object
@@ -53,9 +53,9 @@ print(kriging)
 ```
 
 ```text
-[PointSet(470 points, 4 columns), Variogram([('spherical', 48957.13457196875, 62.19381478589624)], nugget=27913.68340954646), Search(60.0, max_samples=24, min_samples=4), OrdinaryKriging(fitted on 470 samples, nugget 27913.7 + spherical(48957.1, 62.19), radius 60, 4 to 24 samples)]
+[PointSet(470 points, 4 columns), Variogram([('spherical', 39164.93214228283, 64.9567399209863)], nugget=35109.638460785056), Search(60.0, max_samples=24, min_samples=4), OrdinaryKriging(fitted on 470 samples, nugget 35109.6 + spherical(39164.9, 64.96), radius 60, 4 to 24 samples)]
 OrdinaryKriging  fitted on 470 samples
-  variogram  nugget 27913.7 + spherical(48957.1, 62.19)
+  variogram  nugget 35109.6 + spherical(39164.9, 64.96)
   search     radius 60, 4 to 24 samples
 ```
 

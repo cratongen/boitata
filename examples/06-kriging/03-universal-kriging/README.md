@@ -2,7 +2,7 @@
 
 The coal seam thins to the east. `detrend` fits that drift as a `Trend`. Universal kriging estimates the thickness with
 the drift re-fitted in every neighborhood, using the variogram of the residuals. Inside the drilled lease it agrees with
-ordinary kriging; beyond the last holes it keeps following the drift.
+ordinary kriging; beyond the last holes it extrapolates the local drift.
 
 <details><summary>Python</summary>
 
@@ -35,8 +35,8 @@ print(f"variance {holes['THICKNESS_M'].var():.2f} m², of the residuals {residua
 </details>
 
 ```text
-thickness = 2.88 -0.153 m/km east +0.054 m/km north
-variance 0.48 m², of the residuals 0.27 m²
+thickness = 8.74 -0.112 m/km east -0.073 m/km north
+variance 0.42 m², of the residuals 0.29 m²
 ```
 
 The drift inflates the variogram of the thickness at long lags, and the residuals level off lower. Universal kriging
@@ -63,14 +63,14 @@ save(fig, "variograms")
 </details>
 
 ```text
-Variogram  sill 0.4958, 1 structure
+Variogram  sill 0.4225, 1 structure
   structure    sill   range
-  nugget     0.1377
-  spherical  0.3582  5812.5
-Variogram  sill 0.2991, 1 structure
+  nugget      0.165
+  spherical  0.2575  5771.5
+Variogram  sill 0.3179, 1 structure
   structure    sill   range
-  nugget     0.1428
-  spherical  0.1563  2570.6
+  nugget      0.168
+  spherical  0.1499  3641.5
 ```
 
 ![variograms](variograms.png)
@@ -96,9 +96,9 @@ for name, estimator in (("ordinary", ordinary), ("universal", universal)):
 </details>
 
 ```text
-inside the lease: mean |UK - OK| 0.013 m
- ordinary cross-validation: ME +0.001  RMSE 0.431  slope 1.01
-universal cross-validation: ME -0.006  RMSE 0.433  slope 1.00
+inside the lease: mean |UK - OK| 0.016 m
+ ordinary cross-validation: ME +0.001  RMSE 0.482  slope 1.00
+universal cross-validation: ME -0.004  RMSE 0.486  slope 0.96
 ```
 
 <details><summary>Python</summary>
@@ -139,7 +139,7 @@ save(fig, "maps")
 
 Where holes surround a cell, the local drift and the local mean give nearly the same estimate, and the two
 cross-validations are equally good. The differences sit at the edges of the lease, where the neighbors lie on one
-side: universal kriging is thicker in the thick west corner and thinner in the thin northeast.
+side: universal kriging is thicker on the thick western edge and thinner at the thin eastern tip.
 
 ## Beyond the data
 
@@ -177,16 +177,17 @@ save(fig, "profile")
 
 ```text
 easternmost hole at 31892 m
-x = 32000: ordinary 1.15 m, universal 1.04 m, trend 0.90 m
-x = 34000: ordinary 1.30 m, universal 0.38 m, trend 0.59 m
-x = 36000: ordinary 1.18 m, universal 0.59 m, trend 0.29 m
+x = 32000: ordinary 0.86 m, universal 0.64 m, trend 1.25 m
+x = 34000: ordinary 0.90 m, universal -0.24 m, trend 1.03 m
+x = 36000: ordinary 1.32 m, universal -3.04 m, trend 0.80 m
 ```
 
 ![profile](profile.png)
 
-Past the last hole ordinary kriging levels off at the mean of its neighbors, about 1.2 m, while universal kriging
-carries the thinning on, down to 0.59 m at 36 km against 0.29 m for the trend. Whether that is right is a geological
-call. Universal kriging fits the local drift from the neighbors, so it needs a wider search than ordinary kriging:
-with a few one-sided samples the drift is poorly determined and its extrapolation erratic.
+Past the last hole ordinary kriging levels off near the mean of its neighbors, about 0.9 m, while universal kriging
+carries the thinning on much faster than the trend, down to an impossible -3.04 m at 36 km against 0.80 m for the
+trend. Whether the seam keeps thinning is a geological call; a negative thickness is not. Universal kriging fits the
+local drift from the neighbors, so it needs a wider search than ordinary kriging: with a few one-sided samples the
+drift is poorly determined and its extrapolation erratic.
 
 Full script: [`example_06_03.py`](example_06_03.py)

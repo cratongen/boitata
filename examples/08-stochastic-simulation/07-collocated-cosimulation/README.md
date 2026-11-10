@@ -32,7 +32,7 @@ print(f"{len(xy)} samples, correlation of Co and Ni {np.corrcoef(samples['Co'], 
 </details>
 
 ```text
-259 samples, correlation of Co and Ni 0.81
+259 samples, correlation of Co and Ni 0.79
 ```
 
 SGS simulates Ni first, 20 realizations on 50 m nodes, then Co twice with the same seeds: alone, and with row ``k``
@@ -82,8 +82,8 @@ for name, check in checks.items():
 </details>
 
 ```text
-Co alone    correlation with Ni -0.17 to 0.10 (samples 0.81)
-Co with Ni  correlation with Ni 0.80 to 0.88 (samples 0.81)
+Co alone    correlation with Ni -0.03 to 0.18 (samples 0.79)
+Co with Ni  correlation with Ni 0.76 to 0.86 (samples 0.79)
 ```
 
 <details><summary>Python</summary>
@@ -108,7 +108,7 @@ save(fig, "maps")
 ![maps](maps.png)
 
 The cosimulated Co still reproduces its own histogram and variogram (the [realization checks](../../10-checking-models/04-realization-checks/README.md)), and its correlation
-with Ni, 0.80 to 0.88 across realizations, brackets the samples' 0.81. Simulated alone, Co keeps little of it.
+with Ni, 0.76 to 0.86 across realizations, brackets the samples' 0.79. Simulated alone, Co keeps little of it.
 
 <details><summary>Python</summary>
 
@@ -159,12 +159,12 @@ print(f"co-DSS: correlation of Co and Ni over the nodes {min(r):.2f} to {max(r):
 </details>
 
 ```text
-correlation of Co and Ni grades at the samples: 0.81
-co-DSS: correlation of Co and Ni over the nodes 0.82 to 0.89
+correlation of Co and Ni grades at the samples: 0.79
+co-DSS: correlation of Co and Ni over the nodes 0.75 to 0.84
 ```
 
 The co-DSS realizations follow their Ni realizations as closely as the cosimulated SGS ones: their correlation with
-Ni brackets the samples' 0.75. The block above silences the warning on nodes DSS draws from the nearest reachable
+Ni brackets the samples' 0.79. The block above silences the warning on nodes DSS draws from the nearest reachable
 mean and variance.
 
 Full script: [`example_08_07.py`](example_08_07.py)

@@ -66,7 +66,7 @@ print(
 
 
 # %% [markdown]
-# Using Zn at the target lowers the error and removes the smoothing that flattens ordinary kriging:
+# Using Zn at the target lowers the error, but both estimates still vary less than the true values:
 
 # %%
 fig, axes = plt.subplots(1, 2, figsize=(9, 4.2), layout="constrained", sharey=True)

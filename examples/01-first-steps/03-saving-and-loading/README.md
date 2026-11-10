@@ -48,12 +48,12 @@ print(variogram)
 </details>
 
 ```text
-cap: 1004 ppm | declustered mean: 284.9 ppm
-Variogram  sill 0.9737, 2 structures
+cap: 995 ppm | declustered mean: 281.6 ppm
+Variogram  sill 1.022, 2 structures
   structure     sill  range
-  nugget      0.2162
-  spherical  0.02459  13.51
-  spherical   0.7329  72.72
+  nugget      0.3106
+  spherical  0.06002  20.23
+  spherical   0.6515  81.48
 ```
 
 ## Saving
@@ -82,10 +82,10 @@ print((folder / "search.json").read_text())
 </details>
 
 ```text
- declustering.json:   9962 bytes
-      capping.json:    174 bytes
- normal_score.json:  21200 bytes
-    variogram.json:    242 bytes
+ declustering.json:   9930 bytes
+      capping.json:    173 bytes
+ normal_score.json:  21199 bytes
+    variogram.json:    241 bytes
        search.json:    146 bytes
 {"type":"Search","format":1,"min_samples":4,"max_samples":24,"radius":60.0,"max_per_hole":null,"octant":false,"anisotropy":null,"high_grade":null}
 ```
@@ -132,7 +132,7 @@ save(fig, "estimate")
 
 ```text
 identical estimate: True
-declustered mean from the saved weights: 283.9 ppm (capped)
+declustered mean from the saved weights: 279.8 ppm (capped)
 ```
 
 ![estimate](estimate.png)

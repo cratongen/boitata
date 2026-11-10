@@ -89,11 +89,11 @@ axes[1].legend()
 save(fig, "tails")
 
 # %% [markdown]
-# The empirical table never goes past 225 g/t, and the reflected kernels pass it by only a few g/t (P99.9 227 g/t).
-# Sized on the body at 2.2 g/t wide, they leave each high composite a spike of its own. Kernels on log Au widen with the
-# grade and carry the tail well past the highest composite, with P99.9 at 434 g/t for the Silverman width. A wide log
-# kernel inflates the mean by about exp(h²/2), 1.18 for h = 0.57, which lifts 10.24 g/t to 12.06. The width of 0.3 keeps
-# the mean within 5 % (10.73 g/t) and still sets P99.9 at 318 g/t. Compare the mean of a reference with the declustered
+# The empirical table never goes past 158 g/t, and the reflected kernels pass it by only a few g/t (P99.9 160 g/t).
+# Sized on the body at 2.5 g/t wide, they leave each high composite a spike of its own. Kernels on log Au widen with the
+# grade and carry the tail well past the highest composite, with P99.9 at 396 g/t for the Silverman width. A wide log
+# kernel inflates the mean by about exp(h²/2), 1.20 for h = 0.61, which lifts 11.07 g/t to 13.35. The width of 0.3 keeps
+# the mean within 5 % (11.60 g/t) and still sets P99.9 at 233 g/t. Compare the mean of a reference with the declustered
 # mean before you simulate with it.
 
 # %% [markdown]
@@ -170,8 +170,8 @@ axes[0].set_ylabel(names[1])
 save(fig, "imputed")
 
 # %% [markdown]
-# Of the hidden samples, 3.5 % have both minerals above their P80. One Gaussian imputes 5.6 %: it draws tennantite from
-# the correlation of the scores alone, and that correlation is weak, so high chalcocite gets typical tennantite. The
-# mixture imputes 3.6 %, because it first picks the arm of the L that the chalcocite of the sample points to. The
+# Of the hidden samples, 3.9 % have both minerals above their P80. One Gaussian imputes 3.1 %: it draws tennantite from
+# the correlation of the scores alone, one number for both arms of the L. The mixture comes closer, at 4.2 %, because
+# it first picks the arm of the L that the chalcocite of the sample points to. The
 # one-Gaussian imputer of [imputation](../../04-transforms/06-imputation/README.md) stays the default; `components=None`
 # lets BIC decide.

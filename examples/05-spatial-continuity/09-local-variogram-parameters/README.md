@@ -56,7 +56,7 @@ print(f"global ratio {model.ratios[0]:.2f}, ranges {[round(s.range) for s in mod
 </details>
 
 ```text
-global ratio 0.37, ranges [8, 104] m
+global ratio 0.42, ranges [22, 105] m
 ```
 
 ## Variograms along the local directions
@@ -90,7 +90,7 @@ save(fig, "variograms")
 
 `local_variogram_parameters` fits the shape of the global model (nugget and structures, rescaled to the variance of
 the samples in a window) to such variograms. With one window over the whole deposit it returns one fit: in the global
-frame it gives back the global model (scale 1), in the local frames a longer and narrower one.
+frame it gives a longer and narrower model than the global one, in the local frames longer and narrower still.
 
 <details><summary>Python</summary>
 
@@ -106,8 +106,8 @@ for name, field in (("global frame", None), ("local frames", lva)):
 </details>
 
 ```text
-global frame: ratio 0.22, scale 1.21
-local frames: ratio 0.27, scale 1.18
+global frame: ratio 0.21, scale 1.67
+local frames: ratio 0.16, scale 2.35
 ```
 
 ## Moving-window fits
@@ -131,8 +131,8 @@ print("ratio percentiles (10, 50, 90):", np.percentile(fitted.ratios[:, 0], [10,
 </details>
 
 ```text
-scale percentiles (10, 50, 90): [0.77 0.97 1.24]
-ratio percentiles (10, 50, 90): [0.16 0.33 0.42]
+scale percentiles (10, 50, 90): [1.14 3.48 5.33]
+ratio percentiles (10, 50, 90): [0.06 0.12 0.31]
 ```
 
 <details><summary>Python</summary>
@@ -181,10 +181,10 @@ for name, estimate in estimates.items():
 </details>
 
 ```text
-        global N170°: RMSE 144.2 ppm, correlation 0.826
-        local angles: RMSE 145.6 ppm, correlation 0.823
-            + scales: RMSE 145.9 ppm, correlation 0.822
- + scales and ratios: RMSE 146.3 ppm, correlation 0.821
+        global N170°: RMSE 160.8 ppm, correlation 0.777
+        local angles: RMSE 166.5 ppm, correlation 0.756
+            + scales: RMSE 167.6 ppm, correlation 0.752
+ + scales and ratios: RMSE 173.3 ppm, correlation 0.734
 ```
 
 <details><summary>Python</summary>
@@ -210,12 +210,13 @@ save(fig, "kriging")
 
 ![kriging](kriging.png)
 
-The scales alone change the estimate little: RMSE 145.9 against 145.6 ppm. Longer ranges with the same nugget and
-ratios leave the kriging weights close. The fitted ratios change them: the windows see bodies about 0.14 as wide as
-they are long, against 0.33 in the global model, and kriging with those needle-thin ellipses streaks along the field's
+The scales alone change the estimate little: RMSE 167.6 against 166.5 ppm. Longer ranges with the same nugget and
+ratios leave the kriging weights close. The fitted ratios change them: the windows see bodies about 0.12 as wide as
+they are long, against 0.42 in the global model, and kriging with those needle-thin ellipses streaks along the field's
 directions. Wherever the guide's directions are off, the estimate follows them across the bodies, and the RMSE rises
-to 146.3 ppm, worse than the global model. Narrow local ratios pay off only as far as you can trust the orientation
-field. With a field this rough, keep the global ratios and take the local angles and scales. SGS, indicator and
+to 173.3 ppm, worse than the global model. Narrow local ratios pay off only as far as you can trust the orientation
+field. With a field this rough even the local angles alone lose to the global model, 166.5 against 160.8 ppm, so keep
+the global model here and take the local angles and scales only where the field can be trusted. SGS, indicator and
 categorical kriging take the same `anisotropy=` field, scales included.
 
 Full script: [`example_05_09.py`](example_05_09.py)

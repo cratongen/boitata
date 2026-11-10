@@ -92,5 +92,5 @@ save(fig, "trend")
 
 # %% [markdown]
 # Plain SGS follows the trend where data are dense, but pulls the low-trend quarter up toward the global mean. With
-# the trend, each quarter keeps the declustered mean of its data, and the realizations correlate with the trend about
-# as much as the data do.
+# the trend, the lower three quarters keep close to the declustered mean of their data, the top quarter runs high as
+# with plain SGS, and the realizations correlate with the trend about as much as the data do.

@@ -42,7 +42,7 @@ print(grid)
 print(rich)
 
 # %% [markdown]
-# The masked model keeps 11361 of the 78000 cells and stores its cell index with the attributes.
+# The masked model keeps 10155 of the 78000 cells and stores its cell index with the attributes.
 
 # %%
 folder = Path(tempfile.mkdtemp())
@@ -57,7 +57,7 @@ print(back)
 print("same cells:", np.array_equal(back.index, rich.index), "| crs:", back.crs)
 
 # %% [markdown]
-# The full grid takes 1.04 MB in parquet against 4.04 MB as CSV. Polars reads the same file and handles grouping and
+# The full grid takes 1.03 MB in parquet against 4.05 MB as CSV. Polars reads the same file and handles grouping and
 # summaries. A regular model stores no coordinates: its geometry is implicit and the row number is the cell index,
 # x fastest, so a 1 m row of 260 cells is one northing.
 

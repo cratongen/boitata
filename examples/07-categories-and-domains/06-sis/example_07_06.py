@@ -121,8 +121,8 @@ bt.plot.category_legend(rock_types, fig, loc="outside lower center", ncol=5)
 save(fig, "realizations")
 
 # %% [markdown]
-# Each realization matches the true rock type at 44 % to 48 % of the nodes, and two realizations differ wherever the
-# samples leave room. On average the proportions stay within 0.02 of the true grid, except Portlandian: no realization
-# recovers its 5 % of the area from 3 of 259 samples. The most likely type matches at 57 %, more than any
+# Each realization matches the true rock type at 47 % to 52 % of the nodes, and two realizations differ wherever the
+# samples leave room. On average the proportions stay within 0.05 of the true grid, and Portlandian falls short: no
+# realization recovers its 5 % of the area from 5 of 259 samples. The most likely type matches at 60 %, more than any
 # realization, though it is a smooth estimate and no possible map looks like it. Entropy peaks at the contacts and
 # far from the samples.

@@ -30,8 +30,8 @@ print(f"highest {np.sort(au)[-3:].round(1)} g/t")
 </details>
 
 ```text
-107 composites of 1 m in vein V4, declustered mean Au 10.24 g/t
-highest [ 59.5  73.4 224.7] g/t
+107 composites of 1 m in vein V4, declustered mean Au 11.07 g/t
+highest [111.9 135.4 158.1] g/t
 ```
 
 ## A smooth tail for one variable
@@ -61,8 +61,8 @@ for name, kde in references.items():
 </details>
 
 ```text
-reflected at 0  bandwidth 2.17 g/t
-log space       bandwidth 0.57 (log units)
+reflected at 0  bandwidth 2.45 g/t
+log space       bandwidth 0.61 (log units)
 log, width 0.3  bandwidth 0.30 (log units)
 ```
 
@@ -105,19 +105,19 @@ save(fig, "tails")
 
 ```text
                   mean    P50     P99   P99.9  > max (%)
-empirical        10.07   3.29    79.2   224.7       0.00
-reflected at 0   10.72   3.73    73.8   227.2       0.39
-log space        12.06   3.03   133.7   434.4       0.42
-log, width 0.3   10.73   3.14    94.8   318.0       0.39
+empirical        11.08   2.78   137.7   158.1       0.00
+reflected at 0   11.66   4.20   136.2   159.9       0.21
+log space        13.35   3.23   168.1   395.6       1.12
+log, width 0.3   11.60   3.12   143.3   233.1       0.71
 ```
 
 ![tails](tails.png)
 
-The empirical table never goes past 225 g/t, and the reflected kernels pass it by only a few g/t (P99.9 227 g/t).
-Sized on the body at 2.2 g/t wide, they leave each high composite a spike of its own. Kernels on log Au widen with the
-grade and carry the tail well past the highest composite, with P99.9 at 434 g/t for the Silverman width. A wide log
-kernel inflates the mean by about exp(h²/2), 1.18 for h = 0.57, which lifts 10.24 g/t to 12.06. The width of 0.3 keeps
-the mean within 5 % (10.73 g/t) and still sets P99.9 at 318 g/t. Compare the mean of a reference with the declustered
+The empirical table never goes past 158 g/t, and the reflected kernels pass it by only a few g/t (P99.9 160 g/t).
+Sized on the body at 2.5 g/t wide, they leave each high composite a spike of its own. Kernels on log Au widen with the
+grade and carry the tail well past the highest composite, with P99.9 at 396 g/t for the Silverman width. A wide log
+kernel inflates the mean by about exp(h²/2), 1.20 for h = 0.61, which lifts 11.07 g/t to 13.35. The width of 0.3 keeps
+the mean within 5 % (11.60 g/t) and still sets P99.9 at 233 g/t. Compare the mean of a reference with the declustered
 mean before you simulate with it.
 
 ## A mixture for two mineral associations
@@ -145,8 +145,8 @@ print("proportions", mixture.proportions_.round(2))
 
 ```text
 7213 composites; BIC by number of components:
-  1: 57280, 2: 3671, 3: 2010, 4: 1372, 5: 1035, 6: -7481
-proportions [0.6  0.1  0.09 0.04 0.13 0.05]
+  1: 58022, 2: 55093, 3: 7740, 4: 6627, 5: -772, 6: -1926
+proportions [0.14 0.53 0.1  0.1  0.08 0.05]
 ```
 
 <details><summary>Python</summary>
@@ -216,16 +216,16 @@ save(fig, "imputed")
 
 ```text
 3627 tennantite values hidden; both above their P80:
-  truth 0.068
-  one Gaussian 0.047
-  mixture 0.062
+  truth 0.039
+  one Gaussian 0.031
+  mixture 0.042
 ```
 
 ![imputed](imputed.png)
 
-Of the hidden samples, 3.5 % have both minerals above their P80. One Gaussian imputes 5.6 %: it draws tennantite from
-the correlation of the scores alone, and that correlation is weak, so high chalcocite gets typical tennantite. The
-mixture imputes 3.6 %, because it first picks the arm of the L that the chalcocite of the sample points to. The
+Of the hidden samples, 3.9 % have both minerals above their P80. One Gaussian imputes 3.1 %: it draws tennantite from
+the correlation of the scores alone, one number for both arms of the L. The mixture comes closer, at 4.2 %, because
+it first picks the arm of the L that the chalcocite of the sample points to. The
 one-Gaussian imputer of [imputation](../../04-transforms/06-imputation/README.md) stays the default; `components=None`
 lets BIC decide.
 

@@ -102,7 +102,7 @@ map_axes(ax, "Data spacing, n = 4 to 10")
 save(fig, "spacing_map")
 
 # %% [markdown]
-# The median data spacing is 15.3 m; the infilled high-grade areas read under 8 m and the
+# The median data spacing is 15.1 m; the infilled high-grade areas read under 8 m and the
 # edges over 20 m.
 #
 # !!! step "Step 2: Uncertainty of every window"
@@ -147,8 +147,8 @@ for side, (summary, at_window, _) in windows.items():
     )
 
 # %% [markdown]
-# A quarterly window meets ±15 % at the median up to 11.3 m of data spacing and at the P90 up to 9.9 m; a yearly
-# window up to 15.8 m and 14.5 m.
+# A quarterly window meets ±15 % at the median up to 10.5 m of data spacing, but its P90 stays above 15 % even in
+# the densest bin, so `required_spacing` returns NaN. A yearly window meets it up to 15.4 m and 14.0 m.
 #
 # !!! step "Step 4: Overlay the virtual grids"
 #     Wilde (2010, §5.3) checks one method with the other. `spacing_study` repeats the quarterly virtual grids of the
@@ -189,8 +189,8 @@ for s, p50 in zip(grid["spacing"], grid["P50"], strict=True):
     print(f"virtual grid {s:4.1f} m: median MEE {p50:.1%}")
 
 # %% [markdown]
-# Up to 12.5 m the virtual grids lie up to 4 points above the quarterly median of the learning curve: their
-# median crosses 15 % near 11 m, against 11.3 m. Beyond 13 m they fall below it. The sparse windows of the learning
+# Up to 12.5 m the virtual grids lie up to 2 points above the quarterly median of the learning curve: their
+# median crosses 15 % near 9.4 m, against 10.5 m. Beyond 13 m they fall below it. The sparse windows of the learning
 # curve sit at the edges of the area, with data on one side only, while a virtual grid has holes all around every
 # window. Where the deposit has both kinds of data, the two methods agree within 2 m on the required spacing.
 #
@@ -209,10 +209,10 @@ for side, (summary, _, true_window) in windows.items():
     print(f"{side} m windows: truth within the MEE in {np.mean(check['covered'][keep]):.1%}")
 
 # %% [markdown]
-# The MEE covers the truth in 78.1 % of the quarterly windows and 84.5 % of the yearly ones, short of 90 %: the
+# The MEE covers the truth in 82.9 % of the quarterly windows and 85.7 % of the yearly ones, short of 90 %: the
 # model understates the uncertainty a little, so read the required spacings as upper bounds.
 #
 # ## The decision
 #
-# On the learning curve, 90 % of the yearly windows meet ±15 % where the data spacing is 14.5 m or less; the
-# virtual grids gave 13.5 m. Drill to about 13 m for yearly planning, and leave the quarters to grade control.
+# On the learning curve, 90 % of the yearly windows meet ±15 % where the data spacing is 14.0 m or less; the
+# virtual grids gave 12.5 m. Drill to about 12.5 m for yearly planning, and leave the quarters to grade control.

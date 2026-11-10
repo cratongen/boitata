@@ -104,8 +104,8 @@ for a, b, t, g in zip(moved["from"], moved["to"], moved["tonnage"], moved["mean_
     print(f"{a:>4} to {b:4} {t / 1e3:5.1f} kt at {g:.2f} % Zn")
 
 # %% [markdown]
-# Under 1 % of the tonnage changes rock, at grades far from random: the volcanic cells taken into the sulfides run
-# near 1.8 % Zn, while the sulfide specks given to the footwall hold 0.3 %. The matrices show each row as shares of
+# About 1 % of the tonnage changes rock, at grades far from random: the volcanic cells taken into the sulfides run
+# near 1.2 % Zn, while the sulfide specks given to the volcanics hold 3.2 %. The matrices show each row as shares of
 # the rock it starts from, tonnage on the left and zinc on the right. The plot outlines the diagonal and leaves it
 # blank, so the grays show only what moves.
 

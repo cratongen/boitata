@@ -66,9 +66,9 @@ ax.set(xlabel="Cell size (m)", ylabel="Declustered mean (m)", title="Mean thickn
 save(fig, "declustering")
 
 # %% [markdown]
-# The minimum falls at 700 m, the spacing of the regional grid: one regional hole per cell, the infill sharing its
-# cell's weight. The weights are averaged over the same 25 origins, so their mean is the curve's minimum, 1.75 m:
-# the infill inflates the plain mean by about 0.3 m.
+# The minimum falls at 800 m, about the spacing of the regional grid: one regional hole per cell, the infill sharing its
+# cell's weight. The weights are averaged over the same 25 origins, so their mean is the curve's minimum, 1.80 m:
+# the infill inflates the plain mean by about 0.2 m.
 #
 # ## An anisotropic variogram
 #
@@ -107,8 +107,8 @@ ax.legend(loc="lower right", fontsize=8)
 save(fig, "variogram")
 
 # %% [markdown]
-# Half the residual variance is nugget. The rest is continuous over 3.5 km toward N53° and half of that across,
-# where the residuals rise above the sill and fall back below it: bands of thick and thin coal elongated N53°.
+# Half the residual variance is nugget. The rest is continuous over 4.6 km toward N59° and half of that across,
+# where the residuals rise above the sill and fall back below it: bands of thick and thin coal elongated N59°.
 #
 # ## Ordinary or universal kriging
 #
@@ -168,8 +168,8 @@ ax.set(xlabel="Easting (m)", ylabel="Thickness (m)", title="Swath by easting")
 save(fig, "swath")
 
 # %% [markdown]
-# Both smooth the holes, as kriging does. In the easternmost kilometer, where the holes average 1.17 m, universal
-# kriging gives 1.14 m and ordinary kriging 1.23 m: the plane carries the thinning into the edge cells. Keep
+# Both smooth the holes, as kriging does. In the easternmost kilometer, where the holes average 0.87 m, universal
+# kriging gives 0.99 m and ordinary kriging 1.13 m: the plane carries the thinning into the edge cells. Keep
 # universal kriging for the tonnes.
 
 # %% [markdown]
@@ -221,7 +221,7 @@ ax.set(xlabel="Coal in the lease (Mt)", ylabel="Realizations", title="Total tonn
 save(fig, "tonnes")
 
 # %% [markdown]
-# From P10 to P90 the simulated totals span 174.0 to 179.2 Mt, ±1.5 % around 176.5 Mt, and the kriged 176.8 Mt
+# From P10 to P90 the simulated totals span 179.7 to 186.8 Mt, ±1.9 % around 183.3 Mt, and the kriged 183.0 Mt
 # lies within. With a hole every 700 m or closer, errors in single cells cancel over the 7202 cells of the lease.
 # The assumed density weighs more: 0.1 t/m³ either way moves the total more than the whole range from P10 to P90.
 
@@ -255,8 +255,8 @@ map_axes(ax, "Resource classes by drill spacing")
 save(fig, "classes")
 
 # %% [markdown]
-# Measured cells, a quarter of the lease, sit on the infill where the seam is thickest, 2.39 m on average, and hold
-# 62.6 Mt. Indicated cells cover the regional grid, 91.5 Mt; inferred ones, 22.7 Mt, lie at the edges of the lease
+# Measured cells, a quarter of the lease, sit on the infill where the seam is thickest, 2.31 m on average, and hold
+# 59.1 Mt. Indicated cells cover the regional grid, 104.7 Mt; inferred ones, 19.1 Mt, lie at the edges of the lease
 # beyond the last holes, and where the regional grid has gaps. Spacing ignores the variogram; [classification](../../10-checking-models/05-classification/README.md) classifies
 # from the kriging itself.
 #

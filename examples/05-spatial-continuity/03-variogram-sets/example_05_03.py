@@ -34,7 +34,7 @@ print(f"Cd × Zn: {len(vs['Cd', 'Zn'].lags)} lags, {int(vs['Cd', 'Zn'].counts.su
 # %% [markdown]
 # The linear model of coregionalization fits all 28 at once. Each structure has a 7 × 7 sill matrix, kept positive
 # semi-definite, so the model is valid for cokriging any subset of the metals. Its total sill matrix gives correlations
-# between the metals close to those of the samples:
+# between the metals within about 0.1 of those of the samples:
 
 # %%
 lmc = bt.Coregionalization.fit(vs, ["spherical", "spherical"])
@@ -48,8 +48,8 @@ print(f"largest |model - sample| correlation: {np.abs(model_corr - sample_corr)[
 
 # %% [markdown]
 # The diagonal holds the direct variograms and the panels above it the cross variograms, each with the fitted model. Co
-# and Ni gain most of their sill over the long structure, Cu and Pb over the short one, and each cross variogram mixes
-# the two in its own proportions.
+# and Ni gain most of their sill over the long structure, Cu and Pb hold most of theirs in the nugget, and each cross
+# variogram mixes the structures in its own proportions.
 
 # %%
 fig, axes = bt.plot.variograms(vs, model=lmc)

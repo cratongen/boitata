@@ -60,7 +60,7 @@ lens_pole /= np.linalg.norm(lens_pole)
 </details>
 
 ```text
-16070 composites
+16002 composites
 lens 1: dips 56 degrees towards 114
 lens 2: dips 54 degrees towards 112
 lens 3: dips 55 degrees towards 112
@@ -93,20 +93,20 @@ print(f"minor axis to lens pole: {angle:.1f} degrees")
 </details>
 
 ```text
-rotation (azimuth, dip, rake): [184.7  23.3 129.5]
-ranges (major, semi, minor):   [272. 238.  34.]
-ratios:                        [0.87 0.13]
-     major axis: azimuth 184.7, dip 23.3
-semi-major axis: azimuth 069.1, dip 45.1
-     minor axis: azimuth 292.8, dip 35.8
-plane of the major and semi-major axes: dips 54 towards 113
+rotation (azimuth, dip, rake): [201.7   2.2 127.2]
+ranges (major, semi, minor):   [333. 210.  44.]
+ratios:                        [0.63 0.13]
+     major axis: azimuth 201.7, dip  2.2
+semi-major axis: azimuth 108.8, dip 52.8
+     minor axis: azimuth 293.4, dip 37.1
+plane of the major and semi-major axes: dips 53 towards 113
 mean lens plane:                        dips 55 towards 112
-minor axis to lens pole: 0.9 degrees
+minor axis to lens pole: 2.4 degrees
 ```
 
-The major axis plunges 23° toward 185°, close to strike; the semi-major axis runs obliquely down dip; the minor axis
-lies within a degree of the pole of the lenses. The plane of best continuity is the lens plane. Within it the two
-ranges differ by only 13 %, so the direction of the major axis in that plane is the least certain part of the fit.
+The major axis plunges 2° toward 202°, along strike; the semi-major axis runs down dip; the minor axis lies within
+three degrees of the pole of the lenses. The plane of best continuity is the lens plane. Within it the semi-major
+range is about two thirds of the major, so the grade is more continuous along strike than down dip.
 
 ## Slices through the principal planes
 
@@ -163,7 +163,7 @@ save(fig, "axes")
 </details>
 
 ```text
-nugget 0.36, sill 2.18, major range 204 m
+nugget 0.48, sill 1.93, major range 218 m
 ```
 
 ![axes](axes.png)

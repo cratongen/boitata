@@ -36,7 +36,7 @@ print(
 </details>
 
 ```text
-major axis N175°, range 107 m; shortest 42 m
+major axis N5°, range 172 m; shortest 45 m
 ```
 
 Directional variograms keep pairs within `tolerance` (22.5° by default) of an azimuth. Each lag reports its mean
@@ -61,16 +61,16 @@ print(f"sample variance {variance:.0f}")
 
 ```text
  lag   major   minor    omni  pairs(major)
-   5   19752   37595   30571     213
-  25   37884   55658   55194     747
-  45   56836   77468   70461    1127
-  65   66473   90693   78711    1316
-  85   72405   76650   76477    1493
- 105   78323   77118   76227    1640
-sample variance 77905
+   5   27183   41858   36922     236
+  25   50404   62460   57787     622
+  45   51109   72792   67472     990
+  65   57686   79969   73665    1264
+  85   66126   80460   77791    1517
+ 105   73291   72429   74119    1583
+sample variance 74235
 ```
 
-Across the major axis γ passes the sample variance by 65 m. Along it γ is five tenths of the variance at 25 m and
+Across the major axis γ passes the sample variance by 55 m. Along it γ is seven tenths of the variance at 25 m and
 reaches the variance at 105 m. The omnidirectional variogram averages the two and hides the anisotropy. The first lag
 holds few pairs, and any fit near the origin leans on it.
 
@@ -112,9 +112,9 @@ save(fig, "variogram")
 ![variogram](variogram.png)
 
 Other estimators along the major axis. `standardize=True` divides the classical and covariance estimates by the sample
-variance, the correlogram's scale. Covariance and correlogram use each lag's own head and tail means and level off
-below 1 here. The pairwise-relative variogram scales each squared difference by the pair mean, so it ignores the grade
-level and keeps its own scale.
+variance, the correlogram's scale. Covariance and correlogram use each lag's own head and tail means; here they
+depart from the classical estimate at short lags and follow it beyond 50 m. The pairwise-relative variogram scales
+each squared difference by the pair mean, so it ignores the grade level and keeps its own scale.
 
 <details><summary>Python</summary>
 

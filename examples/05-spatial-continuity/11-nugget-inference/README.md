@@ -32,7 +32,7 @@ print(
 </details>
 
 ```text
-8653 channel samples, median length 0.45 m, variance of log Au 2.88
+8653 channel samples, median length 0.45 m, variance of log Au 2.93
 ```
 
 Every estimate uses the same samples: the channel assays of the V1 quartz, about 0.5 m long and uncomposited, so
@@ -79,9 +79,9 @@ for h, g, n in zip(downhole.lags[:3], downhole.gammas[:3] / variance, downhole.c
 </details>
 
 ```text
-0.45 m  γ/σ² 0.66  7074 pairs
-0.92 m  γ/σ² 0.68  5693 pairs
-1.42 m  γ/σ² 0.75  4199 pairs
+0.45 m  γ/σ² 0.63  7074 pairs
+0.92 m  γ/σ² 0.66  5693 pairs
+1.42 m  γ/σ² 0.69  4199 pairs
 ```
 
 ## Neighboring channels
@@ -202,23 +202,24 @@ save(fig, "nuggets")
 
 ```text
 estimate                     nugget / variance
-downhole, extrapolated                    0.61
-adjacent channels                         0.68
-fitted, omnidirectional                   0.64
-fitted, along strike                      0.33
-fitted, down dip                          0.27
+downhole, extrapolated                    0.60
+adjacent channels                         0.65
+fitted, omnidirectional                   0.60
+fitted, along strike                      0.63
+fitted, down dip                          0.86
 ```
 
 ![nuggets](nuggets.png)
 
 ## Why they differ
 
-The estimates run from 0.38 to 0.73 of the variance, all from the same samples, because each one reads from a
+The estimates run from 0.60 to 0.86 of the variance, all from the same samples, because each one reads from a
 different distance. Down the channels the first lag sits at 0.5 m; adjacent channels lie 2.9 m apart along strike;
 down the dip the closest pairs are a level apart, 20 m. Any structure the variogram has between zero and the first lag
 lands in the nugget, so an estimate that starts farther out comes out higher. The down-dip fit has no pair closer than
 18 m and puts most of its sill in the nugget. The omnidirectional variogram pools pairs across the vein, where log Au
-changes fast, with pairs along strike, where it changes slowly, and its fit sits above both directions.
+changes fast, with pairs along strike, where it changes slowly: its fit starts at the downhole value and climbs faster
+than the along-strike one.
 
 Two sources share the nugget, and none of these estimates can split them: sampling and assay error, which only
 duplicates measure, and geology below the 0.5 m sample, the free gold and quartz textures inside one interval. Both
@@ -228,14 +229,14 @@ length).
 
 ## The choice
 
-Take the downhole extrapolation, 0.38 of the variance. It reads the shortest lags, with thousands of pairs at each,
+Take the downhole extrapolation, 0.60 of the variance. It reads the shortest lags, with thousands of pairs at each,
 and the nugget has no direction, so the direction with the shortest lags sees it best. The adjacent channels give
-0.41, an upper bound, since their pairs include 2.9 m of structure along strike. The two agree, so the line did not
-undershoot. The along-strike fit gives 0.43. The omnidirectional and down-dip fits start beyond the short-scale
-structure and overstate the nugget.
+0.65, an upper bound, since their pairs include 2.9 m of structure along strike. The two agree, so the line did not
+undershoot. The along-strike fit gives 0.63, and the omnidirectional fit lands on 0.60. The down-dip fit starts beyond
+the short-scale structure and overstates the nugget.
 
-The choice goes into the model as a fixed `nugget=`. Along strike, the refit with the nugget held at 0.38 follows the
-points almost as well as the free fit, its short structure taking up the difference:
+The choice goes into the model as a fixed `nugget=`. Along strike, the refit with the nugget held at 0.60 follows the
+points as well as the free fit, its short structure taking up the difference:
 
 <details><summary>Python</summary>
 
@@ -253,8 +254,8 @@ for label, fit in (("free", fitted["along strike"]), ("fixed", chosen)):
 </details>
 
 ```text
-free  nugget 0.33, structures 0.34 (2 m), 0.34 (49 m), mean squared misfit 1.2e-04
-fixed nugget 0.61, structures 0.05 (2 m), 0.34 (49 m), mean squared misfit 1.2e-04
+free  nugget 0.63, structures 0.00 (3 m), 0.37 (55 m), mean squared misfit 5.9e-05
+fixed nugget 0.60, structures 0.03 (2 m), 0.37 (55 m), mean squared misfit 5.9e-05
 ```
 
 Full script: [`example_05_11.py`](example_05_11.py)

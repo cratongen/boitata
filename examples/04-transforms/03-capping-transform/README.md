@@ -35,7 +35,7 @@ print(f"{len(quartz)} composites in {len(veins)} veins")
 </details>
 
 ```text
-6749 composites in 4 veins
+6740 composites in 4 veins
 ```
 
 ## One cap per vein
@@ -64,16 +64,15 @@ for vein in veins:
 
 ```text
 vein          P99  metal (%)  5 % metal  metal (%)     CV 1.5  metal (%)
-V1          100.7       9.10      202.4       5.00       63.0      14.94
-V2          215.8       3.09      190.8       5.00       59.6      27.72
-V3          521.0       0.00      466.1       5.00       36.3      64.85
-V4           52.7       8.25      109.1       5.00       39.2      13.82
+V1          126.7      12.27      374.8       5.00       69.9      19.68
+V2          100.1       9.25      172.4       5.00       49.7      18.71
+V3           52.7       0.00       32.1       5.00       52.7       0.00
+V4          131.9       0.95      106.4       5.00       47.5      16.26
 ```
 
-The rules disagree most where the tail is longest. V1 and V2 lose 9 and 3 % of their metal at the P99; holding the
-loss to 5 % lifts their caps to 202 and 191 g/t, the latter just under the extreme channels of V2. In the small veins
-the P99 barely cuts: it is the maximum of V3. A CV of 1.5 caps V1 and V2 near 60 g/t and costs them 15 to 28 % of
-their metal.
+The rules disagree most where the tail is longest. V1 and V2 lose 12 and 9 % of their metal at the P99; holding the
+loss to 5 % lifts their caps to 375 and 172 g/t. In the small veins the P99 barely cuts: it is the maximum of V3. A
+CV of 1.5 caps V1 and V2 at 70 and 50 g/t and costs them about 20 % of their metal.
 
 ## The same numbers as [top cuts](../../03-exploratory-analysis/05-top-cuts/README.md)
 
@@ -101,10 +100,10 @@ for k, vein in enumerate(report["domain"][:-1]):
 
 ```text
 vein      P99  fitted cap  report (%)  fitted (%)
-V1     100.67      100.67        9.10        9.10
-V2     215.77      215.77        3.09        3.09
-V3     521.00      521.00        0.00        0.00
-V4      52.74       52.74        8.25        8.25
+V1     126.74      126.74       12.27       12.27
+V2     100.11      100.11        9.25        9.25
+V3      52.71       52.71        0.00        0.00
+V4     131.92      131.92        0.95        0.95
 ```
 
 On a log-probability plot the dashed caps cut the last percent of the tail of each vein.
@@ -140,7 +139,7 @@ save(fig, "probability")
 The capped grades feed the estimate as any other column. Ordinary kriging estimates 5 m blocks inside the V1 solid
 from the raw and from the capped composites of V1, with one variogram and search. The extreme channels no longer
 spread their grade over their neighborhood: the richest blocks drop below the diagonal and the low-grade ones stay on
-it. The blocks lose 9.5 % of their mean grade, close to the 9.1 % of the declustered composites.
+it. The blocks lose 9.9 % of their mean grade, against 12.3 % for the declustered composites.
 
 <details><summary>Python</summary>
 
@@ -165,9 +164,9 @@ print(
 </details>
 
 ```text
-AU_GPT: 3744 blocks, mean 10.64 g/t
-AU_CAPPED: 3744 blocks, mean 9.63 g/t
-composites: 10.96 and 9.96 g/t
+AU_GPT: 3810 blocks, mean 11.14 g/t
+AU_CAPPED: 3810 blocks, mean 10.04 g/t
+composites: 12.84 and 11.26 g/t
 ```
 
 <details><summary>Python</summary>
@@ -190,7 +189,7 @@ save(fig, "kriged")
 ## In a pipeline
 
 `Capping` has `fit`, `transform` and `fit_transform` like `NormalScore`, so the two chain: cap, then score, the usual
-preparation for a Gaussian simulation. Fitted once, both apply to new samples: a 500 g/t sample is capped to 101 g/t
+preparation for a Gaussian simulation. Fitted once, both apply to new samples: a 500 g/t sample is capped to 127 g/t
 before scoring, so its score is that of the cap. The fitted caps round-trip through JSON and pickle.
 
 <details><summary>Python</summary>
@@ -208,7 +207,7 @@ print(restored.caps_ == pipeline.caps_)
 </details>
 
 ```text
-[-1.311  0.173  1.705  2.605]
+[-1.298  0.125  1.683  2.641]
 True
 ```
 

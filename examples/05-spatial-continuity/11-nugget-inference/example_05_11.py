@@ -163,12 +163,13 @@ save(fig, "nuggets")
 # %% [markdown]
 # ## Why they differ
 #
-# The estimates run from 0.38 to 0.73 of the variance, all from the same samples, because each one reads from a
+# The estimates run from 0.60 to 0.86 of the variance, all from the same samples, because each one reads from a
 # different distance. Down the channels the first lag sits at 0.5 m; adjacent channels lie 2.9 m apart along strike;
 # down the dip the closest pairs are a level apart, 20 m. Any structure the variogram has between zero and the first lag
 # lands in the nugget, so an estimate that starts farther out comes out higher. The down-dip fit has no pair closer than
 # 18 m and puts most of its sill in the nugget. The omnidirectional variogram pools pairs across the vein, where log Au
-# changes fast, with pairs along strike, where it changes slowly, and its fit sits above both directions.
+# changes fast, with pairs along strike, where it changes slowly: its fit starts at the downhole value and climbs faster
+# than the along-strike one.
 #
 # Two sources share the nugget, and none of these estimates can split them: sampling and assay error, which only
 # duplicates measure, and geology below the 0.5 m sample, the free gold and quartz textures inside one interval. Both
@@ -178,14 +179,14 @@ save(fig, "nuggets")
 #
 # ## The choice
 #
-# Take the downhole extrapolation, 0.38 of the variance. It reads the shortest lags, with thousands of pairs at each,
+# Take the downhole extrapolation, 0.60 of the variance. It reads the shortest lags, with thousands of pairs at each,
 # and the nugget has no direction, so the direction with the shortest lags sees it best. The adjacent channels give
-# 0.41, an upper bound, since their pairs include 2.9 m of structure along strike. The two agree, so the line did not
-# undershoot. The along-strike fit gives 0.43. The omnidirectional and down-dip fits start beyond the short-scale
-# structure and overstate the nugget.
+# 0.65, an upper bound, since their pairs include 2.9 m of structure along strike. The two agree, so the line did not
+# undershoot. The along-strike fit gives 0.63, and the omnidirectional fit lands on 0.60. The down-dip fit starts beyond
+# the short-scale structure and overstates the nugget.
 #
-# The choice goes into the model as a fixed `nugget=`. Along strike, the refit with the nugget held at 0.38 follows the
-# points almost as well as the free fit, its short structure taking up the difference:
+# The choice goes into the model as a fixed `nugget=`. Along strike, the refit with the nugget held at 0.60 follows the
+# points as well as the free fit, its short structure taking up the difference:
 
 # %%
 along = experimental["along strike"]

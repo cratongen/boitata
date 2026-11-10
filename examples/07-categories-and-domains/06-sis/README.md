@@ -43,11 +43,11 @@ for k, name in enumerate(names):
 ```text
 259 samples, 6751 grid nodes
               samples  share  true grid
-Argovian           53   0.20       0.21
-Kimmeridgian       85   0.33       0.34
-Sequanian          63   0.24       0.27
-Portlandian         3   0.01       0.05
-Quaternary         55   0.21       0.13
+Argovian           54   0.21       0.19
+Kimmeridgian       85   0.33       0.35
+Sequanian          61   0.24       0.28
+Portlandian         5   0.02       0.05
+Quaternary         54   0.21       0.13
 ```
 
 ## Indicator variograms
@@ -75,11 +75,11 @@ for name, v in zip(names, variograms):
 </details>
 
 ```text
-Argovian     nugget 0.076, sill 0.115, range 2.03 km
-Kimmeridgian nugget 0.139, sill 0.085, range 1.18 km
-Sequanian    nugget 0.132, sill 0.059, range 1.22 km
-Portlandian  nugget 0.000, sill 0.011, range 0.50 km
-Quaternary   nugget 0.032, sill 0.136, range 0.40 km
+Argovian     nugget 0.048, sill 0.148, range 1.45 km
+Kimmeridgian nugget 0.024, sill 0.203, range 0.64 km
+Sequanian    nugget 0.114, sill 0.065, range 0.75 km
+Portlandian  nugget 0.000, sill 0.018, range 0.35 km
+Quaternary   nugget 0.000, sill 0.160, range 0.37 km
 ```
 
 <details><summary>Python</summary>
@@ -132,13 +132,13 @@ print(
 
 ```text
               true grid   mean    min    max
-Argovian           0.21   0.22   0.18   0.25
-Kimmeridgian       0.34   0.35   0.30   0.43
-Sequanian          0.27   0.26   0.23   0.31
-Portlandian        0.05   0.01   0.00   0.03
-Quaternary         0.13   0.15   0.12   0.19
-a realization matches the true rock type at 44% to 48% of the nodes
-the most likely type matches at 57%; mean entropy 0.55
+Argovian           0.19   0.22   0.18   0.26
+Kimmeridgian       0.35   0.30   0.24   0.34
+Sequanian          0.28   0.29   0.25   0.35
+Portlandian        0.05   0.02   0.01   0.04
+Quaternary         0.13   0.17   0.13   0.20
+a realization matches the true rock type at 47% to 52% of the nodes
+the most likely type matches at 60%; mean entropy 0.50
 ```
 
 <details><summary>Python</summary>
@@ -171,9 +171,9 @@ save(fig, "realizations")
 
 ![realizations](realizations.png)
 
-Each realization matches the true rock type at 44 % to 48 % of the nodes, and two realizations differ wherever the
-samples leave room. On average the proportions stay within 0.02 of the true grid, except Portlandian: no realization
-recovers its 5 % of the area from 3 of 259 samples. The most likely type matches at 57 %, more than any
+Each realization matches the true rock type at 47 % to 52 % of the nodes, and two realizations differ wherever the
+samples leave room. On average the proportions stay within 0.05 of the true grid, and Portlandian falls short: no
+realization recovers its 5 % of the area from 5 of 259 samples. The most likely type matches at 60 %, more than any
 realization, though it is a smooth estimate and no possible map looks like it. Entropy peaks at the contacts and
 far from the samples.
 

@@ -40,10 +40,10 @@ print(gaussian)
 ```text
 Variogram  sill 1, 1 structure
   rotation  azimuth 170°, dip 0°, rake 0°
-  ratios    semi/major 0.4845, minor/major 1
+  ratios    semi/major 0.4046, minor/major 1
   structure    sill  major   semi  minor
-  nugget     0.1106
-  spherical  0.8894  104.5  50.63  104.5
+  nugget     0.2395
+  spherical  0.7605    115  46.53    115
 ```
 
 Thirty realizations on 2.5 m nodes. `blocks=` averages each over the 16 nodes of each 10 × 10 m block before
@@ -88,14 +88,14 @@ save(fig, "simulated-blocks")
 </details>
 
 ```text
-above 300 ppm: P10 38.2%, P90 41.8%, true 38.3%
-above 500 ppm: P10 15.2%, P90 18.1%, true 17.1%
-above 800 ppm: P10 1.9%, P90 2.8%, true 2.8%
+above 300 ppm: P10 36.5%, P90 41.5%, true 40.3%
+above 500 ppm: P10 12.9%, P90 15.4%, true 15.6%
+above 800 ppm: P10 1.4%, P90 2.6%, true 1.9%
 ```
 
 ![simulated-blocks](simulated-blocks.png)
 
-The band holds the true curve at each cutoff; at 300 ppm the truth sits at its lower edge.
+The band holds the true curve at 300 and 800 ppm; at 500 ppm the truth sits just above its upper edge.
 
 A mine plan reads uncertainty over production volumes. `groups=` labels each block with its volume, here six 50 m
 strips of northing standing for periods, and summarizes each realization's mean per period, one row per label.
@@ -121,12 +121,12 @@ for label, volumes in (
 </details>
 
 ```text
-blocks: 780 rows, median relative error 58.3%
-periods: 6 rows, median relative error 8.1%
-50 m windows: 780 rows, median relative error 20.7%
+blocks: 780 rows, median relative error 52.6%
+periods: 6 rows, median relative error 10.1%
+50 m windows: 780 rows, median relative error 22.3%
 ```
 
-The median error falls from 58 % on single blocks to 21 % on 50 m windows and 8 % on periods of 130 blocks.
+The median error falls from 53 % on single blocks to 22 % on 50 m windows and 10 % on periods of 130 blocks.
 
 `tolerances=` adds each row's precision, the share of realizations within ±15 % of its mean; a common criterion
 for measured resources asks that share to reach 90 %. `validate` compares the summary with the true blocks. `covered`
@@ -149,13 +149,13 @@ print(f"at 500 ppm: type 1 {np.mean(table['type_1']):.1%}, type 2 {np.mean(table
 </details>
 
 ```text
-precision at ±15 % reaching 90 %: 3.1% of blocks
-truth within the MEE: 84.5% of blocks
-at 500 ppm: type 1 2.3%, type 2 4.1% of blocks
+precision at ±15 % reaching 90 %: 0.5% of blocks
+truth within the MEE: 81.5% of blocks
+at 500 ppm: type 1 2.2%, type 2 5.5% of blocks
 ```
 
-Single 10 m blocks almost never meet ±15 % at 90 %. The truth lies within the MEE for 85 % of blocks, short of the
-nominal 90 %, and 6 % of blocks fall on the wrong side of 500 ppm.
+Single 10 m blocks almost never meet ±15 % at 90 %. The truth lies within the MEE for 82 % of blocks, short of the
+nominal 90 %, and 8 % of blocks fall on the wrong side of 500 ppm.
 
 Localization pools the realizations panel by panel. Over the western 250 m, each 50 × 50 m panel holds 25 blocks.
 25 blocks × 30 realizations give 750 values, sorted and cut into 25 chunks of 30, and the block ranked i by
@@ -210,15 +210,15 @@ save(fig, "localized-simulation")
 </details>
 
 ```text
-kriged: variance 41398, correlation with truth 0.92
-localized: variance 49387, correlation with truth 0.91
-true blocks: variance 50084
+kriged: variance 29140, correlation with truth 0.87
+localized: variance 40077, correlation with truth 0.88
+true blocks: variance 44183
 ```
 
 ![localized-simulation](localized-simulation.png)
 
-Each panel keeps the mean of its realizations, and its blocks the spread the simulation gives them: variance 49 387,
-between kriging's 41 398 and the true 50 084, with a correlation to the truth of 0.91 against kriging's 0.92. The
+Each panel keeps the mean of its realizations, and its blocks the spread the simulation gives them: variance 40 077,
+between kriging's 29 140 and the true 44 183, with a correlation to the truth of 0.88 against kriging's 0.87. The
 pooling uses no change-of-support model, so its result depends on the realizations alone. [Uniform conditioning](../../09-recoverable-resources/02-uniform-conditioning/README.md) and [MIK localization](../../09-recoverable-resources/03-mik-localization/README.md)
 localize the same panels from a change-of-support model.
 

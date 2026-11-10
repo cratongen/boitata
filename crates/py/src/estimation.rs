@@ -1417,6 +1417,13 @@ impl Estimator {
         method
             .check(variogram.as_ref().map(|v| &v.0))
             .map_err(invalid)?;
+        if matches!(method, Method::Kriging(Kind::Simple { .. }))
+            && variogram.as_ref().is_some_and(|v| !v.0.is_stationary())
+        {
+            return Err(invalid(
+                "simple kriging needs a variogram with a sill: every structure must be stationary (not power); use ordinary kriging",
+            ));
+        }
         method.calibrates(&search)?;
         Ok(Self {
             method,

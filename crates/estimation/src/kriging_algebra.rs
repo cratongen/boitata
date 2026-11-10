@@ -22,6 +22,7 @@
 //! is a data change, not a new code path.
 
 use crate::Sample;
+use crate::coincident::Clusters;
 use crate::error::{EstimError, Result};
 use crate::krige::{Estimate, Kind, krige};
 use crate::search::Calibration;
@@ -229,6 +230,20 @@ pub fn krige_universal(
         ));
     }
     let p = drift.p();
+    if p == 0 {
+        crate::krige::check_simple(Kind::Simple { mean: 0.0 }, vg)?;
+    }
+    if let Some(c) = Clusters::find(samples) {
+        let merged = DriftSpec {
+            data: c.rows(&drift.data),
+            target: drift.target.clone(),
+        };
+        let e = krige_universal(target, &c.merge(samples, vg), &merged, vg, mean)?;
+        return Ok(c.spread(e, |w| match (p, mean) {
+            (0, Some(m)) => crate::krige::value(Kind::Simple { mean: m }, w, samples),
+            _ => crate::krige::value(Kind::Ordinary, w, samples),
+        }));
+    }
     let c0 = vg.total_sill();
 
     if p == 0 {

@@ -233,6 +233,12 @@ fn white(key: u64, p: &(f64, f64, f64)) -> f64 {
     (-2.0 * u1.ln()).sqrt() * (std::f64::consts::TAU * u2).cos()
 }
 
+/// The node of a band of `len` nodes whose cell holds the coordinate `x`,
+/// in steps from the band's first node.
+fn node(x: f64, len: usize) -> usize {
+    (x.max(0.0).floor() as usize).min(len - 1)
+}
+
 /// Bounding box of `points`, `(lo, hi)`.
 pub fn bounds(points: &[(f64, f64, f64)]) -> ([f64; 3], [f64; 3]) {
     points.iter().fold(
@@ -393,14 +399,16 @@ impl Layout {
     }
 
     /// The bands of one realization, drawn from `rng`: each band takes its
-    /// direction, then the white noise of every structure's grid in turn.
+    /// direction and node offset, then the white noise of every structure's
+    /// grid in turn.
     fn bands(&self, n_bands: usize, rng: &mut StdRng) -> Bands {
         let normal = Normal::new(0.0, 1.0).unwrap();
-        let (mut directions, mut origins) = (vec![], vec![]);
+        let (mut directions, mut origins, mut shifts) = (vec![], vec![], vec![]);
         let mut noise: Vec<Vec<Vec<f64>>> = vec![vec![]; self.grids.len()];
         for _ in 0..n_bands.max(1) {
             let dir = unit_direction(rng, &normal);
             let dir = Vector3::new(dir.0, dir.1, dir.2);
+            shifts.push((rng.next_u64() >> 11) as f64 / (1u64 << 53) as f64);
             let (tmin, tmax) = self
                 .corners
                 .iter()
@@ -421,6 +429,7 @@ impl Layout {
             to_isotropic: self.to_isotropic,
             directions,
             origins,
+            shifts,
             grids: self
                 .grids
                 .iter()
@@ -441,6 +450,10 @@ pub struct Bands {
     to_isotropic: Matrix3<f64>,
     directions: Vec<Vector3<f64>>,
     origins: Vec<f64>,
+    /// Per band, the offset in `[0, 1)` of its nodes, in steps: a point
+    /// reads the node of its cell, so every point has the variance of a
+    /// node and the band covariance is the same at every position.
+    shifts: Vec<f64>,
     /// Per structure: node spacing, weight and the values of every band.
     grids: Vec<(f64, f64, Vec<Vec<f64>>)>,
     nugget: f64,
@@ -478,12 +491,15 @@ impl Bands {
         let mut sum = vec![0.0; points.len()];
         for (step, weight, values) in &self.grids {
             let mut part = vec![0.0; points.len()];
-            for ((dir, &tmin), band) in self.directions.iter().zip(&self.origins).zip(values) {
+            for (((dir, &tmin), &shift), band) in self
+                .directions
+                .iter()
+                .zip(&self.origins)
+                .zip(&self.shifts)
+                .zip(values)
+            {
                 for (s, q) in part.iter_mut().zip(&q) {
-                    let x = ((q.dot(dir) - tmin) / step).max(0.0);
-                    let i0 = (x.floor() as usize).min(band.len() - 2);
-                    let frac = x - i0 as f64;
-                    *s += band[i0] * (1.0 - frac) + band[i0 + 1] * frac;
+                    *s += band[node((q.dot(dir) - tmin) / step + shift, band.len())];
                 }
             }
             for (s, p) in sum.iter_mut().zip(part) {
@@ -510,11 +526,14 @@ impl Bands {
         let mut sum = 0.0;
         for (step, weight, values) in &self.grids {
             let mut part = 0.0;
-            for ((dir, &tmin), band) in self.directions.iter().zip(&self.origins).zip(values) {
-                let x = ((q.dot(dir) - tmin) / step).max(0.0);
-                let i0 = (x.floor() as usize).min(band.len() - 2);
-                let frac = x - i0 as f64;
-                part += band[i0] * (1.0 - frac) + band[i0 + 1] * frac;
+            for (((dir, &tmin), &shift), band) in self
+                .directions
+                .iter()
+                .zip(&self.origins)
+                .zip(&self.shifts)
+                .zip(values)
+            {
+                part += band[node((q.dot(dir) - tmin) / step + shift, band.len())];
             }
             sum += weight * part;
         }
@@ -1541,8 +1560,6 @@ mod tests {
         }
         let pairs = (runs * 80 * 80) as f64;
         let var = var / pairs;
-        // Interpolating between band nodes a fiftieth of the range apart
-        // takes about 2 % of the spherical sill, 0.012, off the variance.
         assert!((var - 1.0).abs() < 0.03, "variance {var}");
         for (h, g) in lags.iter().zip(gamma) {
             let (g, want) = (g / pairs, vg.gamma(*h));
@@ -1683,6 +1700,59 @@ mod tests {
         let a = turning_bands(&data_locs, &data_vals, None, None, &grid, &vg, &params).unwrap();
         let b = turning_bands(&data_locs, &data_vals, None, None, &grid, &vg, &params).unwrap();
         assert_eq!(a.values, b.values);
+    }
+
+    /// The mean square of the field over `seeds` realizations on 4000 random
+    /// points of a box twenty ranges wide, with the default step, and its
+    /// semivariogram at `lags`, from pairs in random directions.
+    fn moments(model: Model, lags: &[f64], seeds: u64) -> (f64, Vec<f64>) {
+        let vg = Variogram::single(model, 1.0, 100.0);
+        let params = TurningBandsParams::default();
+        let mut r = StdRng::seed_from_u64(99);
+        let normal = Normal::new(0.0, 1.0).unwrap();
+        let u = |r: &mut StdRng| (r.next_u64() >> 11) as f64 / (1u64 << 53) as f64 * 1900.0 + 50.0;
+        let mut pts = vec![];
+        for _ in 0..4000 {
+            let anchor = (u(&mut r), u(&mut r), u(&mut r));
+            pts.push(anchor);
+            for h in lags {
+                let (x, y, z) = unit_direction(&mut r, &normal);
+                pts.push((anchor.0 + h * x, anchor.1 + h * y, anchor.2 + h * z));
+            }
+        }
+        let layout = Layout::new([0.0; 3], [2000.0; 3], &vg, &params, 1).unwrap();
+        let (mut s2, mut gamma, mut n) = (0.0, vec![0.0; lags.len()], 0.0);
+        for seed in 0..seeds {
+            let b = layout.bands(params.n_bands, &mut StdRng::seed_from_u64(seed));
+            for p in b.field(&pts).chunks(lags.len() + 1) {
+                s2 += p[0] * p[0];
+                for (g, v) in gamma.iter_mut().zip(&p[1..]) {
+                    *g += (v - p[0]).powi(2) / 2.0;
+                }
+                n += 1.0;
+            }
+        }
+        (s2 / n, gamma.into_iter().map(|g| g / n).collect())
+    }
+
+    #[test]
+    fn the_field_has_unit_variance_and_the_model_variogram_at_the_default_step() {
+        // Interpolating linearly between band nodes gave a variance of
+        // 2/3 + C₁(step)/3: 0.964 for the exponential, 0.979 for the spherical.
+        let lags = [1.0, 20.0];
+        for (model, tol, seeds) in [
+            (Model::Exponential, 0.02, 8),
+            (Model::Spherical, 0.012, 20),
+            (Model::Gaussian, 0.012, 20),
+        ] {
+            let (var, gamma) = moments(model, &lags, seeds);
+            assert!((var - 1.0).abs() < tol, "{model:?} variance {var}");
+            let vg = Variogram::single(model, 1.0, 100.0);
+            for (h, g) in lags.iter().zip(gamma) {
+                let want = vg.gamma(*h);
+                assert!((g - want).abs() < 0.03, "{model:?} γ({h}) {g} vs {want}");
+            }
+        }
     }
 
     #[test]

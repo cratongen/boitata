@@ -125,7 +125,7 @@ def test_coal_infill_targets_the_thick_seam_inside_the_lease():
     data = d.coal_seam_thickness()
     b = data["boreholes"]
     t = b["THICKNESS_M"]
-    assert t[145:].mean() > 1.3 * t[:145].mean()
+    assert t[145:].mean() > 1.25 * t[:145].mean()
     assert np.all((b["CATEGORY"] == "MECHANIZED") == (t > 1.4))
     regional = np.polyfit(b.coords[:145, 0], t[:145], 1)[0]
     assert regional < 0

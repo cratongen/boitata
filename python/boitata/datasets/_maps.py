@@ -280,7 +280,7 @@ def coal_seam_thickness(seed: int = 0) -> dict:
     odds = np.where(t_pool > 1.9, t_pool**2, 1e-4)
     chosen = rng.choice(len(pool), 150, replace=False, p=odds / odds.sum())
     xy = np.round(np.vstack([regional, pool[chosen]]), 1)
-    t = np.clip(thickness(xy), 0.45, 5.6)
+    t = np.round(np.clip(thickness(xy), 0.45, 5.6), 2)
     n = len(xy)
     z = rng.standard_normal(n)
     ash = np.clip(11.8 - 2.4 * (t - 2.23) + 4.0 * z, 4.0, 25.0)
@@ -293,7 +293,7 @@ def coal_seam_thickness(seed: int = 0) -> dict:
             xy,
             {
                 "ID": np.arange(1.0, n + 1),
-                "THICKNESS_M": np.round(t, 2),
+                "THICKNESS_M": t,
                 "ASH_PCT": np.where(missing, np.nan, np.round(ash, 1)),
                 "CV_MJKG": np.where(missing, np.nan, np.round(cv, 2)),
                 "CATEGORY": labels,

@@ -174,7 +174,8 @@ mod tests {
         let pts = [(11.0, 10.5, 0.0), (13.0, 11.5, 0.0)];
         let point = krige(Kind::Ordinary, &t, &s, &vg).unwrap();
         let block = block_krige_points(Kind::Ordinary, &pts, &s, &vg).unwrap();
-        let drift = DriftSpec::polynomial(&s.iter().map(|s| s.loc).collect::<Vec<_>>(), &t, 1);
+        let drift =
+            DriftSpec::polynomial(&s.iter().map(|s| s.loc).collect::<Vec<_>>(), &t, 1).unwrap();
         let universal = krige_universal(&t, &s, &drift, &vg, None).unwrap();
         for e in [&point, &block, &universal] {
             assert_eq!(e.weights[0], e.weights[1]);

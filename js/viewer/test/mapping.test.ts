@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { logRange, mapIndex, mapPosition, parseCutoffs } from "../src/color";
-import { colorBarSvg } from "../src/colorbar";
+import { chooseTicks, colorBarSvg } from "../src/colorbar";
 import { percentileRange } from "../src/filter";
 import { resolveTheme } from "../src/theme";
 import { logTicks } from "../src/ticks";
@@ -49,6 +49,35 @@ describe("bins", () => {
     const svg = colorBarSvg({ title: "cu", cmap: "viridis", lo: 0, hi: 1, bins: [0.3, 0.5], categories: null, colors: null }, resolveTheme("light", false), "x");
     expect(svg.match(/<rect x="[\d.]+" y="28"/g)).toHaveLength(3);
     expect(svg).toContain(">0.3<");
+  });
+});
+
+describe("color bar legend", () => {
+  const light = resolveTheme("light", false);
+  it("keeps the end ticks and drops labels that would collide", () => {
+    const ticks = [0, 2, 4, 6, 8, 10].map((n) => ({ x: n * 20, label: `${n}00000` }));
+    const kept = chooseTicks(ticks);
+    expect(kept[0].label).toBe("000000");
+    expect(kept[kept.length - 1].label).toBe("1000000");
+    expect(kept.length).toBeLessThan(ticks.length);
+    const svg = colorBarSvg({ title: "metres", cmap: "viridis", lo: 0, hi: 1_000_000, categories: null, colors: null, unit: "m" }, light, "t");
+    expect(svg).toContain("metres (m)");
+    expect(svg).toContain(">0<");
+    expect(svg).toContain(">1000000<");
+    expect(svg.match(/y="58"/g)!.length).toBeLessThan(6);
+  });
+  it("does not repeat a unit the title already states", () => {
+    const svg = colorBarSvg({ title: "Zn (%)", cmap: "cividis", lo: 0, hi: 10, categories: null, colors: null, unit: "%" }, light, "z");
+    expect(svg).toContain(">Zn (%)<");
+    expect(svg).not.toContain("Zn (%) (%)");
+  });
+  it("draws a categorical key and keeps a long name on the swatch", () => {
+    const name = "a very long category name that should not run off the bar";
+    const svg = colorBarSvg({ title: "domain", cmap: "viridis", lo: 0, hi: 1, categories: ["lens 1", name], colors: null }, light, "c");
+    expect(svg).toContain(">lens 1<");
+    expect(svg).toContain(`<title>${name}</title>`);
+    expect(svg).toContain(">a very long category name…<");
+    expect(svg.match(/<rect x="10" y="\d+" width="12"/g)).toHaveLength(2);
   });
 });
 

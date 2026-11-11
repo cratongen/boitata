@@ -368,7 +368,7 @@ def test_drill_hole_points_sit_at_interval_midpoints():
 
 
 def rendered_pixels(scene, points, tmp_path, bare=False):
-    """Colors the saved page shows at world `points`, in a headless browser; `bare` hides the box, grid and panel."""
+    """Colors the saved page shows at world `points`, in a headless browser; `bare` hides the box, grid, panel and section plane."""
     shot, at = rendered(scene, points, tmp_path, bare)
     return [shot.getpixel(tuple(xy)) for xy in at]
 
@@ -391,7 +391,7 @@ def rendered(scene, points, tmp_path, bare=False):
             tab.evaluate(
                 "() => { const s = window.scene; s.axes.show = { box: false, grid: false, ticks: false };"
                 " s.panel.hidden = s.bars.hidden = true;"
-                " s.gizmo.el.style.display = 'none'; s.requestRender(); }"
+                " s.gizmo.el.style.display = 'none'; s.outline.visible = false; s.requestRender(); }"
             )
             tab.wait_for_timeout(100)
         at = tab.evaluate(
@@ -831,7 +831,7 @@ def test_rendered_cap_shows_the_exact_lut_color(tmp_path):
     assert cap == edge == lut_rgb("viridis", 0.5, 0.0, 1.0)
 
 
-def test_shift_drag_and_keys_reach_the_widget_model(tmp_path):
+def test_preset_and_keys_reach_the_widget_model(tmp_path):
     sync_api = pytest.importorskip("playwright.sync_api")
     page = (
         Scene(theme="light").add(row_of_blocks(), "v").view(azimuth=0, dip=90).save(tmp_path / "scene.html")
@@ -845,21 +845,17 @@ def test_shift_drag_and_keys_reach_the_widget_model(tmp_path):
         tab.goto(page.as_uri())
         tab.wait_for_function("typeof window.scene?.screenshot === 'function'", timeout=60_000)
         tab.evaluate(WIDGET)
-        tab.mouse.move(250, 300)
-        tab.keyboard.down("Shift")
-        tab.mouse.down()
-        tab.mouse.move(450, 300, steps=5)
-        tab.mouse.up()
-        tab.keyboard.up("Shift")
+        tab.locator("button", has_text="N–S").click()
         tab.wait_for_function("window.model.state.section?.points?.length === 2", timeout=5_000)
         cut = tab.evaluate("window.model.state.section")
+        tab.evaluate("document.getElementById('widget').shadowRoot.querySelector('.btv-root').focus()")
         tab.keyboard.press("u")
         unfolded = tab.evaluate("window.model.state.section.unfolded")
         tab.keyboard.press("x")
         cleared = tab.evaluate("window.model.state.section")
         browser.close()
     (x0, y0, _), (x1, y1, _) = cut["points"]
-    assert x0 < x1 and abs(y0 - y1) < 1e-6 and 0 < y0 < 30
+    assert abs(x0 - x1) < 1e-6 and y0 < y1
     assert cut["dip"] == 90 and cut["width"] > 0 and cut["unfolded"] is False
     assert unfolded is True and cleared == {}
 
@@ -1122,7 +1118,7 @@ def test_question_mark_opens_the_shortcut_card_and_esc_closes_it(tmp_path):
         tab.mouse.click(450, 40)
         clicked_away = help_card.is_hidden()
     assert shown and closed and reopened and clicked_away
-    assert "Keyboard shortcuts" in text and "Draw a section" in text and "Clear the section" in text
+    assert "Keyboard shortcuts" in text and "Move the section plane" in text and "Clear the section" in text
 
 
 def test_fullscreen_button_fills_the_screen_or_says_why_it_cannot(tmp_path):

@@ -1,7 +1,26 @@
 import { describe, expect, it } from "vitest";
-import type { Vec3 } from "../src/bounds";
+import type { Box, Vec3 } from "../src/bounds";
 import { barHeights } from "../src/filter";
-import { buildSection, inSlab, pickCut, type Section, segmentOf, snap45, traces, unfold } from "../src/section";
+import {
+  buildSection,
+  clipPlane,
+  faceOnSlide,
+  inSlab,
+  pickCut,
+  planeNormal,
+  planePolygon,
+  planePose,
+  planeSection,
+  projectDrag,
+  type Ray,
+  type Section,
+  segmentOf,
+  slideAlongNormal,
+  snap45,
+  stepCut,
+  traces,
+  unfold,
+} from "../src/section";
 
 const section = (points: [number, number][], width = 10, dip = 90, z = 0): Section => buildSection(points, z, width, dip)!;
 const close = (a: number[], b: number[], digits = 9) => a.forEach((v, i) => expect(v).toBeCloseTo(b[i], digits));
@@ -178,6 +197,72 @@ describe("quick cut picking", () => {
         forward,
       ),
     ).toBeNull();
+  });
+});
+
+describe("section plane", () => {
+  const box: Box = { min: [-1, -1, -1], max: [1, 1, 1] };
+
+  it("projects a pointer hit onto the plane normal", () => {
+    expect(projectDrag([0, 0, 0], [3, 4, 0], [1, 0, 0])).toBeCloseTo(3);
+    expect(projectDrag([1, 2, 3], [1, 9, 3], [0, 1, 0])).toBeCloseTo(7);
+    expect(projectDrag([0, 0, 0], [5, 5, 0], [1, 0, 0])).toBeCloseTo(5);
+  });
+
+  it("slides along the normal by where the ray meets the drag plane", () => {
+    const normal: Vec3 = [1, 0, 0];
+    const forward: Vec3 = [0, 1, 0];
+    const ray: Ray = { origin: [0, -10, 2], direction: [0.3, 1, 0] };
+    expect(slideAlongNormal(ray, [0, 0, 0], normal, forward)).toBeCloseTo(3);
+    expect(slideAlongNormal(ray, [0, 0, 0], normal, normal)).toBeNull();
+  });
+
+  it("maps a face-on drag to screen travel when the normal has no direction on screen", () => {
+    expect(faceOnSlide(10, 0, [1, 0, 0], 2)).toBeCloseTo(20);
+    expect(faceOnSlide(10, 0, [-1, 0, 0], 2)).toBeCloseTo(-20);
+    expect(faceOnSlide(0, -4, [0, 0, 1], 2)).toBeCloseTo(8);
+    expect(faceOnSlide(0, -4, [0, 0, -1], 2)).toBeCloseTo(-8);
+  });
+
+  it("builds a 2-point section through a point at a heading and a dip", () => {
+    const cut = planeSection([10, 20, 5], 0, 90, 100);
+    close(cut.points[0], [10, -30]);
+    close(cut.points[1], [10, 70]);
+    expect(cut.z).toBe(5);
+    expect(cut.dip).toBe(90);
+    const pose = planePose(cut.points, cut.z, cut.dip)!;
+    close(pose.origin, [10, 20, 5]);
+    expect(pose.azimuth).toBeCloseTo(0);
+    expect(pose.length).toBeCloseTo(100);
+    close([...pose.normal], [1, 0, 0]);
+  });
+
+  it("keeps a dragged plane on the surface that passes through the moved point", () => {
+    const dip = 45;
+    const start = planeSection([0, 0, 0], 90, dip, 80);
+    const normal = planeNormal(90, dip);
+    const moved: Vec3 = [0 + normal[0] * 20, 0 + normal[1] * 20, 0 + normal[2] * 20];
+    const next = planeSection(moved, 90, dip, 80);
+    stepCut(start.points, 20 * Math.sin(Math.PI / 4)).forEach((p, i) => close(p, next.points[i]));
+    expect(next.z).toBeCloseTo(20 * Math.cos(Math.PI / 4));
+    const section = buildSection(next.points, next.z, 10, next.dip)!;
+    expect(inSlab(section, moved)).toBe(true);
+    expect(inSlab(section, [0, 0, 0])).toBe(false);
+    const upright = planeSection([4, 1, 2], 0, 90, 10);
+    stepCut(planeSection([0, 1, 2], 0, 90, 10).points, 4).forEach((p, i) => close(p, upright.points[i]));
+  });
+
+  it("clips the plane to the box as a polygon, and keeps a quad when the plane misses", () => {
+    const wall = clipPlane([0, 0, 0], [1, 0, 0], box);
+    expect(wall).toHaveLength(4);
+    for (const p of wall) expect(p[0]).toBeCloseTo(0);
+    const level = clipPlane([0, 0, 0], [0, 0, 1], box);
+    expect(level).toHaveLength(4);
+    for (const p of level) expect(p[2]).toBeCloseTo(0);
+    expect(clipPlane([3, 0, 0], [1, 0, 0], box)).toHaveLength(0);
+    const quad = planePolygon([3, 0, 0], [1, 0, 0], box);
+    expect(quad).toHaveLength(4);
+    for (const p of quad) expect(p[0]).toBeCloseTo(3);
   });
 });
 

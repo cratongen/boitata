@@ -6,10 +6,6 @@ export type Arrow = "left" | "right" | "up" | "down";
 export type Action =
   | "fit"
   | "plan"
-  | "draw"
-  | "finish"
-  | "undo"
-  | "lock"
   | "unfold"
   | "clear"
   | "panel"
@@ -29,9 +25,7 @@ export type Action =
 
 /** The state a key's meaning depends on. */
 export interface KeyState {
-  /** A polyline is being drawn. */
-  drawing: boolean;
-  /** Something Esc closes or cancels: a drawing, a quick cut, the pick card, the help card. */
+  /** Something Esc closes or cancels: a plane drag, the pick card, the measure tool, the help card. */
   cancellable: boolean;
   /** Focus is in the panel, where arrows and Page Up/Down are left to it. */
   inPanel?: boolean;
@@ -40,7 +34,6 @@ export interface KeyState {
 const ALWAYS: Record<string, Action> = {
   r: "fit",
   p: "plan",
-  s: "draw",
   u: "unfold",
   x: "clear",
   h: "panel",
@@ -53,8 +46,6 @@ const ALWAYS: Record<string, Action> = {
   "?": "help",
 };
 
-const DRAWING: Record<string, Action> = { enter: "finish", backspace: "undo", shift: "lock" };
-
 const ARROWS: Record<string, Arrow> = { arrowleft: "left", arrowright: "right", arrowup: "up", arrowdown: "down" };
 
 /** Number keys laid out as a compass on the keypad: 8 north, 2 south, 4 west, 6 east, 5 down from above, 0 from below. */
@@ -62,8 +53,7 @@ const VIEWS: Record<string, Snap> = { "8": "north", "2": "south", "4": "west", "
 
 /**
  * The action of a key pressed while the viewer has focus; null leaves the key to the page. Keys with Ctrl, Alt or
- * Meta, and keys typed into a field, are never the viewer's. While drawing, the camera keeps to plan: it pans and
- * zooms but does not orbit or turn to another view.
+ * Meta, and keys typed into a field, are never the viewer's.
  */
 export function keyAction(
   e: { key: string; shiftKey?: boolean; ctrlKey: boolean; altKey: boolean; metaKey: boolean },
@@ -78,10 +68,10 @@ export function keyAction(
     if (state.inPanel) return null;
     if (key === "pageup") return "zoomIn";
     if (key === "pagedown") return "zoomOut";
-    return e.shiftKey ? `pan-${arrow}` : state.drawing ? null : `orbit-${arrow}`;
+    return e.shiftKey ? `pan-${arrow}` : `orbit-${arrow}`;
   }
-  if (key in VIEWS) return state.drawing ? null : `view-${VIEWS[key]}`;
-  return ALWAYS[key] ?? (state.drawing ? (DRAWING[key] ?? null) : null);
+  if (key in VIEWS) return `view-${VIEWS[key]}`;
+  return ALWAYS[key] ?? null;
 }
 
 /** The keys the help card lists, in its order. */
@@ -95,11 +85,8 @@ export const SHORTCUTS: [string, string][] = [
   ["8 2 4 6", "View from the north, south, west or east"],
   ["5 0", "View from above or below"],
   ["O", "Orthographic or perspective"],
-  ["S", "Draw a section"],
-  ["Shift-drag", "Straight cut; while drawing, lock 45°"],
+  ["Drag", "Move the section plane; release cuts"],
   ["Shift+wheel", "Section width"],
-  ["Enter", "Finish the section"],
-  ["Backspace", "Undo the last vertex"],
   ["U", "Unfold or fold back"],
   ["X", "Clear the section"],
   ["[ ]", "Step the section back or forward"],

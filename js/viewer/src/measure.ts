@@ -33,7 +33,7 @@ export function scaleBarSvg(pixels: number, label: string, theme: Theme): string
   const w = Math.ceil(pixels) + 20;
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="30" viewBox="0 0 ${w} 30">` +
-    `<rect x="0.5" y="0.5" width="${w - 1}" height="29" rx="5" fill="${theme.panel}" fill-opacity="0.88" stroke="${theme.border}"/>` +
+    `<rect x="0.5" y="0.5" width="${w - 1}" height="29" rx="5" fill="${theme.panel}" fill-opacity="0.96" stroke="${theme.border}"/>` +
     `<path d="M10 16v6h${pixels.toFixed(1)}v-6" fill="none" stroke="${theme.text}" stroke-width="1.5"/>` +
     `<text x="${w / 2}" y="13" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="${theme.text}">${label}</text></svg>`
   );

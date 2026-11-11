@@ -6,7 +6,7 @@ import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeome
 import { Axes } from "./axes";
 import { blocksBox, type Box, diagonal, lerpBox, maskedBox, triangleMask, union, visibleBox, type Vec3 } from "./bounds";
 import { f32, i32, u32 } from "./buffers";
-import { categoryColor, COLORMAPS, cssToRgb, DEFAULT_COLORMAP, lut, parseCutoffs, type RGB, rgbToHex } from "./color";
+import { categoryColor, COLORMAPS, cssToRgb, DEFAULT_COLORMAP, lut, type RGB, rgbToHex } from "./color";
 import { colorBarSvg } from "./colorbar";
 import { Gizmo, type Snap } from "./gizmo";
 import { hostIsDark, watchHost } from "./host";
@@ -30,7 +30,6 @@ import {
   formatBound,
   fromState,
   histogram,
-  percentileRange,
   LayerFilter,
   openCondition,
   passMask,
@@ -49,16 +48,20 @@ import {
   cutAzimuth,
   distinct,
   faceOn,
+  faceOnSlide,
   orthogonalCut,
+  planePolygon,
+  planePose,
+  planeSection,
   presetCut,
-  stepCut,
-  MAX_SEGMENTS,
-  pickCut,
+  projectDrag,
   type Ray,
+  rayPlane,
   type Section,
   sectionBox,
   type SectionState,
-  snap45,
+  slideAlongNormal,
+  stepCut,
   traces,
   unfold,
   writeSection,
@@ -67,7 +70,6 @@ import { measure, metersPerPixel, scaleBar, scaleBarSvg } from "./measure";
 import { HALO_ORDER, shared } from "./shaders";
 import { CSS } from "./styles";
 import { resolveTheme, type Theme, type ThemeSpec, themeBase, withBase } from "./theme";
-import { formatRange } from "./ticks";
 import type { Buffers, ColumnSpec, Kind, LayerSpec, SceneSpec, VariableSpec } from "./types";
 
 const KINDS: [Kind, string][] = [
@@ -252,21 +254,42 @@ export class Viewer {
   private uprightWidth: number | null = null;
   private stepWidth: number | null = null;
   private planZ: number | null = null;
-  private drawing: { points: XY[]; cursor: XY | null; shift: boolean; view: CameraState } | null = null;
-  private quick: { from: XY; to: XY } | null = null;
-  private press: XY | null = null;
+  /** A drag of the section plane: the cut stays put until the pointer is released. */
+  private slide: {
+    grab: Vec3;
+    origin: Vec3;
+    at: Vec3;
+    normal: Vec3;
+    azimuth: number;
+    length: number;
+    from: XY;
+  } | null = null;
   private folded: CameraState | null = null;
   private tween: { from: CameraState; to: CameraState; start: number } | null = null;
   private outline = new THREE.Group();
   private outlineLines = new LineMaterial({ linewidth: 2, depthTest: false, transparent: true });
   private outlineEdges = new LineMaterial({ linewidth: 1, depthTest: false, transparent: true, opacity: 0.75 });
   private outlineDots = new THREE.PointsMaterial({ size: 7, sizeAttenuation: false, depthTest: false, transparent: true });
+  /** Clear at rest so the cut faces keep their colors; filled while the plane is hovered or dragged. */
+  private planeFill = new THREE.MeshBasicMaterial({
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    polygonOffset: true,
+    polygonOffsetFactor: -2,
+    polygonOffsetUnits: -2,
+  });
+  private planeHandle = new THREE.MeshBasicMaterial({ depthTest: false, depthWrite: false });
   private sweep = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  private sectionControls: { width: HTMLInputElement[]; dip: HTMLInputElement[]; hint: HTMLElement | null } = {
-    width: [],
-    dip: [],
-    hint: null,
-  };
+  private sectionControls: {
+    width: HTMLInputElement[];
+    dip: HTMLInputElement[];
+    hint: HTMLElement | null;
+    east: HTMLInputElement | null;
+    north: HTMLInputElement | null;
+    rl: HTMLInputElement | null;
+  } = { width: [], dip: [], hint: null, east: null, north: null, rl: null };
   private emitTimer: ReturnType<typeof setTimeout> | undefined;
   private stateTimer: ReturnType<typeof setTimeout> | undefined;
   private lastState = "";
@@ -280,12 +303,15 @@ export class Viewer {
   private helpButton = iconButton("keyboard", "Keyboard shortcuts (?)", () => this.toggleHelp());
   private highlight = new THREE.Group();
   private scaleEl = document.createElement("div");
+  private modeEl = document.createElement("div");
   private scaleText = "";
   private measuring = false;
   private marks: Vec3[] = [];
   private marksGroup = new THREE.Group();
   private highlightLines = new LineMaterial({
-    linewidth: 2.5,
+    linewidth: 3.5,
+    depthTest: false,
+    transparent: true,
     polygonOffset: true,
     polygonOffsetFactor: -2,
     polygonOffsetUnits: -8,
@@ -385,8 +411,10 @@ export class Viewer {
     this.help.className = "btv-card btv-help";
     this.help.hidden = true;
     this.scaleEl.className = "btv-scale";
+    this.modeEl.className = "btv-mode";
+    this.modeEl.hidden = true;
     this.scene.add(this.marksGroup);
-    this.root.append(this.axes.overlay, this.sweep, this.bars, this.scaleEl, this.gizmo.el, this.card);
+    this.root.append(this.axes.overlay, this.sweep, this.bars, this.scaleEl, this.gizmo.el, this.modeEl, this.card);
     this.reopen = iconButton("layers", "Show panel (H)", () => this.togglePanel());
     this.reopen.classList.add("btv-open");
     this.reopen.hidden = true;
@@ -434,7 +462,6 @@ export class Viewer {
     this.cleanup.push(() => resize.disconnect());
     this.cleanup.push(watchHost(() => themeBase(this.themeSpec) === "auto" && this.applyTheme()));
     this.root.addEventListener("keydown", (e) => this.key(e));
-    this.root.addEventListener("keyup", (e) => e.key === "Shift" && this.drawing && this.setShift(false));
     const canvas = this.renderer.canvas;
     canvas.addEventListener("pointerdown", (e) => this.pointerDown(e), { capture: true });
     canvas.addEventListener("pointermove", (e) => this.pointerMove(e));
@@ -451,7 +478,7 @@ export class Viewer {
     clearTimeout(this.stateTimer);
     this.clearOutline();
     this.clearHighlight();
-    for (const m of [this.outlineLines, this.outlineEdges, this.outlineDots, this.highlightLines, this.highlightRim, this.highlightOver, this.highlightRing])
+    for (const m of [this.outlineLines, this.outlineEdges, this.outlineDots, this.planeFill, this.planeHandle, this.highlightLines, this.highlightRim, this.highlightOver, this.highlightRing])
       m.dispose();
     this.controls.dispose();
     this.layers.forEach((l) => {
@@ -555,7 +582,7 @@ export class Viewer {
 
   /** Writes this viewer's state into the uniforms its materials share with any other viewer on the page. */
   private shareUniforms(eye: ViewCamera): void {
-    const section = this.drawing ? null : this.cutSection;
+    const section = this.cutSection;
     writeSection(section, !!this.cut?.unfolded);
     shared.uAccent.value.set(this.theme.accent);
     for (const m of [this.outlineLines, this.outlineEdges, this.highlightLines, this.highlightRim, this.highlightOver])
@@ -751,7 +778,7 @@ export class Viewer {
 
   /** From now on the camera orbits the element under CSS pixel `at`, which glides to the middle of the view. */
   private orbitAt(at: XY): void {
-    if (this.drawing || this.quick || this.measuring) return;
+    if (this.slide || this.measuring) return;
     const p = this.hitPoint(at);
     if (!p) return;
     this.card.hidden = true;
@@ -997,7 +1024,7 @@ export class Viewer {
     this.renderer.setBackground(t.background);
     shared.uHalo.value.set(t.halo);
     shared.uAccent.value.set(t.accent);
-    for (const m of [this.outlineLines, this.outlineEdges, this.outlineDots, this.highlightLines, this.highlightRim, this.highlightOver])
+    for (const m of [this.outlineLines, this.outlineEdges, this.outlineDots, this.planeFill, this.planeHandle, this.highlightLines, this.highlightRim, this.highlightOver])
       m.color.set(t.accent);
     this.axes.setTheme(t);
     this.gizmo.setTheme(t);
@@ -1022,14 +1049,22 @@ export class Viewer {
     const brand = document.createElement("span");
     brand.className = "btv-brand";
     brand.textContent = "Scene";
+    const cluster = (...nodes: Node[]) => {
+      const el = document.createElement("div");
+      el.className = "btv-cluster";
+      el.append(...nodes);
+      return el;
+    };
+    const hide = iconButton("hide", "Hide panel (H)", () => this.togglePanel());
+    hide.classList.add("btv-end");
     head.append(
       brand,
-      this.themeButton,
-      iconButton("fit", "Fit view (R)", () => this.fit()),
-      this.fullButton,
-      iconButton("camera", "Screenshot", () => (this.shotMenu.hidden = !this.shotMenu.hidden)),
-      this.helpButton,
-      iconButton("hide", "Hide panel (H)", () => this.togglePanel()),
+      cluster(this.themeButton, iconButton("fit", "Fit view (R)", () => this.fit()), this.fullButton),
+      cluster(
+        iconButton("camera", "Screenshot", () => (this.shotMenu.hidden = !this.shotMenu.hidden)),
+        this.helpButton,
+      ),
+      hide,
     );
     this.buildShotMenu();
     this.body.className = "btv-body";
@@ -1098,7 +1133,7 @@ export class Viewer {
       for (const layer of layers) group.append(...this.layerRow(layer));
       this.body.appendChild(group);
     }
-    this.sectionControls = { width: [], dip: [], hint: null };
+    this.sectionControls = { width: [], dip: [], hint: null, east: null, north: null, rl: null };
     this.body.appendChild(this.section("Section", "section"));
     if (!this.collapsed.has("section")) this.body.appendChild(this.sectionPanel());
     this.body.appendChild(this.section("View", "view"));
@@ -1107,37 +1142,69 @@ export class Viewer {
       box.className = "btv-settings btv-view";
       const tools = document.createElement("div");
       tools.className = "btv-tools";
-      const toggles: [keyof Viewer["show"], IconName, string][] = [
-        ["box", "box", "Bounding box"],
-        ["grid", "grid", "Grid"],
-        ["ticks", "ruler", "Tick labels"],
-        ["gizmo", "axes", "Orientation"],
-        ["edl", "contrast", "Eye-dome lighting (E)"],
-        ["ortho", "ortho", "Orthographic (O)"],
+      const toggles: [keyof Viewer["show"], IconName, string, "scene" | "draw"][] = [
+        ["box", "box", "Bounding box", "scene"],
+        ["grid", "grid", "Grid", "scene"],
+        ["ticks", "ruler", "Tick labels", "scene"],
+        ["gizmo", "axes", "Orientation", "scene"],
+        ["edl", "contrast", "Eye-dome lighting (E)", "draw"],
+        ["ortho", "ortho", "Orthographic (O)", "draw"],
       ];
+      const groups = { scene: document.createElement("div"), draw: document.createElement("div"), mode: document.createElement("div") };
+      for (const el of Object.values(groups)) el.className = "btv-cluster";
       const ruler = iconButton("measure", "Measure: click two points (M)", () => this.toggleMeasure());
       ruler.classList.add("btv-tool");
       ruler.setAttribute("aria-pressed", String(this.measuring));
-      for (const [key, name, text] of toggles) {
+      groups.mode.appendChild(ruler);
+      for (const [key, name, text, group] of toggles) {
         const button = iconButton(name, text, () => {
           this.toggleShow(key);
           button.setAttribute("aria-pressed", String(this.show[key]));
         });
         button.classList.add("btv-tool");
         button.setAttribute("aria-pressed", String(this.show[key]));
-        tools.appendChild(button);
+        groups[group].appendChild(button);
       }
+      tools.append(groups.scene, groups.draw, groups.mode);
       const quality = segmented(
         QUALITIES.map(([value, text, title]) => ({ value, text, title })),
         this.quality,
         (value) => this.setQuality(value as Quality),
       );
-      tools.appendChild(ruler);
       quality.setAttribute("aria-label", "Quality while moving");
       box.append(label("Show"), tools, label("Quality"), quality);
       this.body.appendChild(box);
     }
     this.body.scrollTop = scroll;
+    this.syncMode();
+  }
+
+  /** Shows when a section or the measure tool has the pointer, and how to leave it. */
+  private syncMode(): void {
+    this.root.classList.remove("btv-mode-draw");
+    const measuring = this.measuring;
+    const section = !!this.cut && !measuring;
+    this.root.classList.toggle("btv-mode-measure", measuring);
+    this.root.classList.toggle("btv-mode-section", section);
+    if (!measuring && !section) {
+      this.modeEl.hidden = true;
+      return;
+    }
+    const straight = !!this.cut && distinct(this.cut.points).length === 2 && !this.cut.unfolded;
+    const title = measuring ? "Measure" : "Section";
+    const detail = measuring ? "Click two points" : straight ? "Drag, release to cut" : "On";
+    const key = measuring ? "Esc" : "X";
+    const name = document.createElement("span");
+    name.className = "btv-mode-name";
+    name.textContent = title;
+    const hint = document.createElement("span");
+    hint.className = "btv-mode-hint";
+    hint.textContent = detail;
+    const kbd = document.createElement("kbd");
+    kbd.textContent = key;
+    this.modeEl.replaceChildren(name, hint, kbd);
+    this.modeEl.dataset.label = `${title}. ${detail} (${key})`;
+    this.modeEl.hidden = false;
   }
 
   /** Turns one of the view's overlays or its eye-dome lighting on or off. */
@@ -1171,33 +1238,11 @@ export class Viewer {
     return key;
   }
 
-  /** Sets a variable's range to the 2nd and 98th percentiles of the values of every layer it colors. */
-  private autoRange(name: string): void {
-    const parts = this.layers.filter((l) => l.column?.name === name).map((l) => this.columnData(l, l.column!));
-    const all = new Float32Array(parts.reduce((n, p) => n + p.length, 0));
-    parts.reduce((at, p) => (all.set(p, at), at + p.length), 0);
-    const range = percentileRange(all);
-    if (range && range[1] > range[0]) this.variable(name).clim = range;
-    this.refresh(new Set([name]));
-  }
-
-  private percentileButton(name: string): HTMLButtonElement {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "btv-chip";
-    b.textContent = "p2–p98";
-    b.title = "Range from the 2nd to the 98th percentile";
-    b.addEventListener("click", (e) => {
-      e.stopPropagation();
-      this.autoRange(name);
-    });
-    return b;
-  }
-
   private layerRow(layer: Layer): HTMLElement[] {
     const row = document.createElement("div");
     row.className = "btv-row";
     row.classList.toggle("btv-off", !layer.visible);
+    row.classList.toggle("btv-selected", layer.open);
     const eye = iconButton(layer.visible ? "eye" : "eyeOff", "Show or hide (Alt-click: only this one)", (e) =>
       this.toggleLayer(layer, e.altKey),
     );
@@ -1303,44 +1348,6 @@ export class Viewer {
       );
       scaleKind.setAttribute("aria-label", "Color scale");
       field("Scale", scaleKind);
-      const bins = document.createElement("input");
-      bins.type = "text";
-      bins.placeholder = "e.g. 0.3, 0.5, 1";
-      bins.title = "Cutoffs that step the colors into classes; empty for a continuous scale";
-      bins.value = v.bins?.join(", ") ?? "";
-      bins.addEventListener("change", () => {
-        v.bins = parseCutoffs(bins.value);
-        this.refresh(new Set([c.name]));
-      });
-      field("Bins", bins);
-      const s = this.scale(c.name);
-      const range = document.createElement("div");
-      range.className = "btv-range";
-      const input = (text: string) => {
-        const el = document.createElement("input");
-        el.type = "number";
-        el.step = "any";
-        el.value = text;
-        el.title = text;
-        return el;
-      };
-      const [loText, hiText] = formatRange(s.lo, s.hi);
-      const lo = input(loText);
-      const hi = input(hiText);
-      const apply = () => {
-        const a = Number(lo.value);
-        const b = Number(hi.value);
-        if (Number.isFinite(a) && Number.isFinite(b) && b > a) v.clim = [a, b];
-        this.refresh(new Set([c.name]));
-      };
-      lo.addEventListener("change", apply);
-      hi.addEventListener("change", apply);
-      const reset = iconButton("reset", "Reset range", () => {
-        v.clim = this.spec.variables[c.name]?.clim ?? null;
-        this.refresh(new Set([c.name]));
-      });
-      range.append(lo, hi, this.percentileButton(c.name), reset);
-      field("Range", range);
     }
 
     const opacity = document.createElement("input");
@@ -1624,6 +1631,7 @@ export class Viewer {
       el.innerHTML = colorBarSvg(
         {
           title: this.titled(name, this.variable(name).label ?? name),
+          unit: this.unitOf(name),
           cmap: s.cmap,
           lo: s.lo,
           hi: s.hi,
@@ -1636,33 +1644,7 @@ export class Viewer {
         this.theme,
         `btv-${this.uid}-${i}`,
       );
-      if (!text) el.appendChild(this.barRange(name));
     });
-  }
-
-  /** The range of a color bar's variable, editable in place, with the percentile auto-range. */
-  private barRange(name: string): HTMLElement {
-    const box = document.createElement("div");
-    box.className = "btv-bar-edit";
-    const s = this.scale(name);
-    const v = this.variable(name);
-    const [loText, hiText] = formatRange(s.lo, s.hi);
-    const ends = [loText, hiText].map((text, k) => {
-      const el = document.createElement("input");
-      el.type = "number";
-      el.step = "any";
-      el.value = text;
-      el.setAttribute("aria-label", k ? "Maximum of the color range" : "Minimum of the color range");
-      return el;
-    });
-    const apply = () => {
-      const [a, b] = ends.map((el) => Number(el.value));
-      if (Number.isFinite(a) && Number.isFinite(b) && b > a) v.clim = [a, b];
-      this.refresh(new Set([name]));
-    };
-    ends.forEach((el) => el.addEventListener("change", apply));
-    box.append(ends[0], this.percentileButton(name), ends[1]);
-    return box;
   }
 
   private draggable(el: HTMLDivElement): void {
@@ -1731,7 +1713,7 @@ export class Viewer {
     this.requestRender();
   }
 
-  /** Center of the shown layers' bounds, whatever the section: quick cuts pick on it, drawn ones hinge on it. */
+  /** Center of the shown layers' bounds. Presets and the azimuth field cut through it. */
   private middle(): Vec3 {
     const box = visibleBox(this.layers);
     return box ? ([0, 1, 2].map((a) => (box.min[a] + box.max[a]) / 2) as Vec3) : [0, 0, 0];
@@ -1750,7 +1732,7 @@ export class Viewer {
   private shownBox(): Box | null {
     const box = visibleBox(this.layers);
     const s = this.cutSection;
-    if (!box || !s || this.drawing) return box;
+    if (!box || !s) return box;
     if (!this.cut?.unfolded) return sectionBox(s, box) ?? box;
     const d = THREE.MathUtils.degToRad(s.dip);
     const across = s.half / Math.sin(d) + Math.max(Math.abs(box.min[2] - s.z), Math.abs(box.max[2] - s.z)) / Math.tan(d);
@@ -1773,7 +1755,7 @@ export class Viewer {
   /** Applies a section from Python; empty clears it. */
   setSection(state: SectionState | Record<string, never>): void {
     if (JSON.stringify(state ?? {}) === JSON.stringify(this.sectionState())) return;
-    if (this.drawing) this.endDrawing();
+    this.endSlide(false);
     if (!state || !("points" in state)) return this.setCut(null, false);
     const o = this.spec.origin;
     const zs = state.points.filter((p) => p.length > 2).map((p) => p[2] - o[2]);
@@ -1828,7 +1810,7 @@ export class Viewer {
   }
 
   toggleUnfolded(): void {
-    if (this.cut && !this.drawing && this.cutDip > 0) this.setUnfolded(!this.cut.unfolded);
+    if (this.cut && this.cutDip > 0) this.setUnfolded(!this.cut.unfolded);
   }
 
   // presets
@@ -1895,7 +1877,7 @@ export class Viewer {
   /** Moves the cut one step to the right of its direction (`sign` 1) or back (-1); a plan slab steps up or down. */
   stepSection(sign: 1 | -1): void {
     const c = this.cut;
-    if (!c || this.drawing) return;
+    if (!c || this.slide) return;
     if (this.plan) return this.planAtZ(c.z + sign * this.step());
     const unfolded = c.unfolded;
     this.setCut({ points: stepCut(c.points, sign * this.step()), z: c.z, unfolded: false }, false);
@@ -1961,8 +1943,8 @@ export class Viewer {
   }
 
   clearSection(): void {
-    if (this.drawing) this.endDrawing();
-    else if (this.cut) {
+    this.endSlide(false);
+    if (this.cut) {
       this.leavePlan();
       this.setCut(null);
     }
@@ -1984,81 +1966,9 @@ export class Viewer {
   private sectionEdited(): void {
     this.applySection();
     this.syncControls();
-    this.drawSweep();
     if (!this.cut) return;
     clearTimeout(this.emitTimer);
     this.emitTimer = setTimeout(() => this.emitSection(), 150);
-  }
-
-  // drawing
-
-  toggleDrawing(): void {
-    if (this.drawing) this.finishDrawing();
-    else this.startDrawing();
-  }
-
-  /** Switches to a plan view where clicks add the vertices of a polyline. */
-  private startDrawing(): void {
-    this.endQuick();
-    this.leavePlan();
-    if (this.cut?.unfolded) this.setUnfolded(false);
-    this.drawing = { points: [], cursor: null, shift: false, view: this.cameraState() };
-    this.controls.enableRotate = false;
-    this.controls.mouseButtons.LEFT = THREE.MOUSE.PAN;
-    this.refitBox();
-    this.glide(this.viewState(0, 90));
-    this.drawOutline();
-    this.renderBody();
-  }
-
-  /** Leaves the drawer for the view it started from; returns the vertices drawn. */
-  private endDrawing(): XY[] {
-    const d = this.drawing;
-    if (!d) return [];
-    this.drawing = null;
-    this.press = null;
-    this.controls.enableRotate = true;
-    this.controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
-    this.glide(d.view);
-    this.refitBox();
-    this.drawOutline();
-    this.renderBody();
-    return d.points;
-  }
-
-  finishDrawing(): void {
-    const points = this.endDrawing();
-    if (distinct(points).length >= 2) this.setCut({ points, z: this.middle()[2], unfolded: false });
-  }
-
-  private drawCursor(): XY | null {
-    const d = this.drawing;
-    if (!d?.cursor) return null;
-    const last = d.points[d.points.length - 1];
-    return d.shift && last ? snap45(last, d.cursor) : d.cursor;
-  }
-
-  private addVertex(at: XY): void {
-    const d = this.drawing!;
-    if (d.points.length > MAX_SEGMENTS) return;
-    const last = d.points[d.points.length - 1];
-    const p = d.shift && last ? snap45(last, at) : at;
-    if (last && last[0] === p[0] && last[1] === p[1]) return;
-    d.points.push(p);
-    this.drawOutline();
-    this.updateHint();
-  }
-
-  private undoVertex(): void {
-    this.drawing?.points.pop();
-    this.drawOutline();
-    this.updateHint();
-  }
-
-  private setShift(on: boolean): void {
-    if (!this.drawing || this.drawing.shift === on) return;
-    this.drawing.shift = on;
-    this.drawOutline();
   }
 
   // outline
@@ -2077,29 +1987,28 @@ export class Viewer {
   }
 
   /**
-   * The section in the accent: its trace and slab edges on the top of the box, or its ends and bends once
-   * unfolded; while drawing, the polyline so far, its vertices and the slab it would cut.
+   * A straight section is one plane clipped to the shown layers, with a handle. A polyline keeps its trace on the
+   * top of the box. While the plane is dragged, this draws the plane at the pointer and leaves the cut alone.
+   * Unfolded, the ends and bends stand in for the trace.
    */
   private drawOutline(): void {
     this.clearOutline();
     const box = this.box ?? visibleBox(this.layers);
     if (!box) return;
+    const live = this.slide
+      ? { origin: this.slide.at, normal: this.slide.normal }
+      : !this.cut?.unfolded && this.cut
+        ? planePose(this.cut.points, this.cut.z, this.cutDip)
+        : null;
+    if (live) {
+      this.drawPlane(live.origin, live.normal, box);
+      this.requestRender();
+      return;
+    }
+    const s = this.cutSection;
     const top = box.max[2];
     const pairs = (line: XY[]) => line.slice(1).flatMap((p, i) => [...line[i], top, ...p, top]);
-    const d = this.drawing;
-    let s = this.cutSection;
-    if (d) {
-      const cursor = this.drawCursor();
-      const path = cursor ? [...d.points, cursor] : d.points;
-      s = buildSection(path, this.middle()[2], this.sectionWidth(), this.cutDip);
-      const dots = new THREE.BufferGeometry();
-      dots.setAttribute("position", new THREE.Float32BufferAttribute(path.flatMap((p) => [...p, top]), 3));
-      const points = new THREE.Points(dots, this.outlineDots);
-      points.frustumCulled = false;
-      points.renderOrder = 11;
-      this.outline.add(points);
-    }
-    if (s && this.cut?.unfolded && !d) {
+    if (s && this.cut?.unfolded) {
       const at = [0, ...s.segments.map((g) => g.chainage + g.length)];
       this.addLines(at.flatMap((x) => [x, 0, box.min[2], x, 0, box.max[2]]), this.outlineEdges);
     } else if (s) {
@@ -2108,6 +2017,37 @@ export class Viewer {
       this.addLines([...pairs(left), ...pairs(right)], this.outlineEdges);
     }
     this.requestRender();
+  }
+
+  /** Translucent quad of the plane through `origin`, clipped to `box`, outlined, with a handle on its normal. */
+  private drawPlane(origin: Vec3, normal: Vec3, box: Box): void {
+    const poly = planePolygon(origin, normal, box);
+    if (poly.length < 3) return;
+    const positions: number[] = [];
+    for (let i = 1; i < poly.length - 1; i++) positions.push(...poly[0], ...poly[i], ...poly[i + 1]);
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    const fill = new THREE.Mesh(geometry, this.planeFill);
+    fill.frustumCulled = false;
+    fill.renderOrder = 9;
+    fill.userData.plane = true;
+    this.outline.add(fill);
+    const edge: number[] = [];
+    for (let i = 0; i < poly.length; i++) edge.push(...poly[i], ...poly[(i + 1) % poly.length]);
+    const c: Vec3 = [0, 0, 0];
+    for (const p of poly) for (let k = 0; k < 3; k++) c[k] += p[k];
+    for (let k = 0; k < 3; k++) c[k] /= poly.length;
+    const radius = Math.max(diagonal(box) * 0.012, 1e-3);
+    const handle = new THREE.Mesh(new THREE.SphereGeometry(radius, 16, 10), this.planeHandle);
+    handle.position.set(c[0], c[1], c[2]);
+    handle.frustumCulled = false;
+    handle.renderOrder = 12;
+    handle.userData.plane = true;
+    this.outline.add(handle);
+    const tip: Vec3 = [c[0] + normal[0] * radius * 4, c[1] + normal[1] * radius * 4, c[2] + normal[2] * radius * 4];
+    const lines = this.outline.children.length;
+    this.addLines([...edge, ...c, ...tip], this.outlineLines);
+    this.outline.children.slice(lines).forEach((o) => (o.userData.plane = true));
   }
 
   // pointer
@@ -2123,7 +2063,7 @@ export class Viewer {
     return { origin: caster.ray.origin.toArray() as Vec3, direction: caster.ray.direction.toArray() as Vec3 };
   }
 
-  /** Where the pointer meets the level plane through the top of the box, where the drawer draws. */
+  /** Where the pointer meets the level plane through the top of the box. */
   private planAt(at: XY): XY | null {
     const { origin, direction } = this.ray(at);
     const z = (this.box ?? visibleBox(this.layers))?.max[2] ?? 0;
@@ -2136,90 +2076,154 @@ export class Viewer {
     this.root.focus({ preventScroll: true });
     if (e.button !== 0) return;
     const at = this.screen(e);
-    if (this.drawing) {
-      this.press = at;
+    if (!this.measuring && this.beginSlide(at)) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      this.renderer.canvas.setPointerCapture(e.pointerId);
       return;
     }
-    if (!e.shiftKey || this.cut?.unfolded) {
-      this.clickAt = at;
-      return;
-    }
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    this.renderer.canvas.setPointerCapture(e.pointerId);
-    this.quick = { from: at, to: at };
-    this.drawSweep();
+    this.clickAt = at;
   }
 
   private pointerMove(e: PointerEvent): void {
-    if (this.quick) {
-      this.quick.to = this.screen(e);
-      this.drawSweep();
-    } else if (this.drawing) {
-      this.drawing.cursor = this.planAt(this.screen(e));
-      this.drawing.shift = e.shiftKey;
-      this.drawOutline();
-    }
-  }
-
-  private pointerUp(e: PointerEvent): void {
     const at = this.screen(e);
-    const click = isClick(this.clickAt, at, CLICK_PX);
-    this.clickAt = null;
-    if (click && this.measuring && !this.drawing && !this.quick) return this.addMark(at);
-    if (click && !this.drawing && !this.quick) return this.pick(at);
-    if (this.quick) {
-      const { from } = this.quick;
-      this.endQuick();
-      if (Math.hypot(at[0] - from[0], at[1] - from[1]) >= 2 * CLICK_PX) this.quickCut(from, at);
+    if (this.slide) {
+      this.moveSlide(at);
       return;
     }
-    if (this.drawing && this.press && Math.hypot(at[0] - this.press[0], at[1] - this.press[1]) < CLICK_PX) {
-      const p = this.planAt(at);
-      this.drawing.shift = e.shiftKey;
-      if (p) this.addVertex(p);
-    }
-    this.press = null;
+    const hover = e.buttons === 0 && this.hitsPlane(at);
+    this.root.classList.toggle("btv-plane-hover", hover);
+    this.fillPlane(hover);
   }
 
-  /** The wheel zooms; Shift+wheel sets the width while cutting or drawing, or of the section there is. */
+  private fillPlane(on: boolean): void {
+    const opacity = on ? 0.32 : 0;
+    if (this.planeFill.opacity === opacity) return;
+    this.planeFill.opacity = opacity;
+    this.requestRender();
+  }
+
+  /** A press on the plane that never moves past a click is a click: it picks, and leaves the cut alone. */
+  private pointerUp(e: PointerEvent): void {
+    const at = this.screen(e);
+    if (this.slide) {
+      const from = this.slide.from;
+      const moved = !isClick(from, at, CLICK_PX);
+      this.endSlide(moved);
+      if (moved) return;
+      this.clickAt = from;
+    }
+    const click = isClick(this.clickAt, at, CLICK_PX);
+    this.clickAt = null;
+    if (click && this.measuring) return this.addMark(at);
+    if (click) this.pick(at);
+  }
+
+  /** The wheel zooms; Shift+wheel sets the width of the section there is. */
   private wheel(e: WheelEvent): void {
-    if (e.ctrlKey || !e.shiftKey || !(this.quick || this.drawing || this.cut)) return;
+    if (e.ctrlKey || !e.shiftKey || !this.cut) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     const delta = e.deltaY || e.deltaX;
     if (delta) this.setWidth(this.sectionWidth() * (delta < 0 ? WHEEL_STEP : 1 / WHEEL_STEP));
   }
 
-  /** Cuts the upright section under a line swept across the screen, its ends picked as `pickCut` says. */
-  private quickCut(from: XY, to: XY): void {
-    const center = this.middle();
-    const forward = this.camera.getWorldDirection(new THREE.Vector3()).toArray() as Vec3;
-    const ends = pickCut([this.ray(from), this.ray(to)], center, forward);
-    const points = ends?.map((p) => [p[0], p[1]] as XY) ?? [];
-    if (distinct(points).length !== 2) return;
-    this.leavePlan();
-    this.setCut({ points, z: center[2], unfolded: false });
+  /** True when the pointer is over the section plane or its handle. */
+  private hitsPlane(at: XY): boolean {
+    if (this.cut?.unfolded || !this.cut || !planePose(this.cut.points, this.cut.z, this.cutDip)) return false;
+    const caster = new THREE.Raycaster();
+    caster.setFromCamera(new THREE.Vector2((at[0] / this.width) * 2 - 1, 1 - (at[1] / this.height) * 2), this.eye());
+    return caster.intersectObjects(this.outline.children, false).some((hit) => hit.object.userData.plane);
   }
 
-  private endQuick(): void {
-    this.quick = null;
-    this.drawSweep();
+  /** Starts a slide along the plane's normal. The cut is left where it is until release. */
+  private beginSlide(at: XY): boolean {
+    const pose = this.cut && !this.cut.unfolded ? planePose(this.cut.points, this.cut.z, this.cutDip) : null;
+    if (!pose || !this.hitsPlane(at)) return false;
+    const ray = this.ray(at);
+    this.slide = {
+      grab: rayPlane(ray, pose.origin, pose.normal) ?? pose.origin,
+      origin: pose.origin,
+      at: pose.origin,
+      normal: pose.normal,
+      azimuth: pose.azimuth,
+      length: pose.length,
+      from: at,
+    };
+    this.root.classList.add("btv-plane-drag");
+    this.root.classList.remove("btv-plane-hover");
+    this.fillPlane(true);
+    return true;
   }
 
-  private drawSweep(): void {
-    const q = this.quick;
+  /** Moves the plane outline and the position readout. Does not rebuild the cut. */
+  private moveSlide(at: XY): void {
+    const s = this.slide;
+    if (!s) return;
+    const forward = this.eye().getWorldDirection(new THREE.Vector3()).toArray() as Vec3;
+    const along = slideAlongNormal(this.ray(at), s.grab, s.normal, forward);
+    const distance = along ?? faceOnSlide(at[0] - s.from[0], at[1] - s.from[1], s.normal, this.metersPerPixelAt(s.grab));
+    s.at = [s.origin[0] + s.normal[0] * distance, s.origin[1] + s.normal[1] * distance, s.origin[2] + s.normal[2] * distance];
+    this.drawOutline();
+    this.showReadout(s.at, s.normal);
+    this.writeOrigin(s.at);
+  }
+
+  /** Applies the slide through `setCut`, or puts the plane back when `apply` is false or the plane did not move. */
+  private endSlide(apply: boolean): void {
+    const slide = this.slide;
+    if (!slide) return;
+    this.slide = null;
+    this.root.classList.remove("btv-plane-drag", "btv-plane-hover");
+    this.fillPlane(false);
     this.sweep.replaceChildren();
-    if (!q) return;
-    const ns = "http://www.w3.org/2000/svg";
-    const line = document.createElementNS(ns, "line");
-    for (const [k, v] of Object.entries({ x1: q.from[0], y1: q.from[1], x2: q.to[0], y2: q.to[1] }))
-      line.setAttribute(k, String(v));
-    const text = document.createElementNS(ns, "text");
-    text.setAttribute("x", String(q.to[0] + 10));
-    text.setAttribute("y", String(q.to[1] - 10));
-    text.textContent = `width ${this.length(this.sectionWidth())}`;
-    this.sweep.append(line, text);
+    const distance = projectDrag(slide.origin, slide.at, slide.normal);
+    if (apply && Math.abs(distance) > 1e-4) {
+      const cut = planeSection(slide.at, slide.azimuth, this.cutDip, slide.length);
+      if (this.plan) this.planZ = cut.z;
+      this.setCut({ points: cut.points, z: cut.z, unfolded: false }, false);
+      this.emitSection();
+      return;
+    }
+    this.drawOutline();
+    this.syncControls();
+  }
+
+  /** Meters one CSS pixel spans at `point`. */
+  private metersPerPixelAt(point: Vec3): number {
+    const eye = this.eye();
+    if (eye instanceof THREE.OrthographicCamera) return Math.abs(eye.top - eye.bottom) / Math.max(this.height, 1);
+    return metersPerPixel(Math.max(eye.position.distanceTo(new THREE.Vector3(...point)), 1e-3), this.camera.fov, this.height);
+  }
+
+  /** Easting, northing and elevation of a point on the plane, beside its handle. */
+  private showReadout(origin: Vec3, normal: Vec3): void {
+    const box = this.box ?? visibleBox(this.layers);
+    this.sweep.replaceChildren();
+    if (!box) return;
+    const poly = planePolygon(origin, normal, box);
+    const c: Vec3 = [0, 0, 0];
+    for (const p of poly) for (let k = 0; k < 3; k++) c[k] += p[k];
+    for (let k = 0; k < 3; k++) c[k] /= poly.length || 1;
+    const at = this.toScreen(c);
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", String(at[0] + 14));
+    text.setAttribute("y", String(at[1] - 10));
+    const o = this.spec.origin;
+    text.textContent = `E ${formatLength(origin[0] + o[0])}   N ${formatLength(origin[1] + o[1])}   RL ${formatLength(origin[2] + o[2])}`;
+    this.sweep.appendChild(text);
+  }
+
+  /** The origin fields follow the plane while it is dragged, without rebuilding the panel. */
+  private writeOrigin(origin: Vec3): void {
+    const active = (this.root.getRootNode() as Document | ShadowRoot).activeElement;
+    const o = this.spec.origin;
+    const set = (el: HTMLInputElement | null, value: number) => {
+      if (el && el !== active) el.value = formatLength(value);
+    };
+    set(this.sectionControls.east, origin[0] + o[0]);
+    set(this.sectionControls.north, origin[1] + o[1]);
+    if (this.plan) set(this.sectionControls.rl, origin[2] + o[2]);
   }
 
   // panel
@@ -2229,23 +2233,21 @@ export class Viewer {
     box.className = "btv-settings btv-view";
     const tools = document.createElement("div");
     tools.className = "btv-tools";
-    const tool = (name: IconName, title: string, pressed: boolean, enabled: boolean, action: () => void) => {
+    const cuts = document.createElement("div");
+    const file = document.createElement("div");
+    cuts.className = file.className = "btv-cluster";
+    const tool = (group: HTMLElement, name: IconName, title: string, pressed: boolean, enabled: boolean, action: () => void) => {
       const b = iconButton(name, title, action);
       b.classList.add("btv-tool");
       b.setAttribute("aria-pressed", String(pressed));
       b.disabled = !enabled;
-      tools.appendChild(b);
+      group.appendChild(b);
     };
     const c = this.cut;
-    tool("draw", this.drawing ? "Cut along the polyline (Enter)" : "Draw a section (S)", !!this.drawing, true, () =>
-      this.toggleDrawing(),
-    );
-    tool(c?.unfolded ? "fold" : "unfold", c?.unfolded ? "Fold back (U)" : "Unfold (U)", !!c?.unfolded, !!c && !this.drawing, () =>
+    tool(cuts, c?.unfolded ? "fold" : "unfold", c?.unfolded ? "Fold back (U)" : "Unfold (U)", !!c?.unfolded, !!c, () =>
       this.toggleUnfolded(),
     );
-    tool("clear", this.drawing ? "Cancel drawing (Esc)" : "Clear the section (X)", false, !!c || !!this.drawing, () =>
-      this.clearSection(),
-    );
+    tool(cuts, "clear", "Clear the section (X)", false, !!c, () => this.clearSection());
     const pair = (title: string, slider: [number, number, number], set: (slider: number | null, typed: number | null) => void) => {
       const row = document.createElement("div");
       row.className = "btv-range btv-pair";
@@ -2270,8 +2272,8 @@ export class Viewer {
     const dip = pair("Dip", [5, 90, 1], (slider, typed) => this.setDip((slider ?? typed)!));
     const hint = document.createElement("div");
     hint.className = "btv-note btv-hint";
-    this.sectionControls = { width: width.inputs, dip: dip.inputs, hint };
-    tool("exportImage", "Export the section as a PNG", false, !!c && !this.drawing, () => void this.exportSection());
+    tool(file, "exportImage", "Export the section as a PNG", false, !!c, () => void this.exportSection());
+    tools.append(cuts, file);
     const chip = (text: string, title: string, action: () => void) => {
       const b = document.createElement("button");
       b.type = "button";
@@ -2307,17 +2309,19 @@ export class Viewer {
     const east = typed("Origin easting", center[0] + o[0]);
     const north = typed("Origin northing", center[1] + o[1]);
     const azimuth = typed("Azimuth, degrees from north", at ? cutAzimuth(at) : 0);
+    const aim = () => {
+      const heading = Number(azimuth.value);
+      const e = Number(east.value);
+      const n = Number(north.value);
+      if (!Number.isFinite(heading)) return this.syncControls();
+      const center = Number.isFinite(e) && Number.isFinite(n) ? ([e - o[0], n - o[1]] as XY) : undefined;
+      this.cutAlong(heading, center);
+    };
+    azimuth.addEventListener("change", aim);
     const origin = document.createElement("div");
     origin.className = "btv-range";
-    origin.append(
-      east,
-      north,
-      azimuth,
-      chip("Cut", "Cut through this origin along this azimuth", () => {
-        const v = [east, north, azimuth].map((el) => Number(el.value));
-        if (v.every(Number.isFinite)) this.cutAlong(v[2], [v[0] - o[0], v[1] - o[1]]);
-      }),
-    );
+    origin.append(east, north, azimuth, chip("Cut", "Cut through this origin along this azimuth", aim));
+    this.sectionControls = { width: width.inputs, dip: dip.inputs, hint, east, north, rl: null };
     const stepRow = document.createElement("div");
     stepRow.className = "btv-range";
     const spacing = typed("Step between cuts", this.step());
@@ -2327,26 +2331,32 @@ export class Viewer {
     });
     const stepButton = (sign: 1 | -1) => {
       const b = iconButton(sign > 0 ? "stepForward" : "stepBack", sign > 0 ? "Step forward (])" : "Step back ([)", () => this.stepSection(sign));
-      b.disabled = !c || !!this.drawing;
+      b.disabled = !c;
       return b;
     };
     stepRow.append(stepButton(-1), spacing, stepButton(1));
     const rl = typed("Elevation of the plan slab", (this.planZ ?? m[2]) + o[2]);
+    this.sectionControls.rl = rl;
     rl.addEventListener("change", () => {
       const v = Number(rl.value);
       if (Number.isFinite(v)) this.planAtZ(v - o[2]);
     });
+    const rule = document.createElement("div");
+    rule.className = "btv-rule";
+    const split = () => rule.cloneNode() as HTMLElement;
     box.append(
       label("Cut"),
       tools,
       label("Preset"),
       presets,
+      split(),
       label("Origin"),
       origin,
       label("Step"),
       stepRow,
       label("Plan RL"),
       rl,
+      split(),
       label("Width"),
       width.row,
       label("Dip"),
@@ -2376,15 +2386,14 @@ export class Viewer {
   private updateHint(): void {
     const hint = this.sectionControls.hint;
     if (!hint) return;
-    const d = this.drawing;
     const s = this.cutSection;
-    if (d) {
-      const n = d.points.length;
-      hint.textContent = `${n} point${n === 1 ? "" : "s"}. Click to add, Shift locks 45°, Shift+wheel sets the width, Backspace undoes, Enter cuts, Esc cancels.`;
-    } else if (s && this.cut) {
-      const n = s.segments.length + 1;
-      hint.textContent = `${n} points, ${this.length(s.length)} long. Shift+wheel sets the width, U ${this.cut.unfolded ? "folds back" : "unfolds"}, X clears.`;
-    } else hint.textContent = "Shift-drag across the view for a straight cut (Shift+wheel sets its width), or draw a polyline (S).";
+    if (s && this.cut) {
+      const fold = this.cut.unfolded ? "folds back" : "unfolds";
+      const straight = distinct(this.cut.points).length === 2 && !this.cut.unfolded;
+      hint.textContent = straight
+        ? `Drag the plane and release to cut. Shift+wheel sets the width, U ${fold}, X clears.`
+        : `${s.segments.length + 1} points, ${this.length(s.length)} long. Shift+wheel sets the width, U ${fold}, X clears.`;
+    } else hint.textContent = "Pick a preset or an azimuth. Drag the plane and release to cut. Shift+wheel sets the width.";
   }
 
   // ---- picking ----
@@ -2611,9 +2620,9 @@ export class Viewer {
   private key(e: KeyboardEvent): void {
     const target = e.composedPath()[0] as HTMLElement;
     const inField = /^(INPUT|SELECT|TEXTAREA)$/.test(target?.tagName ?? "");
-    const cancellable = !!(this.drawing || this.quick || this.picked || this.measuring || !this.help.hidden);
+    const cancellable = !!(this.slide || this.picked || this.measuring || !this.help.hidden);
     const inPanel = e.composedPath().includes(this.panel);
-    const action = keyAction(e, inField, { drawing: !!this.drawing, cancellable, inPanel });
+    const action = keyAction(e, inField, { cancellable, inPanel });
     if (!action) return;
     e.preventDefault();
     e.stopPropagation();
@@ -2624,10 +2633,6 @@ export class Viewer {
     ({
       fit: () => this.fit(),
       plan: () => this.setView(0, 90),
-      draw: () => this.toggleDrawing(),
-      finish: () => this.finishDrawing(),
-      undo: () => this.undoVertex(),
-      lock: () => this.setShift(true),
       unfold: () => this.toggleUnfolded(),
       clear: () => this.clearSection(),
       panel: () => this.togglePanel(),
@@ -2638,8 +2643,7 @@ export class Viewer {
         this.renderBody();
       },
       cancel: () => {
-        if (this.drawing) this.endDrawing();
-        else if (this.quick) this.endQuick();
+        if (this.slide) this.endSlide(false);
         else if (!this.help.hidden) this.toggleHelp(false);
         else if (this.measuring) this.toggleMeasure(false);
         else this.dismiss();
@@ -2802,7 +2806,11 @@ export class Viewer {
     await this.idle();
     this.frame();
     shared.uPixelRatio.value = scale;
+    // The section plane is an editing handle, like a hover: it stays out of images, the cut stays in.
+    const plane = this.outline.children.filter((o) => o.userData.plane && o.visible);
+    plane.forEach((o) => (o.visible = false));
     const canvas = this.renderer.snapshot(this.scene, this.eye(), scale, transparent);
+    plane.forEach((o) => (o.visible = true));
     shared.uPixelRatio.value = this.pixelRatio;
     this.requestRender();
     const ratio = canvas.width / this.width;
@@ -2819,6 +2827,30 @@ export class Viewer {
     for (const svg of overlays) {
       const image = await svgImage(new XMLSerializer().serializeToString(svg));
       ctx.drawImage(image, ...place(svg));
+    }
+    const modeOn = ["btv-mode-draw", "btv-mode-measure", "btv-mode-section"].some((name) => this.root.classList.contains(name));
+    if (modeOn) {
+      ctx.strokeStyle = this.theme.accent;
+      ctx.lineWidth = 2 * ratio;
+      ctx.strokeRect(ratio, ratio, canvas.width - 2 * ratio, canvas.height - 2 * ratio);
+    }
+    const modeLabel = this.modeEl.hidden ? "" : (this.modeEl.dataset.label ?? "");
+    if (modeLabel) {
+      ctx.font = `600 ${12 * ratio}px system-ui, sans-serif`;
+      const pad = 10 * ratio;
+      const w = ctx.measureText(modeLabel).width + pad * 2;
+      const x = 12 * ratio;
+      const y = 12 * ratio;
+      const h = 26 * ratio;
+      ctx.fillStyle = this.theme.panel;
+      ctx.strokeStyle = this.theme.accent;
+      ctx.lineWidth = ratio;
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, 13 * ratio);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = this.theme.text;
+      ctx.fillText(modeLabel, x + pad, y + 17 * ratio);
     }
     if (title) {
       ctx.font = `600 ${15 * ratio}px system-ui, sans-serif`;
@@ -2925,15 +2957,19 @@ function ringMaterial(): THREE.ShaderMaterial {
     vertexShader: /* glsl */ `
       uniform float uPixelRatio;
       void main() {
-        gl_PointSize = 22.0 * uPixelRatio;
+        gl_PointSize = 28.0 * uPixelRatio;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }`,
     fragmentShader: /* glsl */ `
       uniform vec3 uAccent;
       void main() {
         float r = 2.0 * length(gl_PointCoord - 0.5);
-        if (r > 1.0 || r < 0.75) discard;
-        gl_FragColor = vec4(uAccent, 1.0);
+        if (r > 1.0) discard;
+        float ring = smoothstep(0.52, 0.66, r) * (1.0 - smoothstep(0.84, 1.0, r));
+        float dot = 1.0 - smoothstep(0.0, 0.22, r);
+        float a = max(ring, dot);
+        if (a < 0.04) discard;
+        gl_FragColor = vec4(uAccent, a);
       }`,
   });
 }

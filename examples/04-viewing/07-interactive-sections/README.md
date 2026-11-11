@@ -3,8 +3,8 @@
 `Scene.section` cuts every layer of a scene to a slab around a section: blocks are cut and capped in their own
 colors, lens surfaces are cut and outlined where the slab's faces cross them, and drill-hole intervals show whole
 when their middle lies in the slab. The section runs along a polyline in plan and may dip; `U` in the viewer, or
-`unfolded` in `sections`, lays it out flat as one true-scale section. While viewing, Shift-drag cuts a straight
-section and `S` draws a polyline. Here each view renders to an image.
+`unfolded` in `sections`, lays it out flat as one true-scale section. While viewing, a preset or the azimuth
+field sets one plane; drag it and release to cut. Here each view renders to an image.
 
 <details><summary>Python</summary>
 

@@ -859,17 +859,17 @@ class Scene:
         `width` / 2 from that surface, or beyond the polyline's ends, is not drawn, in every layer and
         representation: blocks are cut and capped with faces of their own color, meshes are cut and outlined in
         the theme's accent where the slab's faces cross them, and drill-hole intervals, points and spheres show
-        whole when their middle lies in the slab. Filters still apply. The section's trace and slab edges are drawn
-        in the accent along the top of the box, which shrinks to the section.
+        whole when their middle lies in the slab. Filters still apply. The box shrinks to the section. A straight
+        section is drawn as one plane clipped to the shown layers, with a handle; a polyline keeps its trace and
+        slab edges in the accent along the top of the box.
 
-        While viewing, Shift-drag across the view cuts a straight section under the swept line, its ends picked on
-        the level plane through the middle of the shown layers (or, in views within 20 degrees of level, on the
-        upright plane through it that faces the camera); ``S`` or the draw button switches to a plan view where
-        clicks add the vertices of a polyline, Shift locks a segment to a multiple of 45 degrees, Backspace removes
-        the last vertex, Enter or the button cuts and Esc cancels. The mouse wheel zooms; Shift+wheel sets the
-        width while cutting or drawing, or of the section shown. ``U`` or the unfold button lays the section out
-        flat, with the distance along it on the bottom axis and elevation up, and folds it back; ``X`` or the clear
-        button removes it. `sections` reads the result back.
+        While viewing, a preset aims that plane north-south, east-west, in plan, along the model, or long or across
+        the current section, and the azimuth field sets any other heading. Dragging the plane or its handle moves
+        it along its normal without recutting; releasing the pointer cuts there, at the current width and dip.
+        The wheel zooms; Shift+wheel sets the width. ``U`` or the unfold button lays the section out flat, with
+        the distance along it on the bottom axis and elevation up, and folds it back; ``X`` or the clear button
+        removes it. A polyline of more than two points still cuts along each segment. `sections` reads the result
+        back.
 
         Parameters
         ----------

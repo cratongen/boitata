@@ -468,8 +468,8 @@ for p, row in (("P10", p10), ("P50", p50), ("P90", p90)):
 #   the view, `P` looks down in plan, `O` draws it orthographic, at true scale at any depth;
 # - the panel at the top right shows or hides each layer, and its settings switch the representation, the colors
 #   and the filter; `H` hides the panel, `T` switches the theme, the header button goes fullscreen;
-# - Shift-drag cuts a straight section; `S` draws one in plan: click to add vertices, hold Shift to lock a segment
-#   to a multiple of 45°, Enter cuts. Shift+wheel sets the section's width, `U` unfolds it, `X` clears it;
+# - a preset or the azimuth field sets one section plane; drag it and release to cut. Shift+wheel sets the
+#   width, `U` unfolds it, `X` clears it;
 # - click a block, a hole or a surface to inspect its values; `?` lists every key.
 
 # %%

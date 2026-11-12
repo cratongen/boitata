@@ -1,17 +1,17 @@
 //! Uncertainty summaries accumulated realization by realization, so an ensemble
 //! is never held or returned in full unless asked for.
 //!
-//! Realizations are simulated in parallel batches and folded in realization
-//! order, so every summary is identical for any number of threads.
+//! Realizations are folded in realization order, so every summary is
+//! identical for any number of threads.
 
 use boitata_core::BlockModel;
 use rayon::prelude::*;
 
 use crate::error::{Result, SimError};
 
-/// Runs realizations `0..n` in parallel batches and hands them to `add` in
-/// order; at most one batch (`in_flight` realizations, at most one per
-/// thread) is held at a time.
+/// Runs realizations `0..n` and hands them to `add` in order. At most one
+/// batch (`in_flight` realizations, at most one per thread) is held at a
+/// time; a batch that fills the pool runs one realization per thread.
 fn run<R: Send>(
     n: usize,
     in_flight: usize,
@@ -25,11 +25,10 @@ fn run<R: Send>(
     }
     let batch = in_flight.clamp(1, rayon::current_num_threads().max(1));
     for start in (0..n).step_by(batch) {
-        let done: Vec<R> = (start..(start + batch).min(n))
-            .into_par_iter()
-            .map(&simulate)
-            .collect::<Result<_>>()?;
-        done.into_iter().try_for_each(&mut add)?;
+        let count = (start + batch).min(n) - start;
+        for item in crate::realizations(count, |i| simulate(start + i)) {
+            add(item?)?;
+        }
     }
     Ok(())
 }

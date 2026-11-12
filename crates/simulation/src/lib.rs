@@ -26,6 +26,7 @@ pub mod multivariate;
 pub mod objects;
 pub mod pgs;
 pub mod post;
+mod schedule;
 pub mod select;
 pub mod sgs;
 pub mod shared;
@@ -68,6 +69,9 @@ pub use turning_bands::{
     Bands, DEFAULT_MEMORY, GlobalSummary, TurningBandsEnsemble, TurningBandsParams, band_bytes,
     bounds, conditional_gaussian_field, turning_bands, turning_bands_in, turning_bands_to_parquet,
 };
+
+#[doc(hidden)]
+pub use schedule::realizations;
 
 pub mod snesim;
 pub use snesim::{Snesim, SnesimLocal, SnesimParams};

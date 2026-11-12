@@ -11,7 +11,7 @@ use simulation::pgs::LatentFields;
 use simulation::{
     Bands, ContinuousOptions, Decorrelation, Dss, Hierarchy, Lattice, PgsParams, SgsParams,
     SharedSgs, SisParams, Trend, TruncationRule, TurningBandsEnsemble, TurningBandsParams, bounds,
-    dss_in, multivariate, sgs, sgs_shared, sis, turning_bands,
+    dss_in, multivariate, realizations, sgs, sgs_shared, sis, turning_bands,
 };
 use std::collections::HashMap;
 use std::hint::black_box;
@@ -740,40 +740,38 @@ impl World {
     fn run_sgs(&self, lva: bool) -> u64 {
         let local = lva.then_some(&self.anisotropy);
         // Realizations run in parallel, as post::run schedules them for users.
-        (0..REALIZATIONS)
-            .into_par_iter()
-            .map(|k| {
-                let values = sgs(
-                    &self.data,
-                    &self.values,
-                    None,
-                    None,
-                    &self.grid,
-                    &self.variogram,
-                    &self.sgs_params(k),
-                    local,
-                )
-                .unwrap()
-                .values;
-                mix_nodes(&values)
-            })
-            .reduce(|| 0, u64::wrapping_add)
+        realizations(REALIZATIONS, |k| {
+            let values = sgs(
+                &self.data,
+                &self.values,
+                None,
+                None,
+                &self.grid,
+                &self.variogram,
+                &self.sgs_params(k),
+                local,
+            )
+            .unwrap()
+            .values;
+            mix_nodes(&values)
+        })
+        .into_iter()
+        .fold(0, u64::wrapping_add)
     }
 
     fn run_dss(&self, lva: bool) -> u64 {
         let local = lva.then_some(&self.anisotropy);
         let fitted = Dss::new(&self.data, &self.values, None, None, None, &self.variogram).unwrap();
         // Realizations run in parallel, as post::run schedules them for users.
-        (0..REALIZATIONS)
-            .into_par_iter()
-            .map(|k| {
-                let values = fitted
-                    .simulate(None, &self.grid, &self.sgs_params(k), local)
-                    .unwrap()
-                    .values;
-                mix_nodes(&values)
-            })
-            .reduce(|| 0, u64::wrapping_add)
+        realizations(REALIZATIONS, |k| {
+            let values = fitted
+                .simulate(None, &self.grid, &self.sgs_params(k), local)
+                .unwrap()
+                .values;
+            mix_nodes(&values)
+        })
+        .into_iter()
+        .fold(0, u64::wrapping_add)
     }
 
     fn run_tb(&self, trend: bool) -> u64 {
@@ -853,27 +851,26 @@ impl World {
     fn run_sis(&self, local: bool) -> u64 {
         let proportions = local.then_some((self.prop_data.as_slice(), self.prop_nodes.as_slice()));
         // Realizations run in parallel, as post::run schedules them for users.
-        (0..REALIZATIONS)
-            .into_par_iter()
-            .map(|k| {
-                let categories = sis(
-                    &self.data,
-                    &self.categories,
-                    None,
-                    &self.grid,
-                    3,
-                    &self.indicators,
-                    &SisParams {
-                        search: self.search.clone(),
-                        seed: realization_seed(SEED, k as u64),
-                    },
-                    proportions,
-                )
-                .unwrap()
-                .categories;
-                mix_categories(&categories)
-            })
-            .reduce(|| 0, u64::wrapping_add)
+        realizations(REALIZATIONS, |k| {
+            let categories = sis(
+                &self.data,
+                &self.categories,
+                None,
+                &self.grid,
+                3,
+                &self.indicators,
+                &SisParams {
+                    search: self.search.clone(),
+                    seed: realization_seed(SEED, k as u64),
+                },
+                proportions,
+            )
+            .unwrap()
+            .categories;
+            mix_categories(&categories)
+        })
+        .into_iter()
+        .fold(0, u64::wrapping_add)
     }
 
     fn run_pgs(&self, local: bool) -> u64 {

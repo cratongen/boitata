@@ -690,17 +690,14 @@ pub(crate) fn sequential(
                 .map(|tree| nodes.iter().map(|&j| tree.project(&grid[j])).collect())
                 .collect(),
         };
-        let steps: Vec<Option<Result<Step>>> = nodes
-            .par_iter()
-            .enumerate()
-            .map(|(t, &node)| {
+        let steps: Vec<Option<Result<Step>>> =
+            crate::schedule::map_nodes(nodes.len(), local.is_some(), |t| {
                 let earlier = Earlier {
                     nodes: &nodes[..t],
                     points: &points,
                 };
-                step(&known, node, Some(earlier))
-            })
-            .collect();
+                step(&known, nodes[t], Some(earlier))
+            });
         for (&node, s) in nodes.iter().zip(steps) {
             let s = s
                 .or_else(|| step(&known, node, None))

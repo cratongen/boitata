@@ -15,7 +15,6 @@ use rand::Rng;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
-use rayon::prelude::*;
 use variogram::Variogram;
 
 /// Largest batch of nodes searched and kriged in parallel.
@@ -256,11 +255,9 @@ fn simulate(
         // realization is the sequential one for any batch size.
         let size = batch.unwrap_or(all.len() / (8 * most).max(1));
         let nodes = &path[start..(start + size.clamp(1, BATCH)).min(path.len())];
-        let steps: Vec<Option<Step>> = nodes
-            .par_iter()
-            .enumerate()
-            .map(|(t, &node)| step(&all, &means, &tree, node, Some(&nodes[..t])))
-            .collect();
+        let steps: Vec<Option<Step>> = crate::schedule::map_nodes(nodes.len(), false, |t| {
+            step(&all, &means, &tree, nodes[t], Some(&nodes[..t]))
+        });
         for (&node, found) in nodes.iter().zip(steps) {
             let found = match found {
                 Some(found) => found,

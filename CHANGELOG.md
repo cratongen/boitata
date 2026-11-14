@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.7.1 - 2026-11-14
+
+### Features
+
+- **simulation:** name SGS and DSS when turning bands get a local anisotropy
+- **simulation:** local anisotropy in sequential indicator simulation
+- **simulation:** a trend as locally varying mean in DSS
+- **simulation:** local anisotropy in plurigaussian simulation
+- **simulation:** one trend per variable in multivariate simulation
+- **simulation:** clean SIS realizations by maximum a-posteriori selection
+
+### Fixes
+
+- estimate and simulate 2D samples on the plane of a 2D block model
+- **simulation:** quote the bench filter so a regex reaches criterion
+- **simulation:** follow the merged signatures in the bench scenarios
+
+### Performance
+
+- **simulation:** fixed benchmark scenarios and a self-time profile task
+- **simulation:** run scenario realizations in parallel like post::run
+- **estimation:** scan the local-anisotropy search sphere without ordering it
+- **simulation:** a Cholesky inverse and a vectorizable dot in the Gibbs sampler
+- **simulation:** run SGS with local anisotropy on the shared path
+- **simulation:** SIS along one shared multigrid path
+- **simulation:** DSS along one shared multigrid path
+
+### Documentation
+
+- **examples:** regroup the examples into eleven workflow chapters
+- **examples:** merge near-duplicate example pages
+- **examples:** show SIS realizations with and without MAPS cleaning
+- **examples:** rerender the merged simulation pages
 ## 0.7.0 - 2026-11-10
 
 ### Features
@@ -56,6 +89,7 @@
 
 ### Performance
 
+- **simulation:** reuse the kriging factorization in SIS and plurigaussian
 - **simulation:** project batch nodes once for the SGS stale test
 - **simulation:** size simulation memory budgets from available RAM
 - **simulation:** condition turning-bands targets once for every realization

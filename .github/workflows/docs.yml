@@ -1,7 +1,7 @@
 name: docs
 
 # Builds the MkDocs site with the same mise tasks as local dev and publishes it to
-# GitHub Pages (https://gstvschlz.github.io/boitata/) on every release tag, or by hand from main.
+# GitHub Pages (https://cratongen.github.io/boitata/) on every release tag, or by hand from main.
 on:
   push:
     tags: ["v*"]
@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.repository == 'cratongen/boitata'
     runs-on: ubuntu-latest
     env:
       MISE_YES: "1"

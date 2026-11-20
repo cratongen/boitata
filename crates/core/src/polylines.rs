@@ -80,11 +80,11 @@ fn in_ring(p: [f64; 2], ring: &[[f64; 3]]) -> bool {
     inside
 }
 
-fn ring_distance(p: [f64; 2], ring: &[[f64; 3]]) -> f64 {
-    let n = ring.len();
-    (0..n)
+fn part_distance(p: [f64; 2], part: &[[f64; 3]], closed: bool) -> f64 {
+    let n = part.len();
+    (0..if closed { n } else { n - 1 })
         .map(|i| {
-            let (a, b) = (ring[i], ring[(i + 1) % n]);
+            let (a, b) = (part[i], part[(i + 1) % n]);
             let (dx, dy) = (b[0] - a[0], b[1] - a[1]);
             let len2 = dx * dx + dy * dy;
             let t = if len2 > 0.0 {
@@ -275,15 +275,15 @@ impl Polylines {
         (0..self.len()).find(|&f| self.feature_contains(f, xy))
     }
 
-    /// Plan distance from `xy` to the nearest closed part of `feature`, or of
-    /// any feature without it; `signed` makes it negative inside. `None`
-    /// without closed parts.
+    /// Plan distance from `xy` to the nearest part, open or closed, of
+    /// `feature`, or of any feature without it; `signed` makes it negative
+    /// inside the closed parts. `None` without parts.
     pub fn distance(&self, xy: [f64; 2], feature: Option<usize>, signed: bool) -> Option<f64> {
         let features = feature.map_or(0..self.len(), |f| f..f + 1);
         let d = features
             .clone()
-            .flat_map(|f| self.rings(f))
-            .map(|r| ring_distance(xy, self.part(r)))
+            .flat_map(|f| self.feature_parts(f))
+            .map(|p| part_distance(xy, self.part(p), self.closed[p]))
             .reduce(f64::min)?;
         let inside = signed && features.into_iter().any(|f| self.feature_contains(f, xy));
         Some(if inside { -d } else { d })
@@ -581,6 +581,25 @@ mod tests {
             [1., -1., -0.5, 0.5, 1.]
         );
         assert_eq!(p.distance([5., 5.], Some(1), false), None);
+    }
+
+    /// Theory check: an open part is a line, measured to without a closing
+    /// segment and never inside, and it counts next to the rings.
+    #[test]
+    fn open_parts_are_measured_as_lines() {
+        let p = sample();
+        assert_eq!(p.distance([45., 8.], Some(2), true), Some(3.));
+        assert_eq!(p.distance([53., 9.], Some(2), false), Some(5.));
+        assert_eq!(p.distance([38., 5.], None, false), Some(2.));
+        let bent = Polylines::new(
+            vec![[0., 0., 0.], [10., 0., 0.], [10., 10., 0.]],
+            vec![0, 3],
+            vec![0, 1],
+            vec![false],
+            rock(&["a"]),
+        )
+        .unwrap();
+        assert_eq!(bent.distance([4., 4.], None, true), Some(4.));
     }
 
     /// Theory check: two disjoint rings of one feature both hold points and

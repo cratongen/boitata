@@ -652,16 +652,17 @@ impl PyPolylines {
         Ok(PyArray1::from_vec(py, found))
     }
 
-    /// Plan distance from each point to the nearest closed part.
+    /// Plan distance from each point to the nearest part: a ring or, for an
+    /// open part, the line itself.
     ///
     /// Parameters
     /// ----------
     /// points : PointSet, BlockModel or array_like
     ///     ``(n, 2)`` or ``(n, 3)`` coordinates; z is ignored.
     /// feature : int, optional
-    ///     Feature whose closed parts count; all by default.
+    ///     Feature whose parts count; all by default.
     /// signed : bool, default False
-    ///     Negative inside, as `contains`.
+    ///     Negative inside the closed parts, as `contains`.
     ///
     /// Returns
     /// -------
@@ -690,7 +691,7 @@ impl PyPolylines {
         let d = d.or_else(|| xy.is_empty().then(Vec::new));
         Ok(PyArray1::from_vec(
             py,
-            d.ok_or_else(|| invalid("no closed parts to measure to"))?,
+            d.ok_or_else(|| invalid("no parts to measure to"))?,
         ))
     }
 

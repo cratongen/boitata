@@ -152,8 +152,11 @@ def test_polygon_with_a_hole():
     np.testing.assert_array_equal(raw.contains(points), [True, False, False, False])
     with pytest.raises(bt.InvalidInput):
         lines.contains(points, feature=2)
+    line = bt.Polylines([[[40, 5], [50, 5]]])
+    np.testing.assert_allclose(line.distance([[45, 8], [53, 9]], signed=True), [3, 5])
+    np.testing.assert_allclose(bt.Polylines([square(0, 10)]).distance([[1, 5]]), [5])
     with pytest.raises(bt.InvalidInput):
-        bt.Polylines([square(0, 1)]).distance(points)
+        lines.filter(np.array([False, False])).distance(points)
 
 
 def test_assign_domain_nearest_and_solid():

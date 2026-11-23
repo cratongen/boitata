@@ -26,6 +26,8 @@ arrow-array.workspace = true
 criterion.workspace = true
 arrow-schema.workspace = true
 serde_json.workspace = true
+
+[target.'cfg(unix)'.dev-dependencies]
 pprof = "0.15"
 
 [[bench]]

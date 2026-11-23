@@ -1,5 +1,6 @@
 use boitata_core::Geometry;
 use boitata_core::rng::realization_seed;
+#[cfg(unix)]
 use criterion::profiler::Profiler;
 use criterion::{Criterion, criterion_group};
 use estimation::Search;
@@ -13,8 +14,10 @@ use simulation::{
     SharedSgs, SisParams, Trend, TruncationRule, TurningBandsEnsemble, TurningBandsParams, bounds,
     dss_in, multivariate, sgs, sgs_shared, sis, turning_bands,
 };
+#[cfg(unix)]
 use std::collections::HashMap;
 use std::hint::black_box;
+#[cfg(unix)]
 use std::path::Path;
 use std::time::Instant;
 use transforms::Pca;
@@ -285,6 +288,7 @@ fn shared(c: &mut Criterion) {
 }
 
 /// Counts for one function. `file:line` is the leaf line with the most samples.
+#[cfg(unix)]
 struct Leaf {
     samples: u64,
     file: String,
@@ -292,6 +296,7 @@ struct Leaf {
     at_line: u64,
 }
 
+#[cfg(unix)]
 impl Leaf {
     fn add(&mut self, samples: u64, file: String, line: u32) {
         self.samples += samples;
@@ -307,6 +312,7 @@ impl Leaf {
 }
 
 /// `frames[0]` is the interrupted function. Its first symbol is the innermost inline.
+#[cfg(unix)]
 fn leaf_of(frames: &pprof::Frames) -> (String, String, u32) {
     match frames.frames.first().and_then(|frame| frame.first()) {
         Some(symbol) => (
@@ -318,6 +324,7 @@ fn leaf_of(frames: &pprof::Frames) -> (String, String, u32) {
     }
 }
 
+#[cfg(unix)]
 fn write_top(dir: &Path, report: &pprof::Report) {
     let mut counts: HashMap<String, Leaf> = HashMap::new();
     let mut total = 0u64;
@@ -363,16 +370,19 @@ fn write_top(dir: &Path, report: &pprof::Report) {
     std::fs::write(dir.join("top.txt"), lines.join("\n") + "\n").expect("top.txt");
 }
 
+#[cfg(unix)]
 struct SelfTime {
     guard: Option<pprof::ProfilerGuard<'static>>,
 }
 
+#[cfg(unix)]
 impl SelfTime {
     fn new() -> Self {
         Self { guard: None }
     }
 }
 
+#[cfg(unix)]
 impl Profiler for SelfTime {
     fn start_profiling(&mut self, _benchmark_id: &str, _benchmark_dir: &Path) {
         self.guard = Some(pprof::ProfilerGuard::new(997).expect("start profiler"));
@@ -385,11 +395,18 @@ impl Profiler for SelfTime {
     }
 }
 
+#[cfg(unix)]
 criterion_group! {
     name = benches;
     config = Criterion::default().with_profiler(SelfTime::new());
     targets = bench, threads, phases, wide, many, shared, quilting, scenarios
 }
+
+// pprof samples with Unix signals; Windows benches run without the self-time profile.
+#[cfg(not(unix))]
+criterion_group!(
+    benches, bench, threads, phases, wide, many, shared, quilting, scenarios
+);
 
 /// One patch's costs by direct scan and by FFT: channels in 2D comparing the
 /// overlap alone and with a secondary variable over the whole patch, and

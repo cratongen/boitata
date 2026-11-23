@@ -2,6 +2,7 @@ import json
 import re
 import tomllib
 from pathlib import Path
+from types import ModuleType
 
 import boitata as bt
 import pytest
@@ -67,6 +68,12 @@ def test_skill_frontmatter_is_the_part_every_agent_accepts():
 
 def test_skill_names_only_what_the_library_exports():
     text = SKILL.read_text(encoding="utf-8")
-    named = set(re.findall(r"\bbt\.([A-Za-z_]\w*)", text))
-    missing = {name for name in named if not hasattr(bt, name)}
+    modules = {
+        name for name in dir(bt) if not name.startswith("_") and isinstance(getattr(bt, name), ModuleType)
+    }
+    exported = {"__all__", *bt.__all__, *modules}
+    missing = set()
+    for name, attr in set(re.findall(r"\bbt\.([A-Za-z_]\w*)(?:\.([A-Za-z_]\w*))?", text)):
+        if name not in exported or (attr and not hasattr(getattr(bt, name), attr)):
+            missing.add(f"{name}.{attr}" if attr else name)
     assert missing == set()

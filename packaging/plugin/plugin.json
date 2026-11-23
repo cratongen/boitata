@@ -5,8 +5,8 @@
   "version": "0.7.1",
   "description": "How to write correct boitatá code: the kinds of object, the calls each one takes, and where to look up a signature in the installed package.",
   "author": { "name": "Gustavo Pretto Scholze" },
-  "homepage": "https://gstvschlz.github.io/boitata/",
-  "repository": "https://github.com/gstvschlz/boitata",
+  "homepage": "https://cratongen.github.io/boitata/",
+  "repository": "https://github.com/cratongen/boitata",
   "license": "MIT",
   "keywords": ["geostatistics", "kriging", "variogram", "mining", "python"],
   "suggestedPrompts": [
@@ -22,7 +22,7 @@
         "longDescription": "How to write correct boitatá code: the kinds of object, the calls each one takes, and where to look up a signature in the installed package.",
         "developerName": "Gustavo Pretto Scholze",
         "category": "Coding",
-        "websiteURL": "https://gstvschlz.github.io/boitata/"
+        "websiteURL": "https://cratongen.github.io/boitata/"
       }
     }
   }

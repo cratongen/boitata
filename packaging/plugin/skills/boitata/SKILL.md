@@ -24,8 +24,8 @@ python -c "import boitata, pathlib; print(boitata.__version__, pathlib.Path(boit
 - `python -c "import boitata as bt; help(bt.OrdinaryKriging.fit)"` prints the NumPy-style docstring, with every
   argument, its unit and its default.
 - `bt.__all__` lists every public name; `dir(bt.datasets)` and `dir(bt.plot)` list the datasets and the plots.
-- The docs at https://gstvschlz.github.io/boitata/ hold a worked example for most tasks. The page
-  https://gstvschlz.github.io/boitata/guide/finder/ maps a question to the example that answers it.
+- The docs at https://cratongen.github.io/boitata/ hold a worked example for most tasks. The page
+  https://cratongen.github.io/boitata/guide/finder/ maps a question to the example that answers it.
 
 If a name is not in `bt.__all__`, it does not exist. Say so and offer the closest one that does; do not invent it.
 
@@ -88,7 +88,9 @@ Statistics such as `describe` skip them. Estimators, transforms and variograms r
 many went:
 
 ```python
-assayed = samples.filter(~np.isnan(samples["Au"]))
+import numpy as np
+
+assayed = samples.filter(~np.isnan(samples["V"]))
 ```
 
 ## Errors
@@ -112,8 +114,8 @@ inventing numbers. Grouping, joining and pivoting belong to Polars or pandas: `d
 
 ## Write it fast
 
-Correct boitatá code can still be many times slower, or run out of memory, when it works around the library.
-Check each of these before you write a call.
+Correct boitatá code can still repeat work the library does in one call, or hold every realization, when it
+works around the library. Check each of these before you write a call.
 
 ### Do not keep realizations nobody reads
 
@@ -145,22 +147,26 @@ realizations. If the request does not say, ask.
 - **Rank realizations without keeping them.** `summary.realization_mean` is the mean of each realization. Pick
   the low, middle and high ones from it, then call `simulate` again with the same `seed` and `keep=[those]`:
   realization `k` depends only on the seed and `k`, so it comes back identical.
-- **A representative handful** comes from `bt.select_realizations(summary, 5)` on a summary simulated with
-  `keep=`. Do not write your own clustering.
+- **A representative handful** comes from `picked = bt.select_realizations(summary, 5)` on a summary simulated
+  with `keep=`. `picked` indexes `summary.kept`, and the rows are `summary.realizations[picked]`.
 
 ### Keep the shared path
 
-On a regular or masked `BlockModel`, every realization follows one path, so each node's neighbors and kriging
-weights are found once for all of them. These options turn that off without an error, and each realization then
-draws its own random path:
+On a regular or masked `BlockModel`, SGS and DSS follow one multigrid path by default, so each node's neighbors
+and kriging weights are found once for the batch. The default uses a random path per realization when the inputs
+cannot share one. `path="shared"` raises `InvalidInput` and names the cause.
 
-- `bt.Search(octant=True)` or `sectors=`, `bt.Search(high_grade=...)` and `bt.Search(soft=...)`;
-- `anisotropy=` (local anisotropy) in `simulate`;
-- simulated domains, an `(n, targets)` array passed as `domains=`;
-- a sub-blocked model, or points, as targets.
+These inputs leave the shared path:
 
-Add one only when the user asked for it or the geology needs it, and tell the user that the run now uses a
-random path. `path="shared"` raises `InvalidInput` where it cannot run, which is a quick way to find out.
+- targets other than a regular or masked `BlockModel`: points, `grid.coords`, a sub-blocked model;
+- `bt.Search(octant=True)`, `sectors=`, `high_grade=`, `soft=` or `min_holes=`;
+- simulated domains, an `(n, targets)` array passed as `domains=`.
+
+DSS also leaves the shared path for `anisotropy=`, a trend, domains fitted on the samples, and a secondary
+variable. SGS with `anisotropy=` stays on the shared path on a regular or masked block model: a node's anisotropy
+does not change between realizations.
+
+Add one of these only when the user asked for it or the geology needs it, and say when the run uses a random path.
 
 ### Pass boitatá containers, not arrays pulled out of them
 
@@ -183,8 +189,7 @@ random path. `path="shared"` raises `InvalidInput` where it cannot run, which is
 ### One call, not a Python loop
 
 Every estimator, simulator and transform takes all its rows in one call and runs them in parallel in Rust. A
-Python `for` over blocks, samples, realizations or domains that calls boitatá each time is always the slow
-version.
+Python `for` over blocks, samples, realizations or domains calls that function once per row.
 
 - **Fit once.** Reuse the fitted object for every `predict` or `simulate`. To try another search, call
   `kriging.with_search(search)`: it returns a copy that keeps the fitted samples. To come back to a fit in another
@@ -195,6 +200,83 @@ version.
 ### Do not promise a speed
 
 Give the user a time or a speedup only after you ran the code and timed it. Otherwise say it was not measured.
+
+## Hand it to a sibling
+
+boitata is one of a family of standalone libraries for mining and geoscience at https://github.com/cratongen.
+None imports another. They pass NumPy arrays, and tables pass through Arrow, so pandas, polars and pyarrow
+work in between.
+
+| Library | Import | What it does |
+| --- | --- | --- |
+| boitata | `import boitata as bt` | Geostatistics: drill holes, compositing, block models, variograms, kriging, simulation |
+| segyrs | `import segyrs` | Read, write and slice SEG-Y files, including files larger than memory |
+| transiograms | `import transiograms as tg` | Markov chains, hidden Markov models, transiograms and categorical simulation |
+| wireframes | `import wireframes as wf` | Solids, surfaces and strings: read, write, measure and combine |
+
+<!-- Below this line: what boitata hands to each sibling and takes from it, with one short example per neighbour.
+Only calls that exist today in both libraries, checked against ../<sibling>/python/<pkg>/*.pyi. -->
+
+**wireframes.** A mesh crosses as `coords` of shape `(n, 3)` and `triangles` of shape `(m, 3)`. A point set
+crosses as `coords` plus its columns. `to_pyarrow()` is the Arrow table. `wf.PointSet` and `wf.Mesh` take the
+NumPy arrays, and `coords` with `triangles` come back into `bt.Mesh`.
+
+```python
+import numpy as np
+import boitata as bt
+import wireframes as wf
+
+samples = bt.datasets.clustered_metal_survey()
+table = samples.to_pyarrow()
+points = wf.PointSet(samples.coords, {"V": np.asarray(table.column("V"))})
+lens = bt.datasets.stacked_sulphide_lenses()["lens_1"]
+solid = wf.Mesh(lens.coords, lens.triangles)
+back = bt.Mesh(solid.coords, solid.triangles)
+```
+
+**transiograms.** Lithology intervals cross as arrays. Encode text with `tg.Categories.from_labels` before
+`MarkovChain.fit`. The default `direction="up"` reads each hole from its base, so the overburden that caps every
+hole has no transition out of it; `on_empty_row="uniform"` lets the fit run. `simulate_beds` returns integer
+codes in that category order.
+
+```python
+import numpy as np
+import boitata as bt
+import transiograms as tg
+
+lith = bt.datasets.stacked_sulphide_lenses()["lithology"]
+labels = np.asarray(lith["LITH"])
+categories = tg.Categories.from_labels(labels)
+codes = categories.encode(labels)
+chain = tg.MarkovChain(on_empty_row="uniform").fit(
+    codes,
+    holes=np.asarray(lith["HOLE_ID"]),
+    from_=np.asarray(lith["FROM"], dtype=float),
+    to=np.asarray(lith["TO"], dtype=float),
+)
+beds = chain.simulate_beds(4, n=1, seed=0)
+names = np.asarray(categories.names)[beds.ravel()]
+```
+
+**segyrs.** A block-model column whose flat order is `ix + nx * (iy + ny * iz)` crosses as a `(traces, samples)`
+float32 array: reshape the column to `(nz, ny, nx)`, then transpose. `segyrs.create` writes it.
+`segyrs.open(path).numpy()` returns the samples, and `with_column` takes the flat column back. For `seismic_cube` the sample
+interval is 4 ms, so pass 4000 microseconds.
+
+```python
+import numpy as np
+import boitata as bt
+import segyrs
+
+cube = bt.datasets.seismic_cube()
+nx, ny, nz = cube.count
+volume = np.asarray(cube["amplitude"]).reshape(nz, ny, nx)
+traces = np.ascontiguousarray(volume.reshape(nz, -1).T, dtype=np.float32)
+segyrs.create("amplitude.sgy", traces, sample_format="ieee_float32", sample_interval_us=4000)
+back = segyrs.open("amplitude.sgy").numpy()
+flat = np.asarray(back, dtype=np.float64).T.reshape(-1)
+model = bt.BlockModel(cube.origin, cube.size, cube.count).with_column("amplitude", flat)
+```
 
 ## Before you report a result
 

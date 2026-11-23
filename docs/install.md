@@ -123,7 +123,7 @@ The same plugin installs in Claude, Codex, ChatGPT and Antigravity. Start a new 
 Add this repository as a marketplace, then install the plugin from it:
 
 ```text
-/plugin marketplace add gstvschlz/boitata
+/plugin marketplace add cratongen/boitata
 /plugin install boitata@boitata
 ```
 
@@ -136,7 +136,7 @@ installs for your user by default; add `--scope project` to the second command t
 ### Claude apps
 
 In Claude on the web or the desktop, open **Customize > Plugins**, choose **Add > Add marketplace** and paste
-`https://github.com/gstvschlz/boitata`. Then install `boitata` from the list. Claude runs code in its own
+`https://github.com/cratongen/boitata`. Then install `boitata` from the list. Claude runs code in its own
 sandbox there, so ask it to `pip install "boitata[all]"` first.
 
 ### Codex
@@ -144,7 +144,7 @@ sandbox there, so ask it to `pip install "boitata[all]"` first.
 From a shell:
 
 ```sh
-codex plugin marketplace add gstvschlz/boitata
+codex plugin marketplace add cratongen/boitata
 codex plugin add boitata@boitata
 ```
 
@@ -155,14 +155,14 @@ fetches the current skill after a new release.
 
 ChatGPT takes the same plugin as Codex. In the desktop app, add the marketplace with the first Codex command above
 and restart the app: `boitatá` then shows as a source in **Plugins**, where the plus button installs it. In a
-workspace, an admin imports `gstvschlz/boitata` as a GitHub marketplace and the plugin appears in **Plugins** for
+workspace, an admin imports `cratongen/boitata` as a GitHub marketplace and the plugin appears in **Plugins** for
 the team, on the web as well. A chat runs code in its own sandbox, so ask it to `pip install "boitata[all]"`
 first.
 
 ### Antigravity
 
 ```sh
-agy plugin install https://github.com/gstvschlz/boitata/tree/main/packaging/plugin
+agy plugin install https://github.com/cratongen/boitata/tree/main/packaging/plugin
 ```
 
 `agy plugin list` shows it, and the same command installs the current skill after a new release. The app reads
@@ -172,11 +172,11 @@ the same folder, so the plugin also shows under **Customizations**.
 
 The skill follows the [Agent Skills](https://agentskills.io) format, so an agent that reads skills takes the
 folder as it is. Copy
-[`packaging/plugin/skills/boitata`](https://github.com/gstvschlz/boitata/tree/main/packaging/plugin/skills/boitata)
+[`packaging/plugin/skills/boitata`](https://github.com/cratongen/boitata/tree/main/packaging/plugin/skills/boitata)
 into the skills folder the agent reads, which is `.agents/skills/` in a project for most of them.
 
 The plugin adds no tools and sends nothing anywhere: it is the text in
-[`SKILL.md`](https://github.com/gstvschlz/boitata/blob/main/packaging/plugin/skills/boitata/SKILL.md), which you
+[`SKILL.md`](https://github.com/cratongen/boitata/blob/main/packaging/plugin/skills/boitata/SKILL.md), which you
 can read before you install it.
 
 ## Contributors

@@ -46,7 +46,7 @@ guessing at the calls: it follows the library's rules and reads each signature f
 In Claude Code:
 
 ```text
-/plugin marketplace add gstvschlz/boitata
+/plugin marketplace add cratongen/boitata
 /plugin install boitata@boitata
 ```
 

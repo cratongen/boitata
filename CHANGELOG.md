@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Documentation
+
+- **docs:** point links, the docs site and the plugin manifests at cratongen/boitata
+- **docs:** installs from gstvschlz/boitata keep working until the owner archives that repository
+- **conda:** clear recipe-maintainers; the old entry was the personal login gstvschlz, so add a maintainer before a feedstock submission
+- **plugin:** describe the NumPy and Arrow handoff to wireframes, transiograms and segyrs, and match the shared-path notes to 0.7.1
+
 ## 0.7.1 - 2026-11-14
 
 ### Features

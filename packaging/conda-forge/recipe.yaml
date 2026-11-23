@@ -8,7 +8,7 @@ package:
 
 source:
   # Switch to the GitHub tag archive once released (PyPI carries wheels only):
-  #   url: https://github.com/gstvschlz/boitata/archive/refs/tags/v${{ version }}.tar.gz
+  #   url: https://github.com/cratongen/boitata/archive/refs/tags/v${{ version }}.tar.gz
   #   sha256: ...
   path: ../..
 
@@ -76,9 +76,9 @@ tests:
       - python smoke.py
 
 about:
-  homepage: https://github.com/gstvschlz/boitata
-  repository: https://github.com/gstvschlz/boitata
-  documentation: https://gstvschlz.github.io/boitata/
+  homepage: https://github.com/cratongen/boitata
+  repository: https://github.com/cratongen/boitata
+  documentation: https://cratongen.github.io/boitata/
   summary: Geostatistics in Rust with a Python interface
   license: MIT
   license_file:
@@ -86,5 +86,4 @@ about:
     - THIRDPARTY.yml
 
 extra:
-  recipe-maintainers:
-    - gstvschlz
+  recipe-maintainers: []

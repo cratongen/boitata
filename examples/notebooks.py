@@ -16,8 +16,8 @@ from pathlib import Path
 from render import cells
 
 ROOT = Path(__file__).resolve().parents[1]
-SITE = "https://gstvschlz.github.io/boitata/"
-RAW = "https://raw.githubusercontent.com/gstvschlz/boitata/main/"
+SITE = "https://cratongen.github.io/boitata/"
+RAW = "https://raw.githubusercontent.com/cratongen/boitata/main/"
 SETUP = f"""import importlib.util
 import urllib.request
 

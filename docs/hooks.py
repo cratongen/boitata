@@ -16,7 +16,7 @@ SOURCE = re.compile(r"\]\((?:\.\./)+common\.py\)")
 SENTENCE = re.compile(r"(?<=\.)\s+(?=[A-Z`])")
 COLAB = (
     "[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)]"
-    "(https://colab.research.google.com/github/gstvschlz/boitata/blob/main/notebooks/learn_{}.ipynb)"
+    "(https://colab.research.google.com/github/cratongen/boitata/blob/main/notebooks/learn_{}.ipynb)"
 )
 
 API = """
@@ -131,7 +131,7 @@ def on_page_markdown(markdown, page, **kwargs):
         )
     markdown = CHAPTER.sub(r"](\1/example_\2_\3.md)", markdown)
     markdown = SOURCE.sub(
-        "](https://github.com/gstvschlz/boitata/blob/main/examples/common.py)", markdown
+        "](https://github.com/cratongen/boitata/blob/main/examples/common.py)", markdown
     )
     return markdown + capitalized_terms(ROOT)
 

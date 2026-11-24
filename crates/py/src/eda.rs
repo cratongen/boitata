@@ -1378,10 +1378,7 @@ impl Capping {
                     "metal_removed={target} is out of reach; capping at the lowest value removes {}",
                     short.join(", ")
                 );
-                Python::attach(|py| {
-                    let category = py.get_type::<pyo3::exceptions::PyUserWarning>();
-                    PyErr::warn(py, &category, &std::ffi::CString::new(message)?, 1)
-                })?;
+                Python::attach(|py| crate::warn(py, message))?;
             }
         }
         self.fitted = Some(FittedCaps {
@@ -2038,8 +2035,7 @@ fn data_spacing<'py>(
             let message = format!(
                 "{sparse} of {counted} targets have fewer than 4 composites inside the search; enlarge it"
             );
-            let category = py.get_type::<pyo3::exceptions::PyUserWarning>();
-            PyErr::warn(py, &category, &std::ffi::CString::new(message)?, 1)?;
+            crate::warn(py, message)?;
         }
     }
     Ok(array1(py, d).into_any())
@@ -2201,8 +2197,7 @@ fn required_spacing(curve: &Bound<PyAny>, column: &str, threshold: f64) -> PyRes
             "{column} stays at or below {threshold} up to the largest spacing {spacing}; \
              the required spacing lies beyond the tested range"
         );
-        let category = py.get_type::<pyo3::exceptions::PyUserWarning>();
-        PyErr::warn(py, &category, &std::ffi::CString::new(message)?, 1)?;
+        crate::warn(py, message)?;
     }
     Ok(spacing)
 }

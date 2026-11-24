@@ -14,7 +14,7 @@ use drillholes::{
 use pyo3::prelude::*;
 
 use crate::units::Quantity;
-use pyo3::types::PyDict;
+use pyo3::types::{PyDict, PyList};
 use rayon::prelude::*;
 
 use crate::blocks::Mesh;
@@ -52,9 +52,26 @@ fn number(batch: &RecordBatch, name: &str) -> PyResult<Vec<Option<f64>>> {
 /// each segment along each end's direction). Survey angles are `azimuth`
 /// (clockwise from north) and either `dip` (degrees below horizontal) or
 /// `inclination` (degrees from vertical); holes without survey are vertical.
+fn desurvey_method(name: &str) -> PyResult<(DesurveyMethod, &'static str)> {
+    Ok(match name {
+        "minimum_curvature" => (DesurveyMethod::MinimumCurvature, "minimum_curvature"),
+        "tangential" => (DesurveyMethod::Tangential, "tangential"),
+        "balanced_tangential" => (DesurveyMethod::BalancedTangential, "balanced_tangential"),
+        _ => {
+            return Err(invalid(format!(
+                "method must be minimum_curvature, tangential or balanced_tangential, got {name:?}"
+            )));
+        }
+    })
+}
+
 #[pyclass(module = "boitata", name = "Drillholes", frozen)]
 pub struct Drillholes {
     paths: BTreeMap<String, Vec<WellborePoint>>,
+    /// Survey stations of each hole as `[depth, azimuth, inclination]` in
+    /// degrees, sorted and without repeats; empty for a hole surveyed as vertical.
+    survey: BTreeMap<String, Vec<[f64; 3]>>,
+    method: &'static str,
     hole: String,
     intervals: Option<(RecordBatch, String, String, String)>,
     length_unit: Option<String>,
@@ -88,16 +105,7 @@ impl Drillholes {
         method: &str,
         length_unit: Option<String>,
     ) -> PyResult<Self> {
-        let method = match method {
-            "minimum_curvature" => DesurveyMethod::MinimumCurvature,
-            "tangential" => DesurveyMethod::Tangential,
-            "balanced_tangential" => DesurveyMethod::BalancedTangential,
-            _ => {
-                return Err(invalid(format!(
-                    "method must be minimum_curvature, tangential or balanced_tangential, got {method:?}"
-                )));
-            }
-        };
+        let (method, method_name) = desurvey_method(method)?;
         let collar = to_batch(collar)?;
         let survey = to_batch(survey)?;
         let mut collars = BTreeMap::new();
@@ -187,12 +195,112 @@ impl Drillholes {
                 })
                 .collect::<Result<BTreeMap<_, _>, _>>()
         });
+        let paths = paths.map_err(invalid)?;
+        let survey = paths
+            .keys()
+            .map(|id| {
+                let mut s: Vec<[f64; 3]> = stations
+                    .get(id)
+                    .map(|s| {
+                        s.iter()
+                            .map(|s| [s.depth, s.azimuth, s.inclination])
+                            .collect()
+                    })
+                    .unwrap_or_default();
+                s.sort_by(|a, b| a[0].total_cmp(&b[0]));
+                s.dedup_by(|b, a| b[0] - a[0] <= 1e-9 * b[0].max(1.0));
+                (id.clone(), s)
+            })
+            .collect();
         Ok(Self {
-            paths: paths.map_err(invalid)?,
+            paths,
+            survey,
+            method: method_name,
             hole: hole.to_string(),
             intervals,
             length_unit: crate::table::length_unit(length_unit)?,
             crs: None,
+        })
+    }
+
+    /// Holes from a protocol dict's paths, which the caller has checked.
+    #[staticmethod]
+    #[pyo3(signature = (holes, path_coords, path_depths, path_offsets, survey, method, intervals, crs, length_unit))]
+    #[allow(clippy::too_many_arguments)]
+    fn _from_parts(
+        holes: Vec<String>,
+        path_coords: numpy::PyReadonlyArray2<f64>,
+        path_depths: numpy::PyReadonlyArray1<f64>,
+        path_offsets: numpy::PyReadonlyArray1<u32>,
+        survey: Option<(
+            numpy::PyReadonlyArray1<i32>,
+            numpy::PyReadonlyArray1<f64>,
+            numpy::PyReadonlyArray1<f64>,
+            numpy::PyReadonlyArray1<f64>,
+        )>,
+        method: &str,
+        intervals: Option<&Bound<PyAny>>,
+        crs: Option<String>,
+        length_unit: Option<String>,
+    ) -> PyResult<Self> {
+        let (_, method) = desurvey_method(method)?;
+        let (xyz, depth, offsets) = (
+            path_coords.as_array(),
+            path_depths.as_slice()?,
+            path_offsets.as_slice()?,
+        );
+        if offsets.len() != holes.len() + 1 || xyz.ncols() != 3 {
+            return Err(invalid("path_offsets needs one entry per hole plus one"));
+        }
+        let mut paths = BTreeMap::new();
+        let mut stations: BTreeMap<String, Vec<[f64; 3]>> = BTreeMap::new();
+        for (h, id) in holes.iter().enumerate() {
+            let path = (offsets[h] as usize..offsets[h + 1] as usize)
+                .map(|i| WellborePoint {
+                    measured_depth: depth[i],
+                    east: xyz[[i, 0]],
+                    north: xyz[[i, 1]],
+                    elev: xyz[[i, 2]],
+                })
+                .collect();
+            if paths.insert(id.clone(), path).is_some() {
+                return Err(invalid(format!("hole {id:?} appears twice in holes")));
+            }
+            stations.insert(id.clone(), vec![]);
+        }
+        if let Some((hole, at, azimuth, dip)) = survey {
+            let (hole, at, azimuth, dip) = (
+                hole.as_slice()?,
+                at.as_slice()?,
+                azimuth.as_slice()?,
+                dip.as_slice()?,
+            );
+            for i in 0..hole.len() {
+                let id = &holes[hole[i] as usize];
+                stations
+                    .get_mut(id)
+                    .expect("every hole has an entry")
+                    .push([at[i], azimuth[i], dip[i] + 90.0]);
+            }
+        }
+        let intervals = intervals
+            .map(|t| {
+                Ok::<_, PyErr>((
+                    to_batch(t)?,
+                    "HOLE_ID".to_string(),
+                    "FROM".to_string(),
+                    "TO".to_string(),
+                ))
+            })
+            .transpose()?;
+        Ok(Self {
+            paths,
+            survey: stations,
+            method,
+            hole: "HOLE_ID".into(),
+            intervals,
+            length_unit,
+            crs,
         })
     }
 
@@ -769,13 +877,146 @@ impl Drillholes {
                 (id.clone(), path)
             })
             .collect();
+        let survey = self
+            .survey
+            .iter()
+            .map(|(id, stations)| {
+                let path = &self.paths[id];
+                let turned = stations
+                    .iter()
+                    .map(|&[depth, azimuth, inclination]| {
+                        let (x, y, z) = position_at(path, depth);
+                        let (a, i) = (azimuth.to_radians(), inclination.to_radians());
+                        let t = [i.sin() * a.sin(), i.sin() * a.cos(), -i.cos()];
+                        let p = f([x, y, z]);
+                        let q = f([x + t[0], y + t[1], z + t[2]]);
+                        let d = [q[0] - p[0], q[1] - p[1], q[2] - p[2]];
+                        let n = (d[0] * d[0] + d[1] * d[1] + d[2] * d[2]).sqrt();
+                        let azimuth = d[0].atan2(d[1]).to_degrees().rem_euclid(360.0);
+                        let inclination = (-d[2] / n).clamp(-1.0, 1.0).acos().to_degrees();
+                        [depth, azimuth, inclination]
+                    })
+                    .collect();
+                (id.clone(), turned)
+            })
+            .collect();
         Self {
             paths,
+            survey,
+            method: self.method,
             hole: self.hole.clone(),
             intervals: self.intervals.clone(),
             length_unit: self.length_unit.clone(),
             crs,
         }
+    }
+
+    /// Holes, collars, survey, paths and intervals for the `drillholes` protocol dict.
+    pub fn minetypes_parts<'py>(&self, py: Python<'py>, d: &Bound<'py, PyDict>) -> PyResult<()> {
+        use crate::protocol::{columns, owned1, owned3};
+        let holes: Vec<&String> = self.paths.keys().collect();
+        let mut collars = Vec::with_capacity(holes.len());
+        let (mut xyz, mut depth, mut offsets) = (vec![], vec![], vec![0u32]);
+        for (id, path) in &self.paths {
+            if path.len() < 2 {
+                return Err(invalid(format!(
+                    "hole {id:?} has a path of {} point; the protocol needs 2",
+                    path.len()
+                )));
+            }
+            collars.push([path[0].east, path[0].north, path[0].elev]);
+            for w in path {
+                xyz.push([w.east, w.north, w.elev]);
+                depth.push(w.measured_depth);
+            }
+            offsets.push(
+                u32::try_from(xyz.len())
+                    .map_err(|_| invalid("too many path points for uint32 offsets"))?,
+            );
+        }
+        d.set_item("holes", PyList::new(py, &holes)?)?;
+        d.set_item("coords", owned3(py, &collars)?)?;
+        d.set_item("path_coords", owned3(py, &xyz)?)?;
+        d.set_item("path_depths", owned1(py, depth)?)?;
+        d.set_item("path_offsets", owned1(py, offsets)?)?;
+        d.set_item("method", self.method)?;
+        if self.survey.values().all(Vec::is_empty) {
+            d.set_item("survey", py.None())?;
+        } else {
+            let (mut hole, mut at, mut azimuth, mut dip) = (vec![], vec![], vec![], vec![]);
+            for (h, stations) in self.survey.values().enumerate() {
+                for &[depth, a, inclination] in stations {
+                    let down = inclination - 90.0;
+                    if !(-90.0..=90.0).contains(&down) {
+                        return Err(invalid(format!(
+                            "hole {:?} has inclination {inclination} at depth {depth}; the protocol dip is inclination - 90 and must lie in [-90, 90]",
+                            holes[h]
+                        )));
+                    }
+                    hole.push(h as i32);
+                    at.push(depth);
+                    azimuth.push(a.rem_euclid(360.0));
+                    dip.push(down);
+                }
+            }
+            let survey = PyDict::new(py);
+            survey.set_item("hole_index", owned1(py, hole)?)?;
+            survey.set_item("depth", owned1(py, at)?)?;
+            survey.set_item("azimuth", owned1(py, azimuth)?)?;
+            survey.set_item("dip", owned1(py, dip)?)?;
+            d.set_item("survey", survey)?;
+        }
+        let Some((batch, hole, from, to)) = &self.intervals else {
+            d.set_item("intervals", py.None())?;
+            return Ok(());
+        };
+        let ids = text(batch, hole)?;
+        let (starts, ends) = (number(batch, from)?, number(batch, to)?);
+        let mut rows = vec![];
+        for i in 0..batch.num_rows() {
+            if let (Some(id), Some(f), Some(t)) = (&ids[i], starts[i], ends[i])
+                && let Ok(h) = holes.binary_search(&id)
+            {
+                if !(f.is_finite() && t.is_finite() && f >= 0.0 && t > f) {
+                    return Err(invalid(format!(
+                        "interval {i} of hole {id:?} runs from {f} to {t}; the protocol needs 0 <= from < to, both finite"
+                    )));
+                }
+                rows.push((h as i32, f, t, i as u64));
+            }
+        }
+        rows.sort_by(|a, b| a.0.cmp(&b.0).then(a.1.total_cmp(&b.1)));
+        if let Some(w) = rows
+            .windows(2)
+            .find(|w| w[0].0 == w[1].0 && w[1].1 < w[0].2 - 1e-9)
+        {
+            return Err(invalid(format!(
+                "hole {:?} has overlapping intervals {}-{} and {}-{}; the protocol needs them apart",
+                holes[w[0].0 as usize], w[0].1, w[0].2, w[1].1, w[1].2
+            )));
+        }
+        let take = arrow_array::UInt64Array::from_iter_values(rows.iter().map(|r| r.3));
+        let taken = arrow_select::take::take_record_batch(batch, &take).map_err(invalid)?;
+        let keep: Vec<usize> = (0..taken.num_columns())
+            .filter(|&c| ![hole, from, to].contains(&taken.schema().field(c).name()))
+            .collect();
+        let taken = taken.project(&keep).map_err(invalid)?;
+        let owner = Bound::new(py, crate::protocol::Keep(taken.clone()))?.into_any();
+        let (values, units, categories) = columns(py, &taken, &owner, "interval")?;
+        let iv = PyDict::new(py);
+        iv.set_item(
+            "hole_index",
+            owned1(py, rows.iter().map(|r| r.0).collect())?,
+        )?;
+        iv.set_item(
+            "from_depth",
+            owned1(py, rows.iter().map(|r| r.1).collect())?,
+        )?;
+        iv.set_item("to_depth", owned1(py, rows.iter().map(|r| r.2).collect())?)?;
+        iv.set_item("columns", values)?;
+        iv.set_item("units", units)?;
+        iv.set_item("categories", categories)?;
+        d.set_item("intervals", iv)
     }
 
     pub fn crs_ref(&self) -> Option<&str> {
@@ -1807,8 +2048,7 @@ fn snap_to_surface(
             off.len(),
             off.join(", ")
         );
-        let category = py.get_type::<pyo3::exceptions::PyUserWarning>();
-        PyErr::warn(py, &category, &std::ffi::CString::new(message)?, 1)?;
+        crate::warn(py, message)?;
     }
     let report = RecordBatch::try_from_iter([
         ("hole", Arc::new(StringArray::from(holes)) as ArrayRef),
@@ -1819,6 +2059,8 @@ fn snap_to_surface(
     .map_err(invalid)?;
     let moved = Drillholes {
         paths,
+        survey: drillholes.survey.clone(),
+        method: drillholes.method,
         hole: drillholes.hole.clone(),
         intervals: drillholes.intervals.clone(),
         length_unit: drillholes.length_unit.clone(),
@@ -1923,8 +2165,7 @@ fn planned_drillholes(
     };
     if off > 0 {
         let message = format!("{off} collars lie off the topography and stay at the targets' top");
-        let category = py.get_type::<pyo3::exceptions::PyUserWarning>();
-        PyErr::warn(py, &category, &std::ffi::CString::new(message)?, 1)?;
+        crate::warn(py, message)?;
     }
     let intervals = RecordBatch::try_from_iter([
         (
@@ -1940,8 +2181,14 @@ fn planned_drillholes(
         ),
     ])
     .map_err(invalid)?;
+    let survey = holes
+        .iter()
+        .map(|h| (h.0.clone(), vec![[0.0, azimuth, 90.0 - dip]]))
+        .collect();
     Ok(Drillholes {
         paths: holes.into_iter().collect(),
+        survey,
+        method: "tangential",
         hole: "HOLE_ID".into(),
         intervals: Some((intervals, "HOLE_ID".into(), "FROM".into(), "TO".into())),
         length_unit: crate::table::length_unit(None)?,

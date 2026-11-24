@@ -138,6 +138,19 @@ values = samples["Au"]  # one column as a NumPy array
 
 Grouping, joining and pivoting belong to Polars or pandas; boitatá keeps to the spatial work.
 
+## To other mining libraries
+
+Every container has `__minetypes__()`, which returns a plain dict of NumPy arrays: coordinates, columns, units, categories, the CRS and the length unit. Other libraries in the family (wireframes, transiograms, geophysics) read that dict, and boitatá reads theirs, so none of them imports another. `from_minetypes` builds a boitatá container from any object that has the method, and every boitatá function and method takes such an object where it takes a container.
+
+```python
+spec = samples.__minetypes__()
+spec["kind"], spec["coords"].shape  # ('point_set', (n, 3))
+back = bt.PointSet.from_minetypes(samples)
+shell = bt.block_shell(foreign_model)  # any object whose __minetypes__ gives a grid or block model
+```
+
+Numeric columns without nulls and the coordinates come out as read-only views of the container's storage. Columns with nulls, text with nulls (int32 codes, `-1` for null), sub-block offsets and scales (float32 fractions of the parent cell) and every drill hole array are copies. Drill holes send their survey dip negative downward, so a vertical hole has dip `-90`; boitatá keeps inclination from vertical and converts both ways.
+
 ## Block models
 
 A block model is a grid of boxes. Four things fix every block: the `origin` (the outer corner of the first block), the block `size` along each axis, the `count` of blocks along each axis, and a `rotation`. A regular grid stores no coordinates; the block centers follow from those numbers.

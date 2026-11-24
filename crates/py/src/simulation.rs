@@ -2299,8 +2299,7 @@ impl Dss {
                 "{share:.2}% of simulated nodes had a kriged mean and variance no draw reaches; \
                  drew them from the nearest reachable pair"
             );
-            let category = py.get_type::<pyo3::exceptions::PyUserWarning>();
-            PyErr::warn(py, &category, &std::ffi::CString::new(message)?, 1)?;
+            crate::warn(py, message)?;
         }
         Ok(SimulationSummary(
             summary,
@@ -4944,10 +4943,9 @@ impl MultivariateSimulation {
         };
         let missing = data.len() - usable.len();
         if missing > 0 {
-            let category = py.get_type::<pyo3::exceptions::PyUserWarning>();
             let what = if impute { "every" } else { "a" };
             let message = format!("{missing} samples miss {what} variable; dropped them");
-            PyErr::warn(py, &category, &std::ffi::CString::new(message)?, 1)?;
+            crate::warn(py, message)?;
         }
         let (data, locs) = (pick(&data, &usable), pick(&locs, &usable));
         let weights = weights.map(|w| pick(&w, &usable));

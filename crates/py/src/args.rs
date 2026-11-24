@@ -370,8 +370,7 @@ pub fn distinct_in(
         groups.len(),
         lines.join("; ")
     );
-    let category = py.get_type::<pyo3::exceptions::PyUserWarning>();
-    PyErr::warn(py, &category, &std::ffi::CString::new(message)?, 1)?;
+    crate::warn(py, message)?;
     Ok((0..locs.len()).filter(|&i| !dropped[i]).collect())
 }
 

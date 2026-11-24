@@ -57,6 +57,10 @@ def _reduce(obj):
     return _from_json, (type(obj), obj.to_json())
 
 
+from boitata import _protocol
+
+_protocol.install(globals())
+
 for _cls in vars(_boitata).values():
     if isinstance(_cls, type) and (hasattr(_cls, "from_json") or hasattr(_cls, "_from_state")):
         _copyreg.pickle(_cls, _reduce)

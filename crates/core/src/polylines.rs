@@ -199,6 +199,16 @@ impl Polylines {
         &self.vertices
     }
 
+    /// `part_offsets[0] = 0`, `part_offsets[P] =` vertex count.
+    pub fn part_offsets(&self) -> &[u32] {
+        &self.parts
+    }
+
+    /// `feature_offsets[0] = 0`, `feature_offsets[M] =` part count.
+    pub fn feature_offsets(&self) -> &[u32] {
+        &self.features
+    }
+
     pub fn part(&self, i: usize) -> &[[f64; 3]] {
         &self.vertices[self.parts[i] as usize..self.parts[i + 1] as usize]
     }

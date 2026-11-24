@@ -19,6 +19,7 @@ mod lva;
 mod modeling;
 mod multigaussian;
 mod persist;
+mod protocol;
 mod simulation;
 mod table;
 mod transforms;
@@ -37,6 +38,24 @@ pub(crate) fn error(kind: &str, message: impl ToString) -> PyErr {
             Err(e) => e,
         }
     })
+}
+
+/// Raises a `UserWarning` at the caller's line, past the frames of `boitata._protocol`'s wrapper.
+pub(crate) fn warn(py: Python, message: String) -> PyResult<()> {
+    let mut level = 1;
+    let mut frame = py.import("sys")?.call_method1("_getframe", (0,))?;
+    while !frame.is_none()
+        && frame
+            .getattr("f_globals")?
+            .get_item("__name__")
+            .and_then(|n| n.extract::<String>())
+            .is_ok_and(|n| n == "boitata._protocol")
+    {
+        level += 1;
+        frame = frame.getattr("f_back")?;
+    }
+    let category = py.get_type::<pyo3::exceptions::PyUserWarning>();
+    PyErr::warn(py, &category, &std::ffi::CString::new(message)?, level)
 }
 
 pub(crate) fn invalid(message: impl ToString) -> PyErr {
@@ -69,5 +88,6 @@ fn _boitata(m: &Bound<PyModule>) -> PyResult<()> {
     categorical::register(m)?;
     multigaussian::register(m)?;
     consistency::register(m)?;
+    protocol::register(m)?;
     Ok(())
 }
